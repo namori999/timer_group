@@ -18,7 +18,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       // 未ログイン
       return ClipRRect(
         borderRadius:
-            const BorderRadius.horizontal(right: Radius.circular(100)),
+            const BorderRadius.horizontal(right: Radius.circular(30)),
         child: SizedBox(
           width: 200,
           child: Drawer(

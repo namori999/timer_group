@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:timer_group/components/app_drawer.dart';
+import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
@@ -20,26 +20,29 @@ class GroupListPage extends StatefulWidget {
 }
 
 class _GroupListPageState extends State<GroupListPage> {
-  int _counter = 0;
+  var isDrawerOpen = false;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  Icon floatingButtonIcon = const Icon(
+    Icons.add,
+    color: Colors.white,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const AppDrawer(),
-      appBar: AppBar(
+  Color backGroundColor = Colors.white;
+
+  Widget appBar() {
+      return  AppBar(
+        backgroundColor: backGroundColor,
         leading: Builder(
           builder: (context) => Padding(
             padding: const EdgeInsets.only(left: 10),
             child: IconButton(
-              icon: const Icon(Icons.person_outlined),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
+                icon: const Icon(Icons.person_outlined),
+                color: Themes.grayColor.shade700,
+                onPressed: () {
+                  if (!isDrawerOpen) {
+                    Scaffold.of(context).openDrawer();
+                  }
+                }),
           ),
         ),
         centerTitle: true,
@@ -53,11 +56,13 @@ class _GroupListPageState extends State<GroupListPage> {
           Padding(
               padding: const EdgeInsets.only(right: 20),
               child: IconButton(
-                icon: Icon(Icons.settings_outlined,
-                    color: Themes.grayColor.shade900),
-                onPressed: () =>
-                    Navigator.of(context).push(SettingsPage.route()),
-              )),
+                  icon: Icon(Icons.settings_outlined,
+                      color: Themes.grayColor.shade700),
+                  onPressed: () {
+                    if (!isDrawerOpen) {
+                      Navigator.of(context).push(SettingsPage.route());
+                    }
+                  })),
         ],
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -65,47 +70,64 @@ class _GroupListPageState extends State<GroupListPage> {
             bottomRight: Radius.circular(30),
           ),
         ),
-      ),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: const AppDrawer(),
+      appBar: appBar(),
+      backgroundColor: backGroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
             Text(
-              '$_counter',
+              "main",
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: Builder(
-        builder: (context) => FloatingActionButton(
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.add, color: Colors.white),
-          onPressed: () {
-            showBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    alignment: Alignment.center,
-                    height: 600,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 20,
-                        ),
-                      ],
-                    ),
-                    child: const GroupAddPage(),
+        builder: (context) {
+          return FloatingActionButton(
+            backgroundColor: Colors.black,
+            child: floatingButtonIcon,
+            onPressed: () => {
+              setState(() {
+                if (isDrawerOpen) {
+                  floatingButtonIcon = const Icon(
+                    Icons.add,
+                    color: Colors.white,
                   );
-                });
-          },
-        ),
+                  isDrawerOpen = false;
+                  backGroundColor = Colors.white;
+                  Navigator.of(context).pop();
+                } else {
+                  floatingButtonIcon = const Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                  );
+                  isDrawerOpen = true;
+                  backGroundColor = Themes.grayColor[700];
+                  showBottomSheet(
+                    context: context,
+                    elevation: 20,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(30)),
+                    ),
+                    builder: (BuildContext context) {
+                      return GroupAddPage();
+                    },
+                  );
+                }
+              }),
+            },
+          );
+        },
       ),
     );
   }
