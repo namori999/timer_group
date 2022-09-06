@@ -23,7 +23,7 @@ class Themes {
 
   static const MaterialColor grayColor =
   MaterialColor(_grayPrimaryValue, <int, Color>{
-    50: Color(_grayPrimaryValue),
+    50: Color(0xFFFFFFFF),
     100: Color(0xFFE7E5E5),
     200: Color(0xFFDBDBDB),
     300: Color(0xFFC2C2C2),
@@ -34,5 +34,5 @@ class Themes {
     800: Color(0xFF494949),
     900: Color(0xFF343434),
   });
-  static const int _grayPrimaryValue = 0xFFFFFFFF;
+  static const int _grayPrimaryValue = 0xFFA1A1A1;
 }

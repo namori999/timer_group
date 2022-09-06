@@ -12,13 +12,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Themes.grayColor,
-        splashColor: Themes.themeColor
+          primarySwatch: Themes.grayColor,
+          splashColor: Themes.themeColor,
+          fontFamily: 'inter'
       ),
       darkTheme: ThemeData(
-        primarySwatch: Themes.grayColor,
-        brightness: Brightness.dark,
-        splashColor: Themes.themeColor
+          primarySwatch: Themes.grayColor,
+          brightness: Brightness.dark,
+          splashColor: Themes.themeColor,
+          fontFamily: 'inter'
       ),
       home: const GroupListPage(),
     );
