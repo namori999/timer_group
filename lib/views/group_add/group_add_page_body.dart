@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_first.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
-import 'package:timer_group/views/group_add/group_add_page_timer_list.dart';
 
-class GroupAddPageBody extends StatefulWidget {
+class GroupAddPageBody extends ConsumerStatefulWidget {
   GroupAddPageBody({
     Key? key,
     String? defaultEmail,
@@ -20,13 +18,15 @@ class GroupAddPageBody extends StatefulWidget {
   final TextEditingController passwordController;
 
   @override
-  State createState() => GroupAddPageBodyState();
+  ConsumerState createState() => GroupAddPageBodyState();
 }
 
-class GroupAddPageBodyState extends State<GroupAddPageBody> {
+class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
   get emailController => widget.emailController;
-
   get passwordController => widget.passwordController;
+
+  @override
+  WidgetRef get ref => super.ref;
 
   bool isExpandClicked = false;
 
@@ -41,7 +41,7 @@ class GroupAddPageBodyState extends State<GroupAddPageBody> {
 
   Widget nextStepButton() {
     return IconButton(
-      onPressed: () {
+      onPressed: () async {
         setState(() {
           children.clear();
           children.add(GroupAddPageFirst());

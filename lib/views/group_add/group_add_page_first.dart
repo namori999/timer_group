@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:timer_group/views/components/drop_down_button.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/views/components/outlined_drop_down_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
-class GroupAddPageFirst extends StatelessWidget {
+class GroupAddPageFirst extends ConsumerWidget {
   GroupAddPageFirst({
     Key? key,
     String? defaultEmail,
@@ -35,7 +35,7 @@ class GroupAddPageFirst extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -83,7 +83,9 @@ class GroupAddPageFirst extends StatelessWidget {
             const Text(
               "表示単位",
             ),
-            OutlinedDropDownButton(itemList: formatList, type: "TimeFormat",),
+            OutlinedDropDownButton(
+              itemList: formatList, type: "TimeFormat",
+            ),
           ],
         ),
         spacer(),

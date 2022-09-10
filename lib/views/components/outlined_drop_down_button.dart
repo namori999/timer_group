@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
 
 import '../configure/theme.dart';
 
@@ -11,7 +13,6 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
-
   final List<String>? itemList;
   final String type;
 
@@ -21,14 +22,28 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
 
 class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   List<String>? get itemList => widget.itemList;
+
   String get type => widget.type;
   String selectedValue = "";
+  TimeFormat? timeFormat;
 
   @override
   void initState() {
     super.initState();
     selectedValue = (itemList == null) ? "" : itemList!.first;
+  }
 
+  void addOption() async {
+    switch (type) {
+      case "TimeFormat":
+        timeFormat =
+        selectedValue == "分秒" ?
+        TimeFormat.minuteSecond : TimeFormat.hourMinute;
+
+        await ref.read(timerGroupOptionsRepositoryProvider)
+            .addOption(
+            TimerGroupOptions(timerGroupId: 0, timeFormat: timeFormat));
+    }
   }
 
   @override
@@ -48,6 +63,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
               iconSize: 0.0,
               value: selectedValue,
               onChanged: (String? value) {
+                addOption();
                 setState(() {
                   selectedValue = value!;
                 });
@@ -62,4 +78,5 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
       ),
     );
   }
+
 }

@@ -14,12 +14,17 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+TimerGroupOptions _$TimerGroupOptionsFromJson(Map<String, dynamic> json) {
+  return _TimerGroupOptions.fromJson(json);
+}
+
 /// @nodoc
 mixin _$TimerGroupOptions {
-  String get timerGroupId => throw _privateConstructorUsedError;
+  int get timerGroupId => throw _privateConstructorUsedError;
   TimeFormat? get timeFormat => throw _privateConstructorUsedError;
   bool? get overTime => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TimerGroupOptionsCopyWith<TimerGroupOptions> get copyWith =>
       throw _privateConstructorUsedError;
@@ -30,7 +35,7 @@ abstract class $TimerGroupOptionsCopyWith<$Res> {
   factory $TimerGroupOptionsCopyWith(
           TimerGroupOptions value, $Res Function(TimerGroupOptions) then) =
       _$TimerGroupOptionsCopyWithImpl<$Res>;
-  $Res call({String timerGroupId, TimeFormat? timeFormat, bool? overTime});
+  $Res call({int timerGroupId, TimeFormat? timeFormat, bool? overTime});
 }
 
 /// @nodoc
@@ -52,7 +57,7 @@ class _$TimerGroupOptionsCopyWithImpl<$Res>
       timerGroupId: timerGroupId == freezed
           ? _value.timerGroupId
           : timerGroupId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       timeFormat: timeFormat == freezed
           ? _value.timeFormat
           : timeFormat // ignore: cast_nullable_to_non_nullable
@@ -72,7 +77,7 @@ abstract class _$$_TimerGroupOptionsCopyWith<$Res>
           $Res Function(_$_TimerGroupOptions) then) =
       __$$_TimerGroupOptionsCopyWithImpl<$Res>;
   @override
-  $Res call({String timerGroupId, TimeFormat? timeFormat, bool? overTime});
+  $Res call({int timerGroupId, TimeFormat? timeFormat, bool? overTime});
 }
 
 /// @nodoc
@@ -96,7 +101,7 @@ class __$$_TimerGroupOptionsCopyWithImpl<$Res>
       timerGroupId: timerGroupId == freezed
           ? _value.timerGroupId
           : timerGroupId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       timeFormat: timeFormat == freezed
           ? _value.timeFormat
           : timeFormat // ignore: cast_nullable_to_non_nullable
@@ -110,14 +115,17 @@ class __$$_TimerGroupOptionsCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_TimerGroupOptions extends _TimerGroupOptions {
   _$_TimerGroupOptions(
       {required this.timerGroupId, this.timeFormat, this.overTime})
       : super._();
 
+  factory _$_TimerGroupOptions.fromJson(Map<String, dynamic> json) =>
+      _$$_TimerGroupOptionsFromJson(json);
+
   @override
-  final String timerGroupId;
+  final int timerGroupId;
   @override
   final TimeFormat? timeFormat;
   @override
@@ -140,6 +148,7 @@ class _$_TimerGroupOptions extends _TimerGroupOptions {
             const DeepCollectionEquality().equals(other.overTime, overTime));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -152,17 +161,27 @@ class _$_TimerGroupOptions extends _TimerGroupOptions {
   _$$_TimerGroupOptionsCopyWith<_$_TimerGroupOptions> get copyWith =>
       __$$_TimerGroupOptionsCopyWithImpl<_$_TimerGroupOptions>(
           this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_TimerGroupOptionsToJson(
+      this,
+    );
+  }
 }
 
 abstract class _TimerGroupOptions extends TimerGroupOptions {
   factory _TimerGroupOptions(
-      {required final String timerGroupId,
+      {required final int timerGroupId,
       final TimeFormat? timeFormat,
       final bool? overTime}) = _$_TimerGroupOptions;
   _TimerGroupOptions._() : super._();
 
+  factory _TimerGroupOptions.fromJson(Map<String, dynamic> json) =
+      _$_TimerGroupOptions.fromJson;
+
   @override
-  String get timerGroupId;
+  int get timerGroupId;
   @override
   TimeFormat? get timeFormat;
   @override
