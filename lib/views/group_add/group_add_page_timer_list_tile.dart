@@ -7,7 +7,7 @@ import '../configure/theme.dart';
 class GroupAddPageTimerListTile extends ConsumerWidget {
   const GroupAddPageTimerListTile(
     this.index, {
-    Key key,
+    Key? key,
   }) : super(key: key);
   final int index;
 

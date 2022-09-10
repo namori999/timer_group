@@ -5,7 +5,7 @@ import 'package:timer_group/views/group_list_page.dart';
 import 'configure/theme.dart';
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override

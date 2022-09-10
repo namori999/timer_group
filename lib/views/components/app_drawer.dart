@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timer_group/views/configure/theme.dart';
 
 class AppDrawer extends ConsumerStatefulWidget {
-  const AppDrawer({Key key}) : super(key: key);
+  const AppDrawer({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AppDrawerState();
@@ -18,7 +17,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       // 未ログイン
       return ClipRRect(
         borderRadius:
-            const BorderRadius.horizontal(right: Radius.circular(30)),
+            const BorderRadius.horizontal(right: Radius.circular(160)),
         child: SizedBox(
           width: 200,
           child: Drawer(

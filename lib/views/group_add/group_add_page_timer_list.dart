@@ -6,7 +6,7 @@ import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
 
 class GroupAddPageTimerList extends ConsumerStatefulWidget {
-  const GroupAddPageTimerList({Key key}) : super(key: key);
+  const GroupAddPageTimerList({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
