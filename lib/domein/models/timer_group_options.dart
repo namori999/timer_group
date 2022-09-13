@@ -8,7 +8,7 @@ class TimerGroupOptions with _$TimerGroupOptions {
   const TimerGroupOptions._();
 
   factory TimerGroupOptions({
-    required int timerGroupId,
+    required String title,
     TimeFormat? timeFormat,
     bool? overTime,
   }) = _TimerGroupOptions;

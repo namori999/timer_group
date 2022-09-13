@@ -9,7 +9,7 @@ class GroupAddPageTimerListTile extends ConsumerWidget {
     this.index, {
     Key? key,
   }) : super(key: key);
-  final int index;
+  final int? index;
 
   Widget spacer() {
     return Column(

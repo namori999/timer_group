@@ -1,33 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/views/components/outlined_drop_down_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
-
 import 'group_add_page_timer_list.dart';
 
-class GroupAddPageSecond extends StatelessWidget {
+class GroupAddPageSecond extends ConsumerStatefulWidget {
   GroupAddPageSecond({
+    required this.title,
     Key? key,
   }) : super(key: key);
 
-  List<String> formatList = ["分秒", "時分"];
-
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 16),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }
+  String title;
 
   @override
-  Widget build(BuildContext context) {
+  ConsumerState createState() => GroupAddPageSecondState();
+}
+
+class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
+  get title => widget.title;
+  var body = <Widget>[];
+  List<String> overTimeList = ["OFF", "ON"];
+
+  @override
+  void initState() {
+    super.initState();
+    body.add(secondStep());
+  }
+
+  Widget secondStep() {
+    List<String> formatList = ["分秒", "時分"];
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "表示単位",
+            ),
+            OutlinedDropDownButton(
+              itemList: formatList,
+              type: "TimeFormat",
+              timerGroupTitle: title,
+            ),
+          ],
+        ),
+        spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
@@ -63,20 +82,11 @@ class GroupAddPageSecond extends StatelessWidget {
             const Text(
               "オーバータイム",
             ),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(130, 40),
-                foregroundColor: Themes.grayColor,
-                side: const BorderSide(
-                  color: Themes.grayColor,
-                ),
-              ),
-              child: const Text(
-                'OFF',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () => print('Clicked'),
-            ),
+            OutlinedDropDownButton(
+              itemList: overTimeList,
+              type: "overTime",
+              timerGroupTitle: title,
+            )
           ],
         ),
         spacer(),
@@ -116,6 +126,26 @@ class GroupAddPageSecond extends StatelessWidget {
         ),
         const SizedBox(height: 32),
       ],
+    );
+  }
+
+  Widget spacer() {
+    return Column(
+      children: const [
+        SizedBox(height: 16),
+        Divider(
+          color: Themes.grayColor,
+          height: 2,
+        ),
+        SizedBox(height: 16),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: body,
     );
   }
 }

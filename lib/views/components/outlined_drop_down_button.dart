@@ -10,11 +10,13 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
   const OutlinedDropDownButton({
     this.itemList,
     required this.type,
+    required this.timerGroupTitle,
     Key? key,
   }) : super(key: key);
 
   final List<String>? itemList;
   final String type;
+  final String timerGroupTitle;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => DropDownButtonState();
@@ -23,9 +25,12 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
 class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   List<String>? get itemList => widget.itemList;
 
+  String get title => widget.timerGroupTitle;
+
   String get type => widget.type;
   String selectedValue = "";
   TimeFormat? timeFormat;
+  bool overTime = false;
 
   @override
   void initState() {
@@ -36,13 +41,22 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   void addOption() async {
     switch (type) {
       case "TimeFormat":
-        timeFormat =
-        selectedValue == "分秒" ?
-        TimeFormat.minuteSecond : TimeFormat.hourMinute;
+        timeFormat = selectedValue == "分秒"
+            ? TimeFormat.minuteSecond
+            : TimeFormat.hourMinute;
 
-        await ref.read(timerGroupOptionsRepositoryProvider)
-            .addOption(
-            TimerGroupOptions(timerGroupId: 0, timeFormat: timeFormat));
+        await ref
+            .read(timerGroupOptionsRepositoryProvider)
+            .addOption(TimerGroupOptions(title: title, timeFormat: timeFormat));
+        break;
+
+      case "overTime":
+        overTime = selectedValue == "ON" ? true : false;
+
+        await ref
+            .read(timerGroupOptionsRepositoryProvider)
+            .addOption(TimerGroupOptions(title: title, overTime: overTime));
+        break;
     }
   }
 
@@ -78,5 +92,4 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
       ),
     );
   }
-
 }

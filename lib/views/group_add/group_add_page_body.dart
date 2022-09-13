@@ -1,51 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/views/configure/theme.dart';
-import 'package:timer_group/views/group_add/group_add_page_first.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
 
 class GroupAddPageBody extends ConsumerStatefulWidget {
   GroupAddPageBody({
-    Key? key,
     String? defaultEmail,
     String? defaultPassword,
-  })  : emailController = TextEditingController(text: defaultEmail),
-        passwordController = TextEditingController(text: defaultPassword),
+    Key? key,
+  })  : titleController = TextEditingController(text: defaultEmail),
+        descriptionController = TextEditingController(text: defaultPassword),
         super(key: key);
 
+  final TextEditingController titleController;
+  final TextEditingController descriptionController;
+
   final ScrollController listViewController = ScrollController();
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
 
   @override
   ConsumerState createState() => GroupAddPageBodyState();
 }
 
 class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
-  get emailController => widget.emailController;
-  get passwordController => widget.passwordController;
-
-  @override
-  WidgetRef get ref => super.ref;
-
   bool isExpandClicked = false;
+
+  TextEditingController get titleController => widget.titleController;
+
+  TextEditingController get descriptionController =>
+      widget.descriptionController;
 
   final children = <Widget>[];
 
   @override
   void initState() {
     super.initState();
-    children.add(GroupAddPageFirst());
-    children.add(nextStepButton());
+    children.add(nextStepButton(),);
   }
 
   Widget nextStepButton() {
     return IconButton(
-      onPressed: () async {
+      onPressed: () {
         setState(() {
           children.clear();
-          children.add(GroupAddPageFirst());
-          children.add(GroupAddPageSecond());
+          children.add(GroupAddPageSecond(
+            title: titleController.text,
+          ));
         });
       },
       iconSize: 80,
@@ -56,8 +55,62 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     );
   }
 
+  Widget spacer() {
+    return Column(
+      children: const [
+        SizedBox(height: 16),
+        Divider(
+          color: Themes.grayColor,
+          height: 2,
+        ),
+        SizedBox(height: 16),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(children: children);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextField(
+          controller: titleController,
+          keyboardType: TextInputType.text,
+          maxLength: 10,
+          decoration: const InputDecoration(
+            label: Text(
+              "タイトル",
+              strutStyle: StrutStyle(height: 1.3),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: descriptionController,
+          keyboardType: TextInputType.text,
+          maxLength: 50,
+          decoration: const InputDecoration(
+            label: Text(
+              "説明",
+              strutStyle: StrutStyle(height: 1.3),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
+            ),
+          ),
+        ),
+        spacer(),
+        Column(children: children,),
+      ],
+    );
   }
 }
