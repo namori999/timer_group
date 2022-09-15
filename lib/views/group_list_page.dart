@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/groupOptionsProvider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
 import 'configure/theme.dart';
 
-class GroupListPage extends StatefulWidget {
+class GroupListPage extends ConsumerStatefulWidget {
   static Route<GroupListPage> route() {
     return MaterialPageRoute<GroupListPage>(
       settings: const RouteSettings(name: "/group"),
@@ -16,10 +18,10 @@ class GroupListPage extends StatefulWidget {
   const GroupListPage({Key? key}) : super(key: key);
 
   @override
-  State<GroupListPage> createState() => _GroupListPageState();
+  ConsumerState<GroupListPage> createState() => _GroupListPageState();
 }
 
-class _GroupListPageState extends State<GroupListPage> {
+class _GroupListPageState extends ConsumerState<GroupListPage> {
   var isDrawerOpen = false;
 
   Icon floatingButtonIcon = const Icon(
@@ -75,6 +77,9 @@ class _GroupListPageState extends State<GroupListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final timerGroupList = ref.watch(savedTimerGroupProvider);
+    print(timerGroupList.value?.toString());
+
     return Scaffold(
       drawer: AppDrawer(),
       appBar: appBar(),

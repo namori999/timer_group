@@ -20,9 +20,10 @@ TimerGroupOptions _$TimerGroupOptionsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TimerGroupOptions {
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   TimeFormat? get timeFormat => throw _privateConstructorUsedError;
-  bool? get overTime => throw _privateConstructorUsedError;
+  String? get overTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +36,7 @@ abstract class $TimerGroupOptionsCopyWith<$Res> {
   factory $TimerGroupOptionsCopyWith(
           TimerGroupOptions value, $Res Function(TimerGroupOptions) then) =
       _$TimerGroupOptionsCopyWithImpl<$Res>;
-  $Res call({String title, TimeFormat? timeFormat, bool? overTime});
+  $Res call({int id, String title, TimeFormat? timeFormat, String? overTime});
 }
 
 /// @nodoc
@@ -49,11 +50,16 @@ class _$TimerGroupOptionsCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? title = freezed,
     Object? timeFormat = freezed,
     Object? overTime = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -65,7 +71,7 @@ class _$TimerGroupOptionsCopyWithImpl<$Res>
       overTime: overTime == freezed
           ? _value.overTime
           : overTime // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as String?,
     ));
   }
 }
@@ -77,7 +83,7 @@ abstract class _$$_TimerGroupOptionsCopyWith<$Res>
           $Res Function(_$_TimerGroupOptions) then) =
       __$$_TimerGroupOptionsCopyWithImpl<$Res>;
   @override
-  $Res call({String title, TimeFormat? timeFormat, bool? overTime});
+  $Res call({int id, String title, TimeFormat? timeFormat, String? overTime});
 }
 
 /// @nodoc
@@ -93,11 +99,16 @@ class __$$_TimerGroupOptionsCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? title = freezed,
     Object? timeFormat = freezed,
     Object? overTime = freezed,
   }) {
     return _then(_$_TimerGroupOptions(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -109,7 +120,7 @@ class __$$_TimerGroupOptionsCopyWithImpl<$Res>
       overTime: overTime == freezed
           ? _value.overTime
           : overTime // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as String?,
     ));
   }
 }
@@ -117,22 +128,25 @@ class __$$_TimerGroupOptionsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_TimerGroupOptions extends _TimerGroupOptions {
-  _$_TimerGroupOptions({required this.title, this.timeFormat, this.overTime})
+  _$_TimerGroupOptions(
+      {required this.id, required this.title, this.timeFormat, this.overTime})
       : super._();
 
   factory _$_TimerGroupOptions.fromJson(Map<String, dynamic> json) =>
       _$$_TimerGroupOptionsFromJson(json);
 
   @override
+  final int id;
+  @override
   final String title;
   @override
   final TimeFormat? timeFormat;
   @override
-  final bool? overTime;
+  final String? overTime;
 
   @override
   String toString() {
-    return 'TimerGroupOptions(title: $title, timeFormat: $timeFormat, overTime: $overTime)';
+    return 'TimerGroupOptions(id: $id, title: $title, timeFormat: $timeFormat, overTime: $overTime)';
   }
 
   @override
@@ -140,6 +154,7 @@ class _$_TimerGroupOptions extends _TimerGroupOptions {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TimerGroupOptions &&
+            const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.title, title) &&
             const DeepCollectionEquality()
                 .equals(other.timeFormat, timeFormat) &&
@@ -150,6 +165,7 @@ class _$_TimerGroupOptions extends _TimerGroupOptions {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(title),
       const DeepCollectionEquality().hash(timeFormat),
       const DeepCollectionEquality().hash(overTime));
@@ -170,20 +186,23 @@ class _$_TimerGroupOptions extends _TimerGroupOptions {
 
 abstract class _TimerGroupOptions extends TimerGroupOptions {
   factory _TimerGroupOptions(
-      {required final String title,
+      {required final int id,
+      required final String title,
       final TimeFormat? timeFormat,
-      final bool? overTime}) = _$_TimerGroupOptions;
+      final String? overTime}) = _$_TimerGroupOptions;
   _TimerGroupOptions._() : super._();
 
   factory _TimerGroupOptions.fromJson(Map<String, dynamic> json) =
       _$_TimerGroupOptions.fromJson;
 
   @override
+  int get id;
+  @override
   String get title;
   @override
   TimeFormat? get timeFormat;
   @override
-  bool? get overTime;
+  String? get overTime;
   @override
   @JsonKey(ignore: true)
   _$$_TimerGroupOptionsCopyWith<_$_TimerGroupOptions> get copyWith =>

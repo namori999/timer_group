@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'timer_group.dart';
+part of 'timer_group_info.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,49 +14,44 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TimerGroup _$TimerGroupFromJson(Map<String, dynamic> json) {
-  return _TimerGroup.fromJson(json);
+TimerGroupInfo _$TimerGroupInfoFromJson(Map<String, dynamic> json) {
+  return _TimerGroupInfo.fromJson(json);
 }
 
 /// @nodoc
-mixin _$TimerGroup {
-  int? get id => throw _privateConstructorUsedError;
+mixin _$TimerGroupInfo {
   String get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $TimerGroupCopyWith<TimerGroup> get copyWith =>
+  $TimerGroupInfoCopyWith<TimerGroupInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $TimerGroupCopyWith<$Res> {
-  factory $TimerGroupCopyWith(
-          TimerGroup value, $Res Function(TimerGroup) then) =
-      _$TimerGroupCopyWithImpl<$Res>;
-  $Res call({int? id, String title, String? description});
+abstract class $TimerGroupInfoCopyWith<$Res> {
+  factory $TimerGroupInfoCopyWith(
+          TimerGroupInfo value, $Res Function(TimerGroupInfo) then) =
+      _$TimerGroupInfoCopyWithImpl<$Res>;
+  $Res call({String title, String? description});
 }
 
 /// @nodoc
-class _$TimerGroupCopyWithImpl<$Res> implements $TimerGroupCopyWith<$Res> {
-  _$TimerGroupCopyWithImpl(this._value, this._then);
+class _$TimerGroupInfoCopyWithImpl<$Res>
+    implements $TimerGroupInfoCopyWith<$Res> {
+  _$TimerGroupInfoCopyWithImpl(this._value, this._then);
 
-  final TimerGroup _value;
+  final TimerGroupInfo _value;
   // ignore: unused_field
-  final $Res Function(TimerGroup) _then;
+  final $Res Function(TimerGroupInfo) _then;
 
   @override
   $Res call({
-    Object? id = freezed,
     Object? title = freezed,
     Object? description = freezed,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -70,36 +65,32 @@ class _$TimerGroupCopyWithImpl<$Res> implements $TimerGroupCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$$_TimerGroupCopyWith<$Res>
-    implements $TimerGroupCopyWith<$Res> {
-  factory _$$_TimerGroupCopyWith(
-          _$_TimerGroup value, $Res Function(_$_TimerGroup) then) =
-      __$$_TimerGroupCopyWithImpl<$Res>;
+abstract class _$$_TimerGroupInfoCopyWith<$Res>
+    implements $TimerGroupInfoCopyWith<$Res> {
+  factory _$$_TimerGroupInfoCopyWith(
+          _$_TimerGroupInfo value, $Res Function(_$_TimerGroupInfo) then) =
+      __$$_TimerGroupInfoCopyWithImpl<$Res>;
   @override
-  $Res call({int? id, String title, String? description});
+  $Res call({String title, String? description});
 }
 
 /// @nodoc
-class __$$_TimerGroupCopyWithImpl<$Res> extends _$TimerGroupCopyWithImpl<$Res>
-    implements _$$_TimerGroupCopyWith<$Res> {
-  __$$_TimerGroupCopyWithImpl(
-      _$_TimerGroup _value, $Res Function(_$_TimerGroup) _then)
-      : super(_value, (v) => _then(v as _$_TimerGroup));
+class __$$_TimerGroupInfoCopyWithImpl<$Res>
+    extends _$TimerGroupInfoCopyWithImpl<$Res>
+    implements _$$_TimerGroupInfoCopyWith<$Res> {
+  __$$_TimerGroupInfoCopyWithImpl(
+      _$_TimerGroupInfo _value, $Res Function(_$_TimerGroupInfo) _then)
+      : super(_value, (v) => _then(v as _$_TimerGroupInfo));
 
   @override
-  _$_TimerGroup get _value => super._value as _$_TimerGroup;
+  _$_TimerGroupInfo get _value => super._value as _$_TimerGroupInfo;
 
   @override
   $Res call({
-    Object? id = freezed,
     Object? title = freezed,
     Object? description = freezed,
   }) {
-    return _then(_$_TimerGroup(
-      id: id == freezed
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
+    return _then(_$_TimerGroupInfo(
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -114,14 +105,12 @@ class __$$_TimerGroupCopyWithImpl<$Res> extends _$TimerGroupCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TimerGroup extends _TimerGroup {
-  _$_TimerGroup({this.id, required this.title, this.description}) : super._();
+class _$_TimerGroupInfo extends _TimerGroupInfo {
+  _$_TimerGroupInfo({required this.title, this.description}) : super._();
 
-  factory _$_TimerGroup.fromJson(Map<String, dynamic> json) =>
-      _$$_TimerGroupFromJson(json);
+  factory _$_TimerGroupInfo.fromJson(Map<String, dynamic> json) =>
+      _$$_TimerGroupInfoFromJson(json);
 
-  @override
-  final int? id;
   @override
   final String title;
   @override
@@ -129,15 +118,14 @@ class _$_TimerGroup extends _TimerGroup {
 
   @override
   String toString() {
-    return 'TimerGroup(id: $id, title: $title, description: $description)';
+    return 'TimerGroupInfo(title: $title, description: $description)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TimerGroup &&
-            const DeepCollectionEquality().equals(other.id, id) &&
+            other is _$_TimerGroupInfo &&
             const DeepCollectionEquality().equals(other.title, title) &&
             const DeepCollectionEquality()
                 .equals(other.description, description));
@@ -147,41 +135,37 @@ class _$_TimerGroup extends _TimerGroup {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(title),
       const DeepCollectionEquality().hash(description));
 
   @JsonKey(ignore: true)
   @override
-  _$$_TimerGroupCopyWith<_$_TimerGroup> get copyWith =>
-      __$$_TimerGroupCopyWithImpl<_$_TimerGroup>(this, _$identity);
+  _$$_TimerGroupInfoCopyWith<_$_TimerGroupInfo> get copyWith =>
+      __$$_TimerGroupInfoCopyWithImpl<_$_TimerGroupInfo>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TimerGroupToJson(
+    return _$$_TimerGroupInfoToJson(
       this,
     );
   }
 }
 
-abstract class _TimerGroup extends TimerGroup {
-  factory _TimerGroup(
-      {final int? id,
-      required final String title,
-      final String? description}) = _$_TimerGroup;
-  _TimerGroup._() : super._();
+abstract class _TimerGroupInfo extends TimerGroupInfo {
+  factory _TimerGroupInfo(
+      {required final String title,
+      final String? description}) = _$_TimerGroupInfo;
+  _TimerGroupInfo._() : super._();
 
-  factory _TimerGroup.fromJson(Map<String, dynamic> json) =
-      _$_TimerGroup.fromJson;
+  factory _TimerGroupInfo.fromJson(Map<String, dynamic> json) =
+      _$_TimerGroupInfo.fromJson;
 
-  @override
-  int? get id;
   @override
   String get title;
   @override
   String? get description;
   @override
   @JsonKey(ignore: true)
-  _$$_TimerGroupCopyWith<_$_TimerGroup> get copyWith =>
+  _$$_TimerGroupInfoCopyWith<_$_TimerGroupInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/storage/sqlite.dart';
@@ -9,8 +10,8 @@ final savedTimerGroupProvider =
 });
 
 final timerGroupProvider = FutureProvider.autoDispose
-    .family<TimerGroup?, String>((ref, timerGroupId) async {
-  return SqliteLocalDatabase.timerGroup.get(timerGroupId);
+    .family<TimerGroup?, String>((ref, title) async {
+  return SqliteLocalDatabase.timerGroup.get(title);
 });
 
 final timerGroupRepositoryProvider =
@@ -22,30 +23,38 @@ class timerGroupRepository {
   static const _db = SqliteLocalDatabase.timerGroup;
   final Ref ref;
 
-  Future<TimerGroup?> getTimerGroup(String timerGroupId) async =>
-      await _db.get(timerGroupId);
+  Future<TimerGroup> getTimerGroup(String title) async =>
+      await _db.get(title);
 
-  Future<void> update(TimerGroup timerGroup) async {
-    await _db.insert(timerGroup);
-    ref.refresh(timerGroupProvider(timerGroup.title));
+  Future<int> getId(String title) async =>
+      await _db.getId(title);
+
+  Future<void> update(TimerGroupInfo info) async {
+    await _db.insert(info);
     ref.refresh(savedTimerGroupProvider);
   }
 
-  Future<void> addTimerGroup(String title) async {
-    await _db.insert(TimerGroup(title: title));
-    ref.refresh(timerGroupProvider(title));
+  Future<int> addTimerGroup(TimerGroupInfo info) async {
+    final int = await _db.insert(info);
     ref.refresh(savedTimerGroupProvider);
+    return int;
   }
 
-  Future<void> removeTimerGroup(String deckId) async {
-    await _db.delete(deckId);
+  Future<void> removeTimerGroup(int id) async {
+    await _db.delete(id);
     ref.refresh(savedTimerGroupProvider);
   }
 }
 
-final savedTimerGroupOptionsProvider = FutureProvider.autoDispose
-    .family<TimerGroupOptions?, String>((ref, title) async {
-  return await SqliteLocalDatabase.timerGroupOptions.get(title);
+final savedTimerGroupOptionsProvider =
+FutureProvider.autoDispose<Map<String, TimerGroupOptions>>((ref) async {
+  return SqliteLocalDatabase.timerGroupOptions.getAll();
+});
+
+
+final timerGroupOptionsProvider = FutureProvider.autoDispose
+    .family<TimerGroupOptions?, int>((ref, id) async {
+  return await SqliteLocalDatabase.timerGroupOptions.get(id);
 });
 
 final timerGroupOptionsRepositoryProvider =
@@ -57,21 +66,21 @@ class TimerGroupOptionsRepository {
   static const _db = SqliteLocalDatabase.timerGroupOptions;
   final Ref ref;
 
-  Future<void> getOptions(String title) async =>
-      await _db.get(title);
+  Future<TimerGroupOptions?> getOptions(int id) async =>
+      await _db.get(id);
 
   Future<void> update(TimerGroupOptions timerGroupOptions) async {
-    await _db.insert(timerGroupOptions);
+    await _db.update(timerGroupOptions);
     ref.refresh(savedTimerGroupProvider);
   }
 
   Future<void> addOption(TimerGroupOptions timerGroupOptions) async {
     await _db.insert(timerGroupOptions);
-    ref.refresh(savedTimerGroupOptionsProvider(timerGroupOptions.title));
+    ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
 
-  Future<void> removeOption(String title) async {
-    await _db.delete(title);
-    ref.refresh(savedTimerGroupOptionsProvider(title));
+  Future<void> removeOption(int id) async {
+    await _db.delete(id);
+    ref.refresh(timerGroupOptionsProvider(id));
   }
 }

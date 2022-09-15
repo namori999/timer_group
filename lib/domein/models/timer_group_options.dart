@@ -8,9 +8,10 @@ class TimerGroupOptions with _$TimerGroupOptions {
   const TimerGroupOptions._();
 
   factory TimerGroupOptions({
+    required int id,
     required String title,
     TimeFormat? timeFormat,
-    bool? overTime,
+    String? overTime,
   }) = _TimerGroupOptions;
 
   factory TimerGroupOptions.fromJson(Map<String, dynamic> json) =>

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/models/timer_group_info.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
 
@@ -30,22 +33,50 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
       widget.descriptionController;
 
   final children = <Widget>[];
+  bool isEmpty = false;
 
   @override
   void initState() {
     super.initState();
-    children.add(nextStepButton(),);
+    children.add(
+      nextStepButton(),
+    );
+    titleController.addListener(() {
+      if (titleController.text.isEmpty) {
+        isEmpty = true;
+      } else {
+        isEmpty = false;
+      }
+      setState(() {});
+    });
   }
 
   Widget nextStepButton() {
     return IconButton(
-      onPressed: () {
-        setState(() {
-          children.clear();
-          children.add(GroupAddPageSecond(
-            title: titleController.text,
-          ));
-        });
+      onPressed: () async {
+        final title = titleController.text;
+        final description = descriptionController.text;
+        if (!isEmpty) {
+          final provider = ref.watch(timerGroupRepositoryProvider);
+          final id = await provider.addTimerGroup(
+              TimerGroupInfo(
+              title: title, description: description)
+          );
+
+          final optionsProvider =
+              ref.watch(timerGroupOptionsRepositoryProvider);
+          optionsProvider.addOption(
+              TimerGroupOptions(
+                  id: id, title: title, timeFormat: null, overTime: null)
+          );
+
+          setState(() {
+            children.clear();
+            children.add(GroupAddPageSecond(
+              title: title,
+            ));
+          });
+        }
       },
       iconSize: 80,
       icon: const Icon(
@@ -109,7 +140,9 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           ),
         ),
         spacer(),
-        Column(children: children,),
+        Column(
+          children: children,
+        ),
       ],
     );
   }

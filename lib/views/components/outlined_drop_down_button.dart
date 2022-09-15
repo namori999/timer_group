@@ -30,7 +30,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   String get type => widget.type;
   String selectedValue = "";
   TimeFormat? timeFormat;
-  bool overTime = false;
+  String overTime = "false";
 
   @override
   void initState() {
@@ -39,23 +39,39 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   }
 
   void addOption() async {
+    final timerGroupProvider = ref.read(timerGroupRepositoryProvider);
+    final id = await timerGroupProvider.getId(title);
+
+    final optionsProvider = ref.read(timerGroupOptionsRepositoryProvider);
+    final option = await optionsProvider.getOptions(id);
+
+
     switch (type) {
       case "TimeFormat":
         timeFormat = selectedValue == "分秒"
             ? TimeFormat.minuteSecond
             : TimeFormat.hourMinute;
 
-        await ref
-            .read(timerGroupOptionsRepositoryProvider)
-            .addOption(TimerGroupOptions(title: title, timeFormat: timeFormat));
+        await ref.read(timerGroupOptionsRepositoryProvider).update(
+            TimerGroupOptions(
+                id: id,
+                title: title,
+                timeFormat: timeFormat,
+                overTime: option?.overTime)
+        );
         break;
 
       case "overTime":
-        overTime = selectedValue == "ON" ? true : false;
+        overTime = selectedValue == "ON" ? "true" : "false";
 
-        await ref
-            .read(timerGroupOptionsRepositoryProvider)
-            .addOption(TimerGroupOptions(title: title, overTime: overTime));
+        await optionsProvider.update(
+            TimerGroupOptions(
+                id: id,
+                title: title,
+                timeFormat: option?.timeFormat,
+                overTime: overTime)
+        );
+
         break;
     }
   }

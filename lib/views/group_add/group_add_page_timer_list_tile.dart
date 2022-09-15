@@ -26,6 +26,8 @@ class GroupAddPageTimerListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    List<String> notificationList = ["OFF", "ON"];
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this

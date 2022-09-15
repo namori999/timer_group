@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
 const int _databaseVersion = 1;
@@ -48,10 +49,12 @@ abstract class SqliteLocalDatabase {
 class SavedTimerGroup implements SqliteLocalDatabase {
   const SavedTimerGroup();
 
+
   Future<void> _initialize(Database db) async {
     await db.execute('''
 CREATE TABLE IF NOT EXISTS timerGroup (
-  title TEXT PRIMARY KEY, 
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT, 
   description TEXT)
   ''');
   }
@@ -62,27 +65,33 @@ CREATE TABLE IF NOT EXISTS timerGroup (
     return {for (final t in saved.map(TimerGroup.fromJson)) t.title: t};
   }
 
-  Future<TimerGroup?> get(String title) async {
+  Future<TimerGroup> get(String title) async {
     final db = await _getDatabase();
-    final result =
-        await db.query('timerGroup', where: 'title = ?', whereArgs: [title]);
-    if (result.isEmpty) return null;
-    return TimerGroup.fromJson(result[0]);
+    final rows = await db.rawQuery('SELECT * FROM timerGroup WHERE title = ?', [title]);
+    return TimerGroup.fromJson(rows.first) ;
   }
 
-  Future<void> insert(TimerGroup timerGroup) async {
+  Future<int> getId(String title) async {
     final db = await _getDatabase();
-    print("insert timer group: $SavedTimerGroup");
-    await db.insert(
+    final rows = await db.rawQuery('SELECT * FROM timerGroup WHERE title = ?', [title]);
+    final result = rows.first;
+    return result.values.first as int ;
+  }
+
+  Future<int> insert(TimerGroupInfo timerGroupInfo) async {
+    final db = await _getDatabase();
+    print("insert timer group: $timerGroupInfo");
+    final insertedId = await db.insert(
       'timerGroup',
-      timerGroup.toJson(),
+      timerGroupInfo.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    return insertedId;
   }
 
-  Future<void> delete(String title) async {
+  Future<void> delete(int id) async {
     final db = await _getDatabase();
-    await db.delete('timerGroup', where: 'title = ?', whereArgs: [title]);
+    await db.delete('timerGroup', where: 'id = ?', whereArgs: [id]);
   }
 }
 
@@ -95,17 +104,27 @@ class SavedOptions implements SqliteLocalDatabase {
     await db.execute(
       '''
 CREATE TABLE IF NOT EXISTS timerGroupOptions (
-  title TEXT PRIMARY KEY,
+  id INT PRIMARY KEY,
+  title TEXT,
   timeFormat TEXT,
   overTime TEXT)
   ''',
     );
   }
 
-  Future<TimerGroupOptions?> get(String title) async {
+  Future<Map<String, TimerGroupOptions>> getAll() async {
     final db = await _getDatabase();
-    final result = await db.query('timerGroupOptions',
-        where: 'title = ?', whereArgs: [title]);
+    final saved = await db.query('timerGroupOptions');
+    return {for (final t in saved.map(TimerGroup.fromJson)) t.title: title};
+  }
+
+  Future<TimerGroupOptions?> get(int id) async {
+    final db = await _getDatabase();
+    final result = await db.query(
+      'timerGroupOptions',
+      where: 'id = ?', // 渡されたidをキーにしてcatsテーブルを読み込む
+      whereArgs: [id],
+    );
     if (result.isEmpty) return null;
     return TimerGroupOptions.fromJson(result[0]);
   }
@@ -120,9 +139,16 @@ CREATE TABLE IF NOT EXISTS timerGroupOptions (
     );
   }
 
-  Future<void> delete(String title) async {
+  Future<void> update(TimerGroupOptions options) async {
     final db = await _getDatabase();
-    await db.delete('timerGroupOptions',
-        where: 'title = ?', whereArgs: [title]);
+    print("update options: options=$options");
+    await db.update('timerGroupOptions', options.toJson(),
+        where: 'id = ?', whereArgs: [options.id]);
+  }
+
+  Future<void> delete(int id) async {
+    final db = await _getDatabase();
+    await db
+        .delete('timerGroupOptions', where: 'id = ?', whereArgs: [id]);
   }
 }

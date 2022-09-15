@@ -8,14 +8,16 @@ part of 'timer_group_options.dart';
 
 _$_TimerGroupOptions _$$_TimerGroupOptionsFromJson(Map<String, dynamic> json) =>
     _$_TimerGroupOptions(
+      id: json['id'] as int,
       title: json['title'] as String,
       timeFormat: $enumDecodeNullable(_$TimeFormatEnumMap, json['timeFormat']),
-      overTime: json['overTime'] as bool?,
+      overTime: json['overTime'] as String?,
     );
 
 Map<String, dynamic> _$$_TimerGroupOptionsToJson(
         _$_TimerGroupOptions instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'title': instance.title,
       'timeFormat': _$TimeFormatEnumMap[instance.timeFormat],
       'overTime': instance.overTime,
