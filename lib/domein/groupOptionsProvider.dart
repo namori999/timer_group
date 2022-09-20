@@ -5,9 +5,12 @@ import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
 final savedTimerGroupProvider =
-    FutureProvider.autoDispose<Map<String, TimerGroup>>((ref) async {
+    FutureProvider.autoDispose<List<TimerGroup>>((ref) async {
+
+
   return SqliteLocalDatabase.timerGroup.getAll();
 });
+
 
 final timerGroupProvider = FutureProvider.autoDispose
     .family<TimerGroup?, String>((ref, title) async {

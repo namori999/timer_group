@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
 import 'configure/theme.dart';
+import 'group_list/group_list_body.dart';
 
 class GroupListPage extends ConsumerStatefulWidget {
   static Route<GroupListPage> route() {
@@ -22,7 +22,7 @@ class GroupListPage extends ConsumerStatefulWidget {
 }
 
 class _GroupListPageState extends ConsumerState<GroupListPage> {
-  var isDrawerOpen = false;
+  var isSheetOpen = false;
 
   Icon floatingButtonIcon = const Icon(
     Icons.add,
@@ -41,7 +41,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
               icon: const Icon(Icons.person_outlined),
               color: Themes.grayColor.shade700,
               onPressed: () {
-                if (!isDrawerOpen) {
+                if (!isSheetOpen) {
                   Scaffold.of(context).openDrawer();
                 }
               }),
@@ -61,7 +61,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                 icon: Icon(Icons.settings_outlined,
                     color: Themes.grayColor.shade700),
                 onPressed: () {
-                  if (!isDrawerOpen) {
+                  if (!isSheetOpen) {
                     Navigator.of(context).push(SettingsPage.route());
                   }
                 })),
@@ -77,24 +77,11 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final timerGroupList = ref.watch(savedTimerGroupProvider);
-    print(timerGroupList.value?.toString());
-
     return Scaffold(
       drawer: AppDrawer(),
       appBar: appBar(),
       backgroundColor: backGroundColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "main",
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
+      body: const GroupListBody(),
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
@@ -102,14 +89,14 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
             child: floatingButtonIcon,
             onPressed: () => {
               setState(() {
-                if (isDrawerOpen) {
+                if (isSheetOpen) {
                   Navigator.of(context).pop();
                 } else {
                   floatingButtonIcon = const Icon(
                     Icons.clear,
                     color: Colors.white,
                   );
-                  isDrawerOpen = true;
+                  isSheetOpen = true;
                   backGroundColor = Themes.grayColor[700]!;
                   showBottomSheet<void>(
                       context: context,
@@ -126,7 +113,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                         Icons.add,
                         color: Colors.white,
                       );
-                      isDrawerOpen = false;
+                      isSheetOpen = false;
                       backGroundColor = Colors.white;
                     });
                   });

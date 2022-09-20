@@ -59,10 +59,10 @@ CREATE TABLE IF NOT EXISTS timerGroup (
   ''');
   }
 
-  Future<Map<String, TimerGroup>> getAll() async {
+  Future<List<TimerGroup>> getAll() async {
     final db = await _getDatabase();
     final saved = await db.query('timerGroup');
-    return {for (final t in saved.map(TimerGroup.fromJson)) t.title: t};
+    return saved.map(TimerGroup.fromJson).toList();
   }
 
   Future<TimerGroup> get(String title) async {

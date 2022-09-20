@@ -21,6 +21,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
   var body = <Widget>[];
   List<String> overTimeList = ["OFF", "ON"];
 
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +43,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
             OutlinedDropDownButton(
               itemList: formatList,
               type: "TimeFormat",
-              timerGroupTitle: title,
+              title: title,
             ),
           ],
         ),
@@ -58,7 +59,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
         const SizedBox(
           height: 8,
         ),
-        const GroupAddPageTimerList(),
+        GroupAddPageTimerList(title: title,),
         spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +86,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
             OutlinedDropDownButton(
               itemList: overTimeList,
               type: "overTime",
-              timerGroupTitle: title,
+              title: title,
             )
           ],
         ),

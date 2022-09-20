@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/groupOptionsProvider.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
@@ -56,27 +57,36 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
       onPressed: () async {
         final title = titleController.text;
         final description = descriptionController.text;
-        if (!isEmpty) {
-          final provider = ref.watch(timerGroupRepositoryProvider);
-          final id = await provider.addTimerGroup(
-              TimerGroupInfo(
-              title: title, description: description)
-          );
 
-          final optionsProvider =
-              ref.watch(timerGroupOptionsRepositoryProvider);
-          optionsProvider.addOption(
-              TimerGroupOptions(
-                  id: id, title: title, timeFormat: null, overTime: null)
-          );
-
-          setState(() {
-            children.clear();
-            children.add(GroupAddPageSecond(
-              title: title,
-            ));
-          });
+        if (title.isEmpty) {
+          Fluttertoast.showToast(
+              msg: "なにかタイトルをつけてください",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return;
         }
+
+        final provider = ref.watch(timerGroupRepositoryProvider);
+        final id = await provider.addTimerGroup(
+            TimerGroupInfo(title: title, description: description));
+
+        final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);
+        optionsProvider.addOption(TimerGroupOptions(
+            id: id,
+            title: title,
+            timeFormat: TimeFormat.minuteSecond,
+            overTime: null));
+
+        setState(() {
+          children.clear();
+          children.add(GroupAddPageSecond(
+            title: title,
+          ));
+        });
       },
       iconSize: 80,
       icon: const Icon(

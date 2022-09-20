@@ -1,15 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 
 import '../configure/theme.dart';
 
-class GroupAddPageTimerListTile extends ConsumerWidget {
-  const GroupAddPageTimerListTile(
-    this.index, {
+class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
+  const GroupAddPageTimerListTile({
+    this.index,
+    required this.title,
     Key? key,
   }) : super(key: key);
   final int? index;
+  final String title;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      GroupAddPageListTileState();
+}
+
+class GroupAddPageListTileState
+    extends ConsumerState<GroupAddPageTimerListTile> {
+  get index => widget.index;
+
+  get title => widget.title;
+
+  String time = '';
+  String alarm = '';
+  String bgm = '';
 
   Widget spacer() {
     return Column(
@@ -25,9 +44,11 @@ class GroupAddPageTimerListTile extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    List<String> notificationList = ["OFF", "ON"];
+  Widget build(BuildContext context) {
+    final tgRepo = ref.watch(timerGroupRepositoryProvider);
+    final repo = ref.watch(timerGroupOptionsRepositoryProvider);
 
+    //🥺
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
@@ -58,12 +79,32 @@ class GroupAddPageTimerListTile extends ConsumerWidget {
                         color: Themes.grayColor,
                       ),
                     ),
-                    child: const Text(
-                      '分',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Row(
+                      children: [
+                        Text(
+                          time,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const Icon(Icons.keyboard_arrow_right_rounded),
+                      ],
                     ),
-                    onPressed: () => print('Clicked'),
+                    onPressed: () async {
+                      final id = await tgRepo.getId(title);
+                      final options = await repo.getOptions(id);
+                      String result = await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) {
+                          return TimeInputDialog(
+                            timeFormat: options!.timeFormat!,
+                          );
+                        },
+                      );
+                      setState(() {
+                        time = result;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -152,7 +193,7 @@ class GroupAddPageTimerListTile extends ConsumerWidget {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () => print('Clicked'),
+                    onPressed: () {},
                   ),
                 ],
               ),

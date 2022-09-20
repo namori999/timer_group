@@ -10,13 +10,13 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
   const OutlinedDropDownButton({
     this.itemList,
     required this.type,
-    required this.timerGroupTitle,
+    required this.title,
     Key? key,
   }) : super(key: key);
 
   final List<String>? itemList;
   final String type;
-  final String timerGroupTitle;
+  final String title;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => DropDownButtonState();
@@ -25,7 +25,7 @@ class OutlinedDropDownButton extends ConsumerStatefulWidget {
 class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   List<String>? get itemList => widget.itemList;
 
-  String get title => widget.timerGroupTitle;
+  String get title => widget.title;
 
   String get type => widget.type;
   String selectedValue = "";
@@ -39,12 +39,9 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
   }
 
   void addOption() async {
-    final timerGroupProvider = ref.read(timerGroupRepositoryProvider);
-    final id = await timerGroupProvider.getId(title);
-
+    final id = await ref.read(timerGroupRepositoryProvider).getId(title);
     final optionsProvider = ref.read(timerGroupOptionsRepositoryProvider);
     final option = await optionsProvider.getOptions(id);
-
 
     switch (type) {
       case "TimeFormat":
@@ -55,9 +52,9 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await ref.read(timerGroupOptionsRepositoryProvider).update(
             TimerGroupOptions(
                 id: id,
-                title: title,
+                title: option!.title,
                 timeFormat: timeFormat,
-                overTime: option?.overTime)
+                overTime: option.overTime)
         );
         break;
 
@@ -67,8 +64,8 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await optionsProvider.update(
             TimerGroupOptions(
                 id: id,
-                title: title,
-                timeFormat: option?.timeFormat,
+                title: option!.title,
+                timeFormat: option.timeFormat,
                 overTime: overTime)
         );
 
