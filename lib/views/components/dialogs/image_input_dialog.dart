@@ -15,11 +15,6 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
   List<BackGroundImages> images = BackGroundImages.values;
   BackGroundImages selectedImage = BackGroundImages.sample;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget spacer() {
     return Column(
       children: const [

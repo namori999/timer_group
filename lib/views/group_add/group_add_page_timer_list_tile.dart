@@ -54,6 +54,7 @@ class GroupAddPageListTileState
         imageTitle = timer.imagePath;
         notification = timer.notification;
       }
+      setState(() {});
     }
     super.initState();
   }
@@ -87,6 +88,12 @@ class GroupAddPageListTileState
             notification: notification
         )
     );
+  }
+
+  void setResult(){
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -126,33 +133,31 @@ class GroupAddPageListTileState
                       padding: EdgeInsets.zero,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           time,
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
                       ],
                     ),
                     onPressed: () async {
                       final id = await tgRepo.getId(title);
                       final options = await repo.getOptions(id);
-                      showDialog(
+                      String result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
                           return TimeInputDialog(
                             timeFormat: options!.timeFormat!,
-                            title: title,
                           );
                         },
-                      ).then((result) {
-                            time = result;
-                        });
-                    },
+                      );
+                      setState((){
+                        time = result;
+                      });
+                    }
                   ),
                 ],
               ),

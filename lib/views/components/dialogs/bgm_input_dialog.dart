@@ -17,12 +17,6 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
   List<AlarmSounds> alarms = AlarmSounds.values;
   AlarmSounds selectedSound = AlarmSounds.sample;
 
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget spacer() {
     return Column(
       children: const [

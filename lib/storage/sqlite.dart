@@ -163,15 +163,16 @@ class Timers implements SqliteLocalDatabase {
   Future<void> _initialize(Database db) async {
     await db.execute('''
 CREATE TABLE IF NOT EXISTS timers (
-  id INT PRIMARY KEY,
-  index INT,
+  id INTEGER PRIMARY KEY,
+  index INTEGER,
   title TEXT,
   time INTEGER,
   soundPath TEXT,
   bgmPath TEXT,
   imagePath TEXT,
   notification TEXT)
-  ''',);
+  ''',
+    );
   }
 
   Future<List<Timer>> getTimers(int id) async {

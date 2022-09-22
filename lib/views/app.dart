@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_group/views/group_list_page.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'configure/theme.dart';
 
 class App extends StatelessWidget {
@@ -10,7 +10,7 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+      return MaterialApp(
       theme: ThemeData(
           primarySwatch: Themes.grayColor,
           splashColor: Themes.themeColor,
@@ -23,6 +23,15 @@ class App extends StatelessWidget {
           fontFamily: 'inter'
       ),
       home: const GroupListPage(),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale("en"),
+          Locale("ja"),
+        ],
     );
   }
 }
