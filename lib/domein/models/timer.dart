@@ -10,12 +10,21 @@ class Timer with _$Timer {
   factory Timer({
     int? id,
     required int index,
-    required int time,
+    required int time,// timeはぜんぶ 秒 で管理
     required String soundPath,
     required String bgmPath,
+    required String imagePath,
     required String notification,
   }) = _Timer;
 
   factory Timer.fromJson(Map<String, dynamic> json) =>
       _$TimerFromJson(json);
+}
+
+enum AlarmSounds {
+  sample,sample2,sample3
+}
+
+enum BackGroundImages {
+  sample,sample2
 }

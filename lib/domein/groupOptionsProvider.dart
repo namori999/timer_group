@@ -8,7 +8,7 @@ final savedTimerGroupProvider =
     FutureProvider.autoDispose<List<TimerGroup>>((ref) async {
 
 
-  return SqliteLocalDatabase.timerGroup.getAll();
+      return SqliteLocalDatabase.timerGroup.getAll();
 });
 
 

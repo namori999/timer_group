@@ -22,9 +22,10 @@ Timer _$TimerFromJson(Map<String, dynamic> json) {
 mixin _$Timer {
   int? get id => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
-  int get time => throw _privateConstructorUsedError;
+  int get time => throw _privateConstructorUsedError; // timeはぜんぶ 秒 で管理
   String get soundPath => throw _privateConstructorUsedError;
   String get bgmPath => throw _privateConstructorUsedError;
+  String get imagePath => throw _privateConstructorUsedError;
   String get notification => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $TimerCopyWith<$Res> {
       int time,
       String soundPath,
       String bgmPath,
+      String imagePath,
       String notification});
 }
 
@@ -60,6 +62,7 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
     Object? time = freezed,
     Object? soundPath = freezed,
     Object? bgmPath = freezed,
+    Object? imagePath = freezed,
     Object? notification = freezed,
   }) {
     return _then(_value.copyWith(
@@ -83,6 +86,10 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
           ? _value.bgmPath
           : bgmPath // ignore: cast_nullable_to_non_nullable
               as String,
+      imagePath: imagePath == freezed
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String,
       notification: notification == freezed
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
@@ -102,6 +109,7 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
       int time,
       String soundPath,
       String bgmPath,
+      String imagePath,
       String notification});
 }
 
@@ -121,6 +129,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
     Object? time = freezed,
     Object? soundPath = freezed,
     Object? bgmPath = freezed,
+    Object? imagePath = freezed,
     Object? notification = freezed,
   }) {
     return _then(_$_Timer(
@@ -144,6 +153,10 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
           ? _value.bgmPath
           : bgmPath // ignore: cast_nullable_to_non_nullable
               as String,
+      imagePath: imagePath == freezed
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String,
       notification: notification == freezed
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
@@ -161,6 +174,7 @@ class _$_Timer extends _Timer {
       required this.time,
       required this.soundPath,
       required this.bgmPath,
+      required this.imagePath,
       required this.notification})
       : super._();
 
@@ -173,16 +187,19 @@ class _$_Timer extends _Timer {
   final int index;
   @override
   final int time;
+// timeはぜんぶ 秒 で管理
   @override
   final String soundPath;
   @override
   final String bgmPath;
   @override
+  final String imagePath;
+  @override
   final String notification;
 
   @override
   String toString() {
-    return 'Timer(id: $id, index: $index, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, notification: $notification)';
+    return 'Timer(id: $id, index: $index, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
   }
 
   @override
@@ -195,6 +212,7 @@ class _$_Timer extends _Timer {
             const DeepCollectionEquality().equals(other.time, time) &&
             const DeepCollectionEquality().equals(other.soundPath, soundPath) &&
             const DeepCollectionEquality().equals(other.bgmPath, bgmPath) &&
+            const DeepCollectionEquality().equals(other.imagePath, imagePath) &&
             const DeepCollectionEquality()
                 .equals(other.notification, notification));
   }
@@ -208,6 +226,7 @@ class _$_Timer extends _Timer {
       const DeepCollectionEquality().hash(time),
       const DeepCollectionEquality().hash(soundPath),
       const DeepCollectionEquality().hash(bgmPath),
+      const DeepCollectionEquality().hash(imagePath),
       const DeepCollectionEquality().hash(notification));
 
   @JsonKey(ignore: true)
@@ -230,6 +249,7 @@ abstract class _Timer extends Timer {
       required final int time,
       required final String soundPath,
       required final String bgmPath,
+      required final String imagePath,
       required final String notification}) = _$_Timer;
   _Timer._() : super._();
 
@@ -241,10 +261,12 @@ abstract class _Timer extends Timer {
   int get index;
   @override
   int get time;
-  @override
+  @override // timeはぜんぶ 秒 で管理
   String get soundPath;
   @override
   String get bgmPath;
+  @override
+  String get imagePath;
   @override
   String get notification;
   @override

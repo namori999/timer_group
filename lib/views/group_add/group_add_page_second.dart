@@ -29,8 +29,6 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
   }
 
   Widget secondStep() {
-    List<String> formatList = ["分秒", "時分"];
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -41,7 +39,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
               "表示単位",
             ),
             OutlinedDropDownButton(
-              itemList: formatList,
+              itemList: const ['分秒', '時分'],
               type: "TimeFormat",
               title: title,
             ),

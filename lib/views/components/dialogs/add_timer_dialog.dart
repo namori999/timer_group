@@ -9,6 +9,8 @@ class AddTimerDialog extends StatelessWidget {
   int index;
   String title;
 
+  GlobalKey<GroupAddPageListTileState> globalKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,7 +18,7 @@ class AddTimerDialog extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       child: Column(
         children: [
-          GroupAddPageTimerListTile(index: index, title: title),
+          GroupAddPageTimerListTile(index: index, title: title, key: globalKey,),
           const SizedBox(
             height: 16,
           ),
@@ -28,6 +30,7 @@ class AddTimerDialog extends StatelessWidget {
               ),
             ),
             onPressed: () {
+              globalKey.currentState!.addTimer();
               Navigator.of(context).pop();
             },
             child: Row(

@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/timerProvider.dart';
+import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
+import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
+import 'package:timer_group/views/components/dialogs/image_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 
 import '../configure/theme.dart';
@@ -10,10 +15,12 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
   const GroupAddPageTimerListTile({
     this.index,
     required this.title,
+    this.timer,
     Key? key,
   }) : super(key: key);
   final int? index;
   final String title;
+  final Timer? timer;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -23,12 +30,33 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get index => widget.index;
-
   get title => widget.title;
+  Timer? get timer => widget.timer;
 
   String time = '';
-  String alarm = '';
-  String bgm = '';
+  AlarmSounds alarm = AlarmSounds.sample;
+  String alarmTitle = '';
+  AlarmSounds bgm = AlarmSounds.sample;
+  String bgmTitle = '';
+  BackGroundImages image = BackGroundImages.sample;
+  String imageTitle = BackGroundImages.sample.name;
+  String notification = 'ON';
+  bool isNotifyEnabled = true;
+
+  @override
+  void initState() {
+    if(mounted) {
+      final timer = this.timer;
+      if (timer != null) {
+        time = timer.time.toString();
+        alarmTitle = timer.soundPath;
+        bgmTitle = timer.bgmPath;
+        imageTitle = timer.imagePath;
+        notification = timer.notification;
+      }
+    }
+    super.initState();
+  }
 
   Widget spacer() {
     return Column(
@@ -43,12 +71,29 @@ class GroupAddPageListTileState
     );
   }
 
+  void addTimer() async {
+    final repo = ref.watch(timerGroupRepositoryProvider);
+    final id = await repo.getId(title);
+    final provider = ref.watch(timerRepositoryProvider);
+
+    await provider.addTimer(
+        Timer(
+            id: id,
+            index: index,
+            time: int.parse(time),
+            soundPath: alarmTitle,
+            bgmPath: bgmTitle,
+            imagePath: imageTitle,
+            notification: notification
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final tgRepo = ref.watch(timerGroupRepositoryProvider);
     final repo = ref.watch(timerGroupOptionsRepositoryProvider);
 
-    //🥺
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
@@ -78,32 +123,35 @@ class GroupAddPageListTileState
                       side: const BorderSide(
                         color: Themes.grayColor,
                       ),
+                      padding: EdgeInsets.zero,
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           time,
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
+                        const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
                       ],
                     ),
                     onPressed: () async {
                       final id = await tgRepo.getId(title);
                       final options = await repo.getOptions(id);
-                      String result = await showDialog(
+                      showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
                           return TimeInputDialog(
                             timeFormat: options!.timeFormat!,
+                            title: title,
                           );
                         },
-                      );
-                      setState(() {
-                        time = result;
-                      });
+                      ).then((result) {
+                            time = result;
+                        });
                     },
                   ),
                 ],
@@ -121,13 +169,32 @@ class GroupAddPageListTileState
                       side: const BorderSide(
                         color: Themes.grayColor,
                       ),
+                      padding: EdgeInsets.zero,
                     ),
-                    child: const Text(
-                      '分',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Row(
+                      children: [
+                        Text(
+                          alarmTitle,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.keyboard_arrow_right_rounded),
+                      ],
                     ),
-                    onPressed: () => print('Clicked'),
+                    onPressed: () async {
+                      AlarmSounds result = await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) {
+                          return AlermInputDialog();
+                        },
+                      );
+                      setState(() {
+                        alarm = result;
+                        alarmTitle = result.name;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -143,13 +210,32 @@ class GroupAddPageListTileState
                       side: const BorderSide(
                         color: Themes.grayColor,
                       ),
+                      padding: EdgeInsets.zero,
                     ),
-                    child: const Text(
-                      '分',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Row(
+                      children: [
+                        Text(
+                          alarmTitle,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.keyboard_arrow_right_rounded),
+                      ],
                     ),
-                    onPressed: () => print('Clicked'),
+                    onPressed: () async {
+                      AlarmSounds result = await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) {
+                          return BgmInputDialog();
+                        },
+                      );
+                      setState(() {
+                        bgm = result;
+                        bgmTitle = result.name;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -157,21 +243,40 @@ class GroupAddPageListTileState
                 children: [
                   const Icon(Icons.image_outlined),
                   const Text("背景"),
-                  Spacer(),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
-                      foregroundColor: Themes.grayColor,
-                      side: const BorderSide(
-                        color: Themes.grayColor,
+                  const Spacer(),
+                  Container(
+                    width: 130,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/$imageTitle.jpg'),
+                        fit: BoxFit.fitWidth,
                       ),
                     ),
-                    child: const Text(
-                      '分',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: Size(130, 40),
+                        foregroundColor: Themes.grayColor,
+                        side: const BorderSide(
+                          color: Themes.grayColor,
+                        ),
+                      ),
+                      onPressed: () async {
+                        BackGroundImages result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) {
+                            return ImageInputDialog();
+                          },
+                        );
+                        setState(() {
+                          image = result;
+                          imageTitle = result.name;
+                        });
+                      },
+                      child: Text(''),
                     ),
-                    onPressed: () => print('Clicked'),
                   ),
                 ],
               ),
@@ -181,20 +286,31 @@ class GroupAddPageListTileState
                   const Text("通知"),
                   Spacer(),
                   OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
-                      foregroundColor: Themes.grayColor,
-                      side: const BorderSide(
-                        color: Themes.grayColor,
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(130, 40),
+                        foregroundColor: Themes.grayColor,
+                        side: const BorderSide(
+                          color: Themes.grayColor,
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      '分',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {},
-                  ),
+                      child: Text(
+                        notification,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () {
+                        if (isNotifyEnabled) {
+                          isNotifyEnabled = false;
+                          setState(() {
+                            notification = 'OFF';
+                          });
+                        } else {
+                          isNotifyEnabled = true;
+                          setState(() {
+                            notification = 'ON';
+                          });
+                        }
+                      }),
                 ],
               ),
             ],
