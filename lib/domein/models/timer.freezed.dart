@@ -21,7 +21,7 @@ Timer _$TimerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Timer {
   int? get id => throw _privateConstructorUsedError;
-  int get index => throw _privateConstructorUsedError;
+  int get number => throw _privateConstructorUsedError;
   int get time => throw _privateConstructorUsedError; // timeはぜんぶ 秒 で管理
   String get soundPath => throw _privateConstructorUsedError;
   String get bgmPath => throw _privateConstructorUsedError;
@@ -39,7 +39,7 @@ abstract class $TimerCopyWith<$Res> {
       _$TimerCopyWithImpl<$Res>;
   $Res call(
       {int? id,
-      int index,
+      int number,
       int time,
       String soundPath,
       String bgmPath,
@@ -58,7 +58,7 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? index = freezed,
+    Object? number = freezed,
     Object? time = freezed,
     Object? soundPath = freezed,
     Object? bgmPath = freezed,
@@ -70,9 +70,9 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      index: index == freezed
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
+      number: number == freezed
+          ? _value.number
+          : number // ignore: cast_nullable_to_non_nullable
               as int,
       time: time == freezed
           ? _value.time
@@ -105,7 +105,7 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
   @override
   $Res call(
       {int? id,
-      int index,
+      int number,
       int time,
       String soundPath,
       String bgmPath,
@@ -125,7 +125,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? index = freezed,
+    Object? number = freezed,
     Object? time = freezed,
     Object? soundPath = freezed,
     Object? bgmPath = freezed,
@@ -137,9 +137,9 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      index: index == freezed
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
+      number: number == freezed
+          ? _value.number
+          : number // ignore: cast_nullable_to_non_nullable
               as int,
       time: time == freezed
           ? _value.time
@@ -170,7 +170,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
 class _$_Timer extends _Timer {
   _$_Timer(
       {this.id,
-      required this.index,
+      required this.number,
       required this.time,
       required this.soundPath,
       required this.bgmPath,
@@ -184,7 +184,7 @@ class _$_Timer extends _Timer {
   @override
   final int? id;
   @override
-  final int index;
+  final int number;
   @override
   final int time;
 // timeはぜんぶ 秒 で管理
@@ -199,7 +199,7 @@ class _$_Timer extends _Timer {
 
   @override
   String toString() {
-    return 'Timer(id: $id, index: $index, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
+    return 'Timer(id: $id, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
   }
 
   @override
@@ -208,7 +208,7 @@ class _$_Timer extends _Timer {
         (other.runtimeType == runtimeType &&
             other is _$_Timer &&
             const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.index, index) &&
+            const DeepCollectionEquality().equals(other.number, number) &&
             const DeepCollectionEquality().equals(other.time, time) &&
             const DeepCollectionEquality().equals(other.soundPath, soundPath) &&
             const DeepCollectionEquality().equals(other.bgmPath, bgmPath) &&
@@ -222,7 +222,7 @@ class _$_Timer extends _Timer {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(index),
+      const DeepCollectionEquality().hash(number),
       const DeepCollectionEquality().hash(time),
       const DeepCollectionEquality().hash(soundPath),
       const DeepCollectionEquality().hash(bgmPath),
@@ -245,7 +245,7 @@ class _$_Timer extends _Timer {
 abstract class _Timer extends Timer {
   factory _Timer(
       {final int? id,
-      required final int index,
+      required final int number,
       required final int time,
       required final String soundPath,
       required final String bgmPath,
@@ -258,7 +258,7 @@ abstract class _Timer extends Timer {
   @override
   int? get id;
   @override
-  int get index;
+  int get number;
   @override
   int get time;
   @override // timeはぜんぶ 秒 で管理

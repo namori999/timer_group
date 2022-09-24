@@ -98,7 +98,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                   );
                   isSheetOpen = true;
                   backGroundColor = Themes.grayColor[700]!;
-                  showBottomSheet<void>(
+                  showBottomSheet(
                       context: context,
                       elevation: 20,
                       shape: const RoundedRectangleBorder(
@@ -106,7 +106,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                             BorderRadius.vertical(top: Radius.circular(30)),
                       ),
                       builder: (context) {
-                        return GroupAddPage();
+                        return const GroupAddPage();
                       }).closed.whenComplete(() {
                     setState(() {
                       floatingButtonIcon = const Icon(

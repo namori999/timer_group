@@ -117,10 +117,11 @@ CREATE TABLE IF NOT EXISTS timerGroupOptions (
     );
   }
 
-  Future<Map<String, TimerGroupOptions>> getAll() async {
+
+  Future<List<TimerGroupOptions>> getAll() async {
     final db = await _getDatabase();
     final saved = await db.query('timerGroupOptions');
-    return {for (final t in saved.map(TimerGroup.fromJson)) t.title: title};
+    return saved.map(TimerGroupOptions.fromJson).toList();
   }
 
   Future<TimerGroupOptions?> get(int id) async {
@@ -163,8 +164,8 @@ class Timers implements SqliteLocalDatabase {
   Future<void> _initialize(Database db) async {
     await db.execute('''
 CREATE TABLE IF NOT EXISTS timers (
-  id INTEGER PRIMARY KEY,
-  index INTEGER,
+  id INT PRIMARY KEY,
+  number INTEGER,
   title TEXT,
   time INTEGER,
   soundPath TEXT,
@@ -197,7 +198,7 @@ CREATE TABLE IF NOT EXISTS timers (
 
   Future<void> update(Timer timer) async {
     final db = await _getDatabase();
-    print("update timers: tiemrs=$timer");
+    print("update timers: timers = $timer");
     await db.update('timers', timer.toJson(),
         where: 'id = ?', whereArgs: [timer.id]);
   }
@@ -205,5 +206,12 @@ CREATE TABLE IF NOT EXISTS timers (
   Future<void> delete(int id) async {
     final db = await _getDatabase();
     await db.delete('timers', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future calculateTotal(int id) async {
+    final db = await _getDatabase();
+    var result = await db.rawQuery(
+        'select sum(number) as Total from Items where refID = ?', [id]);
+    print(result.toList());
   }
 }

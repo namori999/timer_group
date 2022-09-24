@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
@@ -45,16 +46,13 @@ class GroupAddPageListTileState
 
   @override
   void initState() {
-    if(mounted) {
-      final timer = this.timer;
-      if (timer != null) {
+    final timer = this.timer;
+    if (timer != null) {
         time = timer.time.toString();
         alarmTitle = timer.soundPath;
         bgmTitle = timer.bgmPath;
         imageTitle = timer.imagePath;
         notification = timer.notification;
-      }
-      setState(() {});
     }
     super.initState();
   }
@@ -72,22 +70,24 @@ class GroupAddPageListTileState
     );
   }
 
-  void addTimer() async {
+  Future<Timer> addTimer() async {
     final repo = ref.watch(timerGroupRepositoryProvider);
     final id = await repo.getId(title);
     final provider = ref.watch(timerRepositoryProvider);
 
-    await provider.addTimer(
-        Timer(
-            id: id,
-            index: index,
-            time: int.parse(time),
-            soundPath: alarmTitle,
-            bgmPath: bgmTitle,
-            imagePath: imageTitle,
-            notification: notification
-        )
+    var timer = Timer(
+        id: id,
+        number: index,
+        time: timeToInt(time),
+        soundPath: alarmTitle,
+        bgmPath: bgmTitle,
+        imagePath: imageTitle,
+        notification: notification
     );
+
+    await provider.addTimer(timer);
+
+    return timer;
   }
 
   void setResult(){

@@ -46,17 +46,6 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
           ],
         ),
         spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              "タイマー",
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 8,
-        ),
         GroupAddPageTimerList(title: title,),
         spacer(),
         Row(

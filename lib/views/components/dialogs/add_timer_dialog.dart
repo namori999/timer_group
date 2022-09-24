@@ -1,5 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
 class AddTimerDialog extends StatelessWidget {
@@ -29,9 +31,9 @@ class AddTimerDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {
-              globalKey.currentState!.addTimer();
-              Navigator.of(context).pop();
+            onPressed: () async {
+              Timer timer = await globalKey.currentState!.addTimer();
+              Navigator.pop<Timer>(context, timer);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

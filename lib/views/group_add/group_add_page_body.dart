@@ -79,7 +79,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
             id: id,
             title: title,
             timeFormat: TimeFormat.minuteSecond,
-            overTime: null));
+            overTime: 'OFF'));
 
         setState(() {
           children.clear();

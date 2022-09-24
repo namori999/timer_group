@@ -10,28 +10,26 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-      return MaterialApp(
+    return MaterialApp(
       theme: ThemeData(
           primarySwatch: Themes.grayColor,
           splashColor: Themes.themeColor,
-          fontFamily: 'inter'
-      ),
+          fontFamily: 'inter'),
       darkTheme: ThemeData(
           primarySwatch: Themes.grayColor,
           brightness: Brightness.dark,
           splashColor: Themes.themeColor,
-          fontFamily: 'inter'
-      ),
+          fontFamily: 'inter'),
       home: const GroupListPage(),
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale("en"),
-          Locale("ja"),
-        ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale("en"),
+        Locale("ja"),
+      ],
     );
   }
 }

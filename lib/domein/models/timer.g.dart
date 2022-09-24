@@ -8,7 +8,7 @@ part of 'timer.dart';
 
 _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
       id: json['id'] as int?,
-      index: json['index'] as int,
+      number: json['number'] as int,
       time: json['time'] as int,
       soundPath: json['soundPath'] as String,
       bgmPath: json['bgmPath'] as String,
@@ -18,7 +18,7 @@ _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
 
 Map<String, dynamic> _$$_TimerToJson(_$_Timer instance) => <String, dynamic>{
       'id': instance.id,
-      'index': instance.index,
+      'number': instance.number,
       'time': instance.time,
       'soundPath': instance.soundPath,
       'bgmPath': instance.bgmPath,

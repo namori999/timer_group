@@ -8,19 +8,37 @@ class GroupAddPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: <Widget>[
-          const Text(
-            "タイマーグループを追加",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return DraggableScrollableSheet(
+      expand: true,
+      initialChildSize: 1,
+      maxChildSize: 1,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Container(
+          alignment: Alignment.topCenter,
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: <Widget>[
+                  const Center(
+                    child: Text(
+                      "タイマーグループを追加",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  GroupAddPageBody(),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(height: 32),
-          GroupAddPageBody(),
-          const SizedBox(height: 32),
-        ],
-      ),
+        );
+      },
     );
   }
 }

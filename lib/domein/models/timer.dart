@@ -9,7 +9,7 @@ class Timer with _$Timer {
 
   factory Timer({
     int? id,
-    required int index,
+    required int number,
     required int time,// timeはぜんぶ 秒 で管理
     required String soundPath,
     required String bgmPath,
