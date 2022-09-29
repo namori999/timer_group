@@ -52,7 +52,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await ref.read(timerGroupOptionsRepositoryProvider).update(
             TimerGroupOptions(
                 id: id,
-                title: option!.title,
+                title: option.title,
                 timeFormat: timeFormat,
                 overTime: option.overTime)
         );
@@ -64,7 +64,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await optionsProvider.update(
             TimerGroupOptions(
                 id: id,
-                title: option!.title,
+                title: option.title,
                 timeFormat: option.timeFormat,
                 overTime: overTime)
         );
@@ -75,6 +75,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
 
   @override
   Widget build(BuildContext context) {
+
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Themes.grayColor, width: 1),
@@ -87,7 +88,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               isExpanded: true,
-              iconSize: 0.0,
+              iconSize: 5.0,
               value: selectedValue,
               onChanged: (String? value) {
                 addOption();

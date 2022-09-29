@@ -6,7 +6,7 @@ import 'package:timer_group/views/components/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
 class BgmInputDialog extends ConsumerStatefulWidget {
-  BgmInputDialog({Key? key}) : super(key: key);
+  const BgmInputDialog({Key? key}) : super(key: key);
 
   @override
   BgmInputDialogState createState() => BgmInputDialogState();
@@ -14,7 +14,7 @@ class BgmInputDialog extends ConsumerStatefulWidget {
 
 class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
 
-  List<AlarmSounds> alarms = AlarmSounds.values;
+  List<AlarmSounds> musics = AlarmSounds.values;
   AlarmSounds selectedSound = AlarmSounds.sample;
 
   Widget spacer() {
@@ -95,15 +95,15 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
       content: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: ListView.separated(
-          itemCount: alarms.length,
+          itemCount: musics.length,
           controller: ScrollController(),
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: ((context, index) => Container(
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: alarms[index]),
-                  value: alarms[index],
+                  title: AudioPlayButton(sound: musics[index]),
+                  value: musics[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),
                 ),

@@ -65,7 +65,7 @@ class TimerGroupOptionsRepository {
   static const _db = SqliteLocalDatabase.timerGroupOptions;
   final Ref ref;
 
-  Future<TimerGroupOptions?> getOptions(int id) async =>
+  Future<TimerGroupOptions> getOptions(int id) async =>
       await _db.get(id);
 
   Future<void> update(TimerGroupOptions timerGroupOptions) async {

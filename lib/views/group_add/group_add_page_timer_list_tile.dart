@@ -31,7 +31,9 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get index => widget.index;
+
   get title => widget.title;
+
   Timer? get timer => widget.timer;
 
   String time = '';
@@ -47,12 +49,13 @@ class GroupAddPageListTileState
   @override
   void initState() {
     final timer = this.timer;
+
     if (timer != null) {
-        time = timer.time.toString();
-        alarmTitle = timer.soundPath;
-        bgmTitle = timer.bgmPath;
-        imageTitle = timer.imagePath;
-        notification = timer.notification;
+      time = intToTimeLeft(timer.time);
+      alarmTitle = timer.soundPath;
+      bgmTitle = timer.bgmPath;
+      imageTitle = timer.imagePath;
+      notification = timer.notification;
     }
     super.initState();
   }
@@ -78,22 +81,15 @@ class GroupAddPageListTileState
     var timer = Timer(
         id: id,
         number: index,
-        time: timeToInt(time),
+        time: timeToSecond(time),
         soundPath: alarmTitle,
         bgmPath: bgmTitle,
         imagePath: imageTitle,
-        notification: notification
-    );
+        notification: notification);
 
     await provider.addTimer(timer);
 
     return timer;
-  }
-
-  void setResult(){
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -124,41 +120,40 @@ class GroupAddPageListTileState
                   const Text("タイム"),
                   const Spacer(),
                   OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
-                      foregroundColor: Themes.grayColor,
-                      side: const BorderSide(
-                        color: Themes.grayColor,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          time,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(130, 40),
+                        foregroundColor: Themes.grayColor,
+                        side: const BorderSide(
+                          color: Themes.grayColor,
                         ),
-                        const Icon(Icons.keyboard_arrow_right_rounded),
-                      ],
-                    ),
-                    onPressed: () async {
-                      final id = await tgRepo.getId(title);
-                      final options = await repo.getOptions(id);
-                      String result = await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (_) {
-                          return TimeInputDialog(
-                            timeFormat: options!.timeFormat!,
-                          );
-                        },
-                      );
-                      setState((){
-                        time = result;
-                      });
-                    }
-                  ),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            time,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_rounded),
+                        ],
+                      ),
+                      onPressed: () async {
+                        final id = await tgRepo.getId(title);
+                        final options = await repo.getOptions(id);
+                        String result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) {
+                            return TimeInputDialog(
+                              timeFormat: options.timeFormat!,
+                            );
+                          },
+                        );
+                        setState(() {
+                          time = result;
+                        });
+                      }),
                 ],
               ),
               Row(
@@ -192,7 +187,7 @@ class GroupAddPageListTileState
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return AlermInputDialog();
+                          return const AlarmInputDialog();
                         },
                       );
                       setState(() {
@@ -220,7 +215,7 @@ class GroupAddPageListTileState
                     child: Row(
                       children: [
                         Text(
-                          alarmTitle,
+                          bgmTitle,
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -229,16 +224,16 @@ class GroupAddPageListTileState
                       ],
                     ),
                     onPressed: () async {
-                      AlarmSounds result = await showDialog(
+                      AlarmSounds sounds = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return BgmInputDialog();
+                          return const BgmInputDialog();
                         },
                       );
                       setState(() {
-                        bgm = result;
-                        bgmTitle = result.name;
+                        bgm = sounds;
+                        bgmTitle = sounds.name;
                       });
                     },
                   ),

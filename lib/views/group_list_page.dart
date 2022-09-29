@@ -106,7 +106,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                             BorderRadius.vertical(top: Radius.circular(30)),
                       ),
                       builder: (context) {
-                        return const GroupAddPage();
+                        return GroupAddPage();
                       }).closed.whenComplete(() {
                     setState(() {
                       floatingButtonIcon = const Icon(

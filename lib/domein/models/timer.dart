@@ -25,6 +25,10 @@ enum AlarmSounds {
   sample,sample2,sample3
 }
 
+enum Musics {
+  sample,sample2,sample3
+}
+
 enum BackGroundImages {
   sample,sample2
 }

@@ -5,14 +5,14 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/components/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
-class AlermInputDialog extends ConsumerStatefulWidget {
-  AlermInputDialog({Key? key}) : super(key: key);
+class AlarmInputDialog extends ConsumerStatefulWidget {
+  const AlarmInputDialog({Key? key}) : super(key: key);
 
   @override
-  AlermInputDialogState createState() => AlermInputDialogState();
+  AlarmInputDialogState createState() => AlarmInputDialogState();
 }
 
-class AlermInputDialogState extends ConsumerState<AlermInputDialog> {
+class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
 
   List<AlarmSounds> alarms = AlarmSounds.values;
   AlarmSounds selectedSound = AlarmSounds.sample;

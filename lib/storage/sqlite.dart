@@ -117,21 +117,20 @@ CREATE TABLE IF NOT EXISTS timerGroupOptions (
     );
   }
 
-
   Future<List<TimerGroupOptions>> getAll() async {
     final db = await _getDatabase();
     final saved = await db.query('timerGroupOptions');
     return saved.map(TimerGroupOptions.fromJson).toList();
   }
 
-  Future<TimerGroupOptions?> get(int id) async {
+  Future<TimerGroupOptions> get(int id) async {
     final db = await _getDatabase();
     final result = await db.query(
       'timerGroupOptions',
       where: 'id = ?', // 渡されたidをキーにしてcatsテーブルを読み込む
       whereArgs: [id],
     );
-    if (result.isEmpty) return null;
+    if (result.isEmpty) return TimerGroupOptions(id: id, title: title);
     return TimerGroupOptions.fromJson(result[0]);
   }
 
@@ -162,7 +161,8 @@ class Timers implements SqliteLocalDatabase {
   const Timers();
 
   Future<void> _initialize(Database db) async {
-    await db.execute('''
+    await db.execute(
+      '''
 CREATE TABLE IF NOT EXISTS timers (
   id INT PRIMARY KEY,
   number INTEGER,
@@ -211,7 +211,16 @@ CREATE TABLE IF NOT EXISTS timers (
   Future calculateTotal(int id) async {
     final db = await _getDatabase();
     var result = await db.rawQuery(
-        'select sum(number) as Total from Items where refID = ?', [id]);
+        'select sum(number) as Total from timers where refID = ?', [id]);
     print(result.toList());
+    return result.toList();
+  }
+
+  Future getTotal(int id) async {
+    final db = await _getDatabase();
+    var result =
+        await db.rawQuery("SELECT SUM(time) FROM timers where id = ?", [id]);
+    int? value = result[0]["SUM(time)"] as int;
+    return value.toString();
   }
 }

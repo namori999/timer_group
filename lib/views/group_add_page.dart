@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:timer_group/views/group_add/group_add_page_body.dart';
 
 class GroupAddPage extends StatelessWidget {
@@ -9,7 +8,6 @@ class GroupAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      expand: true,
       initialChildSize: 1,
       maxChildSize: 1,
       builder: (BuildContext context, ScrollController scrollController) {
@@ -20,8 +18,8 @@ class GroupAddPage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: SingleChildScrollView(
               child: Wrap(
-                children: <Widget>[
-                  const Center(
+                children: const <Widget>[
+                  Center(
                     child: Text(
                       "タイマーグループを追加",
                       style: TextStyle(
@@ -30,9 +28,9 @@ class GroupAddPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 48),
+                  SizedBox(height: 48),
                   GroupAddPageBody(),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                 ],
               ),
             ),

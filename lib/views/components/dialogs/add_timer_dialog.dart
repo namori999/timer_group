@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_group/domein/models/timer.dart';
@@ -16,40 +15,59 @@ class AddTimerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.75,
-      margin: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          GroupAddPageTimerListTile(index: index, title: title, key: globalKey,),
-          const SizedBox(
-            height: 16,
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () async {
-              Timer timer = await globalKey.currentState!.addTimer();
-              Navigator.pop<Timer>(context, timer);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  '決定',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
+            height: 500,
+            margin: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          index = index -1;
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.close_rounded)),
+                  ],
+                ),
+                GroupAddPageTimerListTile(
+                  index: index,
+                  title: title,
+                  key: globalKey,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                )
+                  onPressed: () async {
+                    Timer timer = await globalKey.currentState!.addTimer();
+                    Navigator.pop<Timer>(context, timer);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        'タイマーを追加',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

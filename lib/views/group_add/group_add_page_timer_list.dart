@@ -32,7 +32,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
     index = -1;
     addIndex();
     super.initState();
-    //timerList.add(GroupAddPageTimerListTile(index: addIndex(), title: title));
   }
 
   @override
@@ -43,7 +42,13 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text("タイマー"),
-            Text(index.toString()),
+            Padding(
+              padding: EdgeInsets.only(right: 32),
+              child: Text(
+                '× $index',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
           ],
         ),
         const SizedBox(

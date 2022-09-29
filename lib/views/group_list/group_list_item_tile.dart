@@ -1,53 +1,99 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
+class GroupListItemTile extends ConsumerStatefulWidget {
+  GroupListItemTile({
+    required this.timerGroup,
+    required this.options,
+    this.timers,
+    required this.totalTime,
+    Key? key,
+  }) : super(key: key);
 
-class GroupListItemTile extends ConsumerWidget {
-  const GroupListItemTile(
-      this.timerGroup, this.options, this.timers,
-       {
-        Key? key,
-      }) : super(key: key);
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
-  final List<Timer> timers;
+  List<Timer>? timers;
+  final String totalTime;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      GroupListItemTileState();
+}
+
+class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
+  TimerGroup get timerGroup => widget.timerGroup;
+  TimerGroupOptions get options => widget.options;
+  List<Timer>? get timers => widget.timers;
+  String get totalTime => widget.totalTime;
+
+  String totalTimeText = '';
+  String format = '分秒表示';
+
+  @override
+  void initState() {
+    format = getFormatName();
+    super.initState();
+  }
 
   String getFormatName() {
     if (options.timeFormat == TimeFormat.minuteSecond) {
+      totalTimeText = secondToMinute(int.parse(totalTime));
       return '分秒表示';
     } else {
+      totalTimeText = secondToHour(int.parse(totalTime));
       return '時分表示';
     }
   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget separator() {
+    return Row(
+      children: const [
+        SizedBox(
+          width: 16,
+        ),
+        Text('|'),
+        SizedBox(
+          width: 16,
+        ),
+      ],
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10),
-        child: ListTile(
-          title: Text(timerGroup.title,style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),),
+      padding: const EdgeInsets.all(10),
+      child: ListTile(
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              timerGroup.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
           subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('|'),
+              Text(totalTimeText),
+              separator(),
               Row(
                 children: [
                   const Icon(Icons.notifications_active_outlined),
-                  Text('× ${timers.length}'),
+                  Text('× ${timers!.length}'),
                 ],
               ),
-              Text('|'),
-              Text(getFormatName()),
+              separator(),
+              Text(format),
             ],
-          )
-        ),
+          )),
     );
   }
 }

@@ -50,6 +50,7 @@ dependencies:
   fluttertoast: ^8.0.9
   pin_code_fields: ^7.4.0
   soundpool: ^2.3.0
+  flutter_launcher_icons: ^0.10.0
 
 dev_dependencies:
   flutter_test:
@@ -91,3 +92,8 @@ flutter:
      - family: Inter
        fonts:
          - asset: assets/fonts/inter.ttf
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"

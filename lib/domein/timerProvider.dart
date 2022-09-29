@@ -30,4 +30,7 @@ class timerRepository {
     await _db.delete(id);
     ref.refresh(timerRepositoryProvider);
   }
+
+  Future<String> getTotal(int id) async =>
+    await _db.getTotal(id);
 }

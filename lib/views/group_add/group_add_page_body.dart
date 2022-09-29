@@ -8,18 +8,9 @@ import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
 
 class GroupAddPageBody extends ConsumerStatefulWidget {
-  GroupAddPageBody({
-    String? defaultEmail,
-    String? defaultPassword,
+  const GroupAddPageBody({
     Key? key,
-  })  : titleController = TextEditingController(text: defaultEmail),
-        descriptionController = TextEditingController(text: defaultPassword),
-        super(key: key);
-
-  final TextEditingController titleController;
-  final TextEditingController descriptionController;
-
-  final ScrollController listViewController = ScrollController();
+  })  : super(key: key);
 
   @override
   ConsumerState createState() => GroupAddPageBodyState();
@@ -28,10 +19,12 @@ class GroupAddPageBody extends ConsumerStatefulWidget {
 class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
   bool isExpandClicked = false;
 
-  TextEditingController get titleController => widget.titleController;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final ScrollController listViewController = ScrollController();
 
-  TextEditingController get descriptionController =>
-      widget.descriptionController;
+  String titleText = '';
+  String descriptionText = '';
 
   final children = <Widget>[];
   bool isEmpty = false;
@@ -52,11 +45,18 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     });
   }
 
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
   Widget nextStepButton() {
     return IconButton(
       onPressed: () async {
-        final title = titleController.text;
-        final description = descriptionController.text;
+        final title = titleText;
+        final description = descriptionText;
 
         if (title.isEmpty) {
           Fluttertoast.showToast(
@@ -116,8 +116,10 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
       children: [
         TextField(
           controller: titleController,
-          keyboardType: TextInputType.text,
+          keyboardType: TextInputType.name,
           maxLength: 10,
+          onSubmitted: (String value) => titleText = value,
+          textInputAction: TextInputAction.next,
           decoration: const InputDecoration(
             label: Text(
               "タイトル",
@@ -134,8 +136,9 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
         const SizedBox(height: 8),
         TextField(
           controller: descriptionController,
-          keyboardType: TextInputType.text,
+          keyboardType: TextInputType.name,
           maxLength: 50,
+          onSubmitted: (String value) => descriptionText = value,
           decoration: const InputDecoration(
             label: Text(
               "説明",

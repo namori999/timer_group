@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,10 +12,9 @@ class SettingsPage extends StatelessWidget {
         const Offset begin = Offset(1.0, 0.0);
         const Offset end = Offset.zero;
         var curve = Curves.easeInOutQuart;
-        var tween = Tween(begin: begin, end: end)
-            .chain(CurveTween(curve: curve));
-        final Animation<Offset> offsetAnimation =
-          animation.drive(tween);
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        final Animation<Offset> offsetAnimation = animation.drive(tween);
 
         return SlideTransition(
           position: offsetAnimation,
@@ -32,11 +30,16 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('設定'),
+        title: const Text(
+          '設定',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: null,//const SettingsBody(),
-        backgroundColor: Colors.white,
+      body: null, //const SettingsBody(),
+      backgroundColor: Colors.white,
     );
   }
 }

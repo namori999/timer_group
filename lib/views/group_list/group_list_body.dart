@@ -12,7 +12,6 @@ class GroupListBody extends ConsumerWidget {
   Center build(BuildContext context, WidgetRef ref) {
     final timerGroup = ref.watch(savedTimerGroupProvider);
 
-
     Future<void> _failureDialog() async {
       await showDialog<void>(
         context: context,
@@ -33,7 +32,7 @@ class GroupListBody extends ConsumerWidget {
     return Center(
       child: timerGroup.when(
         loading: () => const CircularProgressIndicator(),
-        data: (decks) => GroupListBodyData(decks),
+        data: (tgs) => GroupListBodyData(tgs),
         error: (error, stackTrace) {
           Future(() async => await _failureDialog());
           return const Text("データないよ");

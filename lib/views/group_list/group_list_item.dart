@@ -1,17 +1,17 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/timerProvider.dart';
+import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 
 class GroupListItem extends ConsumerStatefulWidget {
-  const GroupListItem(this.timerGroup, {Key? key}) : super(key: key);
+  GroupListItem(this.timerGroup, this.options, {Key? key}) : super(key: key);
   final TimerGroup timerGroup;
+  TimerGroupOptions options;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => DeckListItemState();
@@ -19,35 +19,56 @@ class GroupListItem extends ConsumerStatefulWidget {
 
 class DeckListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
-  TimerGroupOptions options = TimerGroupOptions(id: 0, title:'');
-  List<Timer> timers = [];
+
+  TimerGroupOptions get options => widget.options;
+  String totalTime = '';
+  List<Timer> timers =[];
 
   @override
   void initState() {
-    if(mounted){
-      getOptions();
-      getTimers();
-    }
     super.initState();
   }
 
-  void getOptions() async {
-    final repo = ref.read(timerGroupOptionsRepositoryProvider);
-    final id = timerGroup.id;
-    options = (await repo.getOptions(id!))!;
-  }
-
-  void getTimers() async{
+  Future<List<Timer>> getTimers() async {
     final repo = ref.read(timerRepositoryProvider);
     final id = timerGroup.id;
-    timers = await repo.getTimers(id!);
+    final timers = await repo.getTimers(id!);
+    this.timers = timers;
+    final totalTime = await repo.getTotal(id);
+    this.totalTime = totalTime;
+    return timers;
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: (){},
-        child:GroupListItemTile(timerGroup,options,timers),
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: FutureBuilder<List<Timer>>(
+        future: getTimers(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == null) {
+              return Text('no data');
+            } else {
+              return InkWell(
+                onTap: () => Navigator.of(context).push(DetailPage.route()),
+                borderRadius: BorderRadius.circular(10),
+                child: GroupListItemTile(
+                  timerGroup: timerGroup,
+                  options: options,
+                  timers: timers,
+                  totalTime: totalTime,
+                ),
+              );
+            }
+          } else {
+            return CircularProgressIndicator(); // loading
+          }
+        },
+      ),
     );
   }
 }
