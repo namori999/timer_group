@@ -21,6 +21,7 @@ Timer _$TimerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Timer {
   int? get id => throw _privateConstructorUsedError;
+  int get groupId => throw _privateConstructorUsedError;
   int get number => throw _privateConstructorUsedError;
   int get time => throw _privateConstructorUsedError; // timeはぜんぶ 秒 で管理
   String get soundPath => throw _privateConstructorUsedError;
@@ -39,6 +40,7 @@ abstract class $TimerCopyWith<$Res> {
       _$TimerCopyWithImpl<$Res>;
   $Res call(
       {int? id,
+      int groupId,
       int number,
       int time,
       String soundPath,
@@ -58,6 +60,7 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
+    Object? groupId = freezed,
     Object? number = freezed,
     Object? time = freezed,
     Object? soundPath = freezed,
@@ -70,6 +73,10 @@ class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      groupId: groupId == freezed
+          ? _value.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
       number: number == freezed
           ? _value.number
           : number // ignore: cast_nullable_to_non_nullable
@@ -105,6 +112,7 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
   @override
   $Res call(
       {int? id,
+      int groupId,
       int number,
       int time,
       String soundPath,
@@ -125,6 +133,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? groupId = freezed,
     Object? number = freezed,
     Object? time = freezed,
     Object? soundPath = freezed,
@@ -137,6 +146,10 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      groupId: groupId == freezed
+          ? _value.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
       number: number == freezed
           ? _value.number
           : number // ignore: cast_nullable_to_non_nullable
@@ -170,6 +183,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
 class _$_Timer extends _Timer {
   _$_Timer(
       {this.id,
+      required this.groupId,
       required this.number,
       required this.time,
       required this.soundPath,
@@ -183,6 +197,8 @@ class _$_Timer extends _Timer {
 
   @override
   final int? id;
+  @override
+  final int groupId;
   @override
   final int number;
   @override
@@ -199,7 +215,7 @@ class _$_Timer extends _Timer {
 
   @override
   String toString() {
-    return 'Timer(id: $id, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
+    return 'Timer(id: $id, groupId: $groupId, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
   }
 
   @override
@@ -208,6 +224,7 @@ class _$_Timer extends _Timer {
         (other.runtimeType == runtimeType &&
             other is _$_Timer &&
             const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.groupId, groupId) &&
             const DeepCollectionEquality().equals(other.number, number) &&
             const DeepCollectionEquality().equals(other.time, time) &&
             const DeepCollectionEquality().equals(other.soundPath, soundPath) &&
@@ -222,6 +239,7 @@ class _$_Timer extends _Timer {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(groupId),
       const DeepCollectionEquality().hash(number),
       const DeepCollectionEquality().hash(time),
       const DeepCollectionEquality().hash(soundPath),
@@ -245,6 +263,7 @@ class _$_Timer extends _Timer {
 abstract class _Timer extends Timer {
   factory _Timer(
       {final int? id,
+      required final int groupId,
       required final int number,
       required final int time,
       required final String soundPath,
@@ -257,6 +276,8 @@ abstract class _Timer extends Timer {
 
   @override
   int? get id;
+  @override
+  int get groupId;
   @override
   int get number;
   @override

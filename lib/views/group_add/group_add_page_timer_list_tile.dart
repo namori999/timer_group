@@ -79,16 +79,16 @@ class GroupAddPageListTileState
     final provider = ref.watch(timerRepositoryProvider);
 
     var timer = Timer(
-        id: id,
+        groupId: id,
         number: index,
         time: timeToSecond(time),
         soundPath: alarmTitle,
         bgmPath: bgmTitle,
         imagePath: imageTitle,
-        notification: notification);
+        notification: notification
+    );
 
     await provider.addTimer(timer);
-
     return timer;
   }
 

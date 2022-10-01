@@ -164,9 +164,9 @@ class Timers implements SqliteLocalDatabase {
     await db.execute(
       '''
 CREATE TABLE IF NOT EXISTS timers (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  groupId INTEGER,
   number INTEGER,
-  title TEXT,
   time INTEGER,
   soundPath TEXT,
   bgmPath TEXT,
@@ -176,12 +176,12 @@ CREATE TABLE IF NOT EXISTS timers (
     );
   }
 
-  Future<List<Timer>> getTimers(int id) async {
+  Future<List<Timer>> getTimers(int groupId) async {
     final db = await _getDatabase();
     final saved = await db.query(
       'timers',
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'groupId = ?',
+      whereArgs: [groupId],
     );
     return saved.map(Timer.fromJson).toList();
   }

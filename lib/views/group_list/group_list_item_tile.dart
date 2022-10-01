@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
-import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
 class GroupListItemTile extends ConsumerStatefulWidget {
-  GroupListItemTile({
+  const GroupListItemTile({
     required this.timerGroup,
     required this.options,
-    this.timers,
+    required this.timerCount,
     required this.totalTime,
     Key? key,
   }) : super(key: key);
 
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
-  List<Timer>? timers;
+  final String timerCount;
   final String totalTime;
 
   @override
@@ -27,7 +26,7 @@ class GroupListItemTile extends ConsumerStatefulWidget {
 class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
   TimerGroup get timerGroup => widget.timerGroup;
   TimerGroupOptions get options => widget.options;
-  List<Timer>? get timers => widget.timers;
+  String get timers => widget.timerCount;
   String get totalTime => widget.totalTime;
 
   String totalTimeText = '';
@@ -87,7 +86,7 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
               Row(
                 children: [
                   const Icon(Icons.notifications_active_outlined),
-                  Text('× ${timers!.length}'),
+                  Text('× $timers'),
                 ],
               ),
               separator(),

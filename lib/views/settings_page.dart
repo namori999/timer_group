@@ -6,7 +6,7 @@ class SettingsPage extends StatelessWidget {
     return PageRouteBuilder<SettingsPage>(
       settings: const RouteSettings(name: "/setting"),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return SettingsPage();
+        return const SettingsPage();
       },
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const Offset begin = Offset(1.0, 0.0);
