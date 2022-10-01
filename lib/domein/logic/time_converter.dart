@@ -1,3 +1,4 @@
+import 'package:timer_group/domein/models/timer_group_options.dart';
 
 int timeToSecond(String duration) {
   int hours = int.parse(duration.substring(0, 2));
@@ -31,12 +32,18 @@ String secondToHour(int value) {
   double h = m / 60.0;
   String result = '${h.toStringAsFixed(1)}時間';
   return result;
-
 }
 
 String secondToMinute(int value) {
-
   double m = value / 60.0;
   String result = "$m分";
   return result;
+}
+
+String getFormattedTime(TimerGroupOptions options,String totalTime) {
+  if (options.timeFormat == TimeFormat.minuteSecond) {
+    return secondToMinute(int.parse(totalTime));
+  } else {
+    return secondToHour(int.parse(totalTime));
+  }
 }

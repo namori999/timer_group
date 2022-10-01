@@ -1,9 +1,10 @@
-import 'dart:async';
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/timerProvider.dart';
@@ -14,10 +15,10 @@ class GroupListBodyData extends ConsumerWidget {
   final List<TimerGroup> timerGroups;
   String timerCount ='';
   String totalTime = '';
+  List<Timer> timers = [];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
 
     Future<TimerGroupOptions> _getFutureValue(int index) async {
       final id = timerGroups[index].id!;
@@ -25,11 +26,11 @@ class GroupListBodyData extends ConsumerWidget {
           await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
         final repo = ref.read(timerRepositoryProvider);
         final timers = await repo.getTimers(id);
+        this.timers = timers;
         timerCount = timers.length.toString();
         final totalTime = await repo.getTotal(id);
         this.totalTime = totalTime;
         return option;
-
     }
 
     if (timerGroups.isEmpty) {
@@ -51,7 +52,8 @@ class GroupListBodyData extends ConsumerWidget {
                     timerGroups[index],
                     snapshot.data,
                     timerCount,
-                    totalTime
+                    totalTime,
+                    timers,
                 );
               }
             } else {

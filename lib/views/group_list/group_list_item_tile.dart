@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timer_group/domein/groupOptionsProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
@@ -34,19 +35,11 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
 
   @override
   void initState() {
-    format = getFormatName();
+    format = getFormatName(options);
+    totalTimeText = getFormattedTime(options, totalTime);
     super.initState();
   }
 
-  String getFormatName() {
-    if (options.timeFormat == TimeFormat.minuteSecond) {
-      totalTimeText = secondToMinute(int.parse(totalTime));
-      return '分秒表示';
-    } else {
-      totalTimeText = secondToHour(int.parse(totalTime));
-      return '時分表示';
-    }
-  }
 
   Widget separator() {
     return Row(

@@ -14,3 +14,17 @@ Widget spacer() {
     ],
   );
 }
+
+Widget textSeparator() {
+  return Row(
+    children: const [
+      SizedBox(
+        width: 16,
+      ),
+      Text('|'),
+      SizedBox(
+        width: 16,
+      ),
+    ],
+  );
+}

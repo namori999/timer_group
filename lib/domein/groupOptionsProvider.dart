@@ -83,3 +83,12 @@ class TimerGroupOptionsRepository {
     ref.refresh(timerGroupOptionsProvider(id));
   }
 }
+
+
+String getFormatName(TimerGroupOptions options) {
+  if (options.timeFormat == TimeFormat.minuteSecond) {
+    return '分秒表示';
+  } else {
+    return '時分表示';
+  }
+}
