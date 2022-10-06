@@ -31,6 +31,11 @@ class timerRepository {
     ref.refresh(timerRepositoryProvider);
   }
 
+  Future<void> removeAllTimers(int groupId) async {
+    await _db.deleteAllTimers(groupId);
+    ref.refresh(timerRepositoryProvider);
+  }
+
   Future<String> getTotal(int id) async =>
     await _db.getTotal(id);
 }

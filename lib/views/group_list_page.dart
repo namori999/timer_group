@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
+import 'package:timer_group/views/group_add/group_add_page_body.dart';
 import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
@@ -31,6 +33,35 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   Color backGroundColor = Colors.white;
 
+  void showCancelAlert() {
+    final addPageBody = GroupAddPageBodyState();
+
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('編集中のグループを削除します'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text('キャンセル'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            CupertinoDialogAction(
+                child: const Text(
+                  '削除',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () async {
+                  addPageBody.cancelAdding();
+                  Navigator.pop<bool>(context);
+                  Navigator.pop(this.context);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
   PreferredSizeWidget appBar() {
     return AppBar(
       backgroundColor: backGroundColor,
@@ -38,12 +69,13 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
         builder: (context) => Padding(
           padding: const EdgeInsets.only(left: 10),
           child: IconButton(
+              splashColor: isSheetOpen ? Colors.transparent : Themes.themeColor,
+              highlightColor:
+                  isSheetOpen ? Colors.transparent : Themes.themeColor,
               icon: const Icon(Icons.person_outlined),
               color: Themes.grayColor.shade700,
               onPressed: () {
-                if (!isSheetOpen) {
-                  Scaffold.of(context).openDrawer();
-                }
+                isSheetOpen ? null : Scaffold.of(context).openDrawer();
               }),
         ),
       ),
@@ -58,12 +90,16 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
         Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
+                splashColor:
+                    isSheetOpen ? Colors.transparent : Themes.themeColor,
+                highlightColor:
+                    isSheetOpen ? Colors.transparent : Themes.themeColor,
                 icon: Icon(Icons.settings_outlined,
                     color: Themes.grayColor.shade700),
                 onPressed: () {
-                  if (!isSheetOpen) {
-                    Navigator.of(context).push(SettingsPage.route());
-                  }
+                  isSheetOpen
+                      ? null
+                      : Navigator.of(context).push(SettingsPage.route());
                 })),
       ],
       shape: const RoundedRectangleBorder(
@@ -85,42 +121,41 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-            backgroundColor: Colors.black,
-            child: floatingButtonIcon,
-            onPressed: () => {
-              setState(() {
+              backgroundColor: Colors.black,
+              child: floatingButtonIcon,
+              onPressed: () {
                 if (isSheetOpen) {
-                  Navigator.of(context).pop();
+                  showCancelAlert();
                 } else {
-                  floatingButtonIcon = const Icon(
-                    Icons.clear,
-                    color: Colors.white,
-                  );
-                  isSheetOpen = true;
-                  backGroundColor = Themes.grayColor[700]!;
-                  showBottomSheet(
-                      context: context,
-                      elevation: 20,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(30)),
-                      ),
-                      builder: (context) {
-                        return GroupAddPage();
-                      }).closed.whenComplete(() {
-                    setState(() {
-                      floatingButtonIcon = const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      );
-                      isSheetOpen = false;
-                      backGroundColor = Colors.white;
+                  setState(() {
+                    floatingButtonIcon = const Icon(
+                      Icons.clear,
+                      color: Colors.white,
+                    );
+                    isSheetOpen = true;
+                    backGroundColor = Themes.grayColor[700]!;
+                    showBottomSheet(
+                        context: context,
+                        elevation: 20,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(30)),
+                        ),
+                        builder: (context) {
+                          return GroupAddPage();
+                        }).closed.whenComplete(() {
+                      setState(() {
+                        floatingButtonIcon = const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        );
+                        isSheetOpen = false;
+                        backGroundColor = Colors.white;
+                      });
                     });
                   });
                 }
-              }),
-            },
-          );
+              });
         },
       ),
     );

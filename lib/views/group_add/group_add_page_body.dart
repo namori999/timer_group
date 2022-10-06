@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
 
 class GroupAddPageBody extends ConsumerStatefulWidget {
   const GroupAddPageBody({
     Key? key,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   ConsumerState createState() => GroupAddPageBodyState();
@@ -28,6 +29,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
 
   final children = <Widget>[];
   bool isEmpty = false;
+  bool onSecondStep = false;
 
   @override
   void initState() {
@@ -52,6 +54,16 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     super.dispose();
   }
 
+  Future<void> cancelAdding() async {
+    if (onSecondStep) {
+      final repo = ref.watch(timerGroupRepositoryProvider);
+      final timerProvider = ref.watch(timerRepositoryProvider);
+      final id = await repo.getId(titleText);
+      await repo.removeTimerGroup(id);
+      await timerProvider.removeAllTimers(id);
+    }
+  }
+
   Widget nextStepButton() {
     return IconButton(
       onPressed: () async {
@@ -70,6 +82,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           return;
         }
 
+        onSecondStep = true;
         final provider = ref.watch(timerGroupRepositoryProvider);
         final id = await provider.addTimerGroup(
             TimerGroupInfo(title: title, description: description));

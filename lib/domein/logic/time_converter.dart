@@ -26,9 +26,7 @@ String intToTimeLeft(int value) {
 }
 
 String secondToHour(int value) {
-  int m;
-  m = ((value - (value ~/ 3600) * 3600)) ~/ 60;
-
+  double m = (value / 60.0);
   double h = m / 60.0;
   String result = '${h.toStringAsFixed(1)}時間';
   return result;

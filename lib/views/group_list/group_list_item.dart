@@ -11,25 +11,22 @@ class GroupListItem extends ConsumerStatefulWidget {
   GroupListItem(
       this.timerGroup,
       this.options,
-      this.timerCount,
       this.totalTime,
       this.timers,
       {Key? key})
       : super(key: key);
   final TimerGroup timerGroup;
   TimerGroupOptions options;
-  String timerCount;
   String totalTime;
   List<Timer> timers;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => DeckListItemState();
+  ConsumerState<ConsumerStatefulWidget> createState() => GroupListItemState();
 }
 
-class DeckListItemState extends ConsumerState<GroupListItem> {
+class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
   TimerGroupOptions get options => widget.options;
-  String get timerCount => widget.timerCount;
   String get totalTime => widget.totalTime;
   List<Timer> get timers => widget.timers;
 
@@ -60,7 +57,7 @@ class DeckListItemState extends ConsumerState<GroupListItem> {
         child: GroupListItemTile(
           timerGroup: timerGroup,
           options: options,
-          timerCount: timerCount,
+          timers: timers,
           totalTime: totalTime,
         ),
       ),

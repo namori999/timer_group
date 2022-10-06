@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
@@ -9,14 +10,14 @@ class GroupListItemTile extends ConsumerStatefulWidget {
   const GroupListItemTile({
     required this.timerGroup,
     required this.options,
-    required this.timerCount,
+    required this.timers,
     required this.totalTime,
     Key? key,
   }) : super(key: key);
 
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
-  final String timerCount;
+  final List<Timer> timers;
   final String totalTime;
 
   @override
@@ -27,16 +28,22 @@ class GroupListItemTile extends ConsumerStatefulWidget {
 class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
   TimerGroup get timerGroup => widget.timerGroup;
   TimerGroupOptions get options => widget.options;
-  String get timers => widget.timerCount;
+  List<Timer> get timers => widget.timers;
   String get totalTime => widget.totalTime;
 
   String totalTimeText = '';
   String format = '分秒表示';
+  String timerCount = '';
 
   @override
   void initState() {
     format = getFormatName(options);
     totalTimeText = getFormattedTime(options, totalTime);
+    if (options.overTime == 'ON'){
+      timerCount = (timers.length -1).toString();
+    } else {
+      timerCount = timers.length.toString();
+    }
     super.initState();
   }
 
@@ -79,7 +86,7 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
               Row(
                 children: [
                   const Icon(Icons.notifications_active_outlined),
-                  Text('× $timers'),
+                  Text('× $timerCount'),
                 ],
               ),
               separator(),

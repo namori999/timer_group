@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
-import 'package:timer_group/domein/timerProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/components/outlined_drop_down_button.dart';
+import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 import 'group_add_page_timer_list.dart';
@@ -26,20 +28,15 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
   bool overTimeEnabled = false;
   String totalTime = '';
   int id = 0;
+  var timer;
 
   @override
   initState() {
     super.initState();
-      Future(() async {
-        id = await ref.watch(timerGroupRepositoryProvider).getId(title);
-        totalTime = ref.watch(timerRepositoryProvider).getTotal(id).toString();
-      });
-    body.add(secondStep());
   }
 
-
-  Widget secondStep() {
-
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -57,22 +54,8 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
           ],
         ),
         spacer(),
-        GroupAddPageTimerList(title: title,),
-        spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              '合計時間',
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 32),
-              child: Text(
-                totalTime,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+        GroupAddPageTimerList(
+          title: title,
         ),
         spacer(),
         Row(
@@ -81,37 +64,55 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
             const Text(
               "オーバータイム",
             ),
-            OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(130, 40),
-                  foregroundColor: Themes.grayColor,
-                  side: const BorderSide(
-                    color: Themes.grayColor,
-                  ),
-                ),
-                child: Text(
-                  overTimeText,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  if (overTimeEnabled) {
-                    overTimeEnabled = false;
-                    setState(() {
-                      overTimeText = 'OFF';
-                    });
-                  } else {
-                    overTimeEnabled = true;
-                    setState(() {
-                      overTimeText = 'ON';
-                      body.add(
-                          GroupAddPageTimerListTile(title: title, index: 0,)
-                      );
-                    });
-                  }
+            Switch(
+                value: overTimeEnabled,
+                activeColor: Themes.themeColor,
+                onChanged: (bool value) async {
+                  final repo = ref.watch(timerGroupRepositoryProvider);
+                  id = await repo.getId(title);
+                  final optionsProvider =
+                      ref.watch(timerGroupOptionsRepositoryProvider);
+                  final options = await optionsProvider.getOptions(id);
+
+                  setState(() {
+                    overTimeEnabled = value;
+                  });
+
+                  timer = await showModalBottomSheet(
+                      context: context,
+                      elevation: 20,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(10)),
+                      ),
+                      builder: (context) {
+                        return AddTimerDialog(
+                          index: 0,
+                          title: title,
+                          overTime: true,
+                        );
+                      });
+
+                  await optionsProvider.update(TimerGroupOptions(
+                      id: id,
+                      title: title,
+                      timeFormat: options.timeFormat,
+                      overTime: overTimeText));
                 }),
           ],
         ),
+        if (overTimeEnabled)
+          Column(
+            children: [
+              GroupAddPageTimerListTile(
+                index: 0,
+                title: title,
+                timer: timer,
+              ),
+              spacer()
+            ],
+          ),
         spacer(),
         TextButton(
           style: TextButton.styleFrom(
@@ -149,26 +150,6 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
         ),
         const SizedBox(height: 32),
       ],
-    );
-  }
-
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 16),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: body,
     );
   }
 }

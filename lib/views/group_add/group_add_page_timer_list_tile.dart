@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/timerProvider.dart';
@@ -13,15 +13,18 @@ import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 import '../configure/theme.dart';
 
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
-  const GroupAddPageTimerListTile({
+  GroupAddPageTimerListTile({
     this.index,
     required this.title,
     this.timer,
+    this.overTime,
     Key? key,
   }) : super(key: key);
+
   final int? index;
   final String title;
   final Timer? timer;
+  bool? overTime;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -45,6 +48,8 @@ class GroupAddPageListTileState
   String imageTitle = BackGroundImages.sample.name;
   String notification = 'ON';
   bool isNotifyEnabled = true;
+  String timerRowText = 'タイマー';
+  String alarmRowText = 'アラーム';
 
   @override
   void initState() {
@@ -57,6 +62,7 @@ class GroupAddPageListTileState
       imageTitle = timer.imagePath;
       notification = timer.notification;
     }
+
     super.initState();
   }
 
@@ -85,8 +91,7 @@ class GroupAddPageListTileState
         soundPath: alarmTitle,
         bgmPath: bgmTitle,
         imagePath: imageTitle,
-        notification: notification
-    );
+        notification: notification);
 
     await provider.addTimer(timer);
     return timer;
@@ -112,8 +117,13 @@ class GroupAddPageListTileState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(index.toString()),
-              spacer(),
+              if (index != 0)
+                Column(
+                  children: [
+                    Text(index.toString()),
+                    spacer(),
+                  ],
+                ),
               Row(
                 children: [
                   const Icon(Icons.timer_outlined),
@@ -147,6 +157,7 @@ class GroupAddPageListTileState
                           builder: (_) {
                             return TimeInputDialog(
                               timeFormat: options.timeFormat!,
+                              selectedTime: time,
                             );
                           },
                         );

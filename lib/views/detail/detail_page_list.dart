@@ -22,7 +22,7 @@ class DetailPageList extends ConsumerStatefulWidget {
 }
 
 class DetailPageListState extends ConsumerState<DetailPageList> {
-  final timerList = <Widget>[];
+  List<Timer> timerList = [];
 
   get title => widget.title;
 
@@ -37,6 +37,27 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
 
   @override
   Widget build(BuildContext context) {
+    if (options.overTime == 'ON') {
+      return Expanded(
+        child: Scrollbar(
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(top: 16),
+            physics: const ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: timers.length - 1,
+            itemBuilder: (context, index) {
+              return DetailPageListTile(
+                title: title,
+                timer: timers[index],
+                options: options,
+              );
+            },
+          ),
+        ),
+      );
+    }
+
     return Expanded(
       child: Scrollbar(
         child: ListView.builder(

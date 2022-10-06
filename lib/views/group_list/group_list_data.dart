@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
@@ -13,8 +13,7 @@ import 'package:timer_group/views/group_list/group_list_item.dart';
 class GroupListBodyData extends ConsumerWidget {
   GroupListBodyData(this.timerGroups, {Key? key}) : super(key: key);
   final List<TimerGroup> timerGroups;
-  String timerCount ='';
-  String totalTime = '';
+  String totalTime = 'OFF';
   List<Timer> timers = [];
 
   @override
@@ -27,7 +26,6 @@ class GroupListBodyData extends ConsumerWidget {
         final repo = ref.read(timerRepositoryProvider);
         final timers = await repo.getTimers(id);
         this.timers = timers;
-        timerCount = timers.length.toString();
         final totalTime = await repo.getTotal(id);
         this.totalTime = totalTime;
         return option;
@@ -51,13 +49,12 @@ class GroupListBodyData extends ConsumerWidget {
                 return GroupListItem(
                     timerGroups[index],
                     snapshot.data,
-                    timerCount,
                     totalTime,
                     timers,
                 );
               }
             } else {
-              return Center(child: CircularProgressIndicator()); // loading
+              return const Center(child: CircularProgressIndicator()); // loading
             }
           },
         );

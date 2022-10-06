@@ -21,6 +21,8 @@ class timerGroupRepository {
   timerGroupRepository(this.ref);
 
   static const _db = SqliteLocalDatabase.timerGroup;
+  static const _optionsDb = SqliteLocalDatabase.timerGroupOptions;
+  static const _timersDb = SqliteLocalDatabase.timers;
   final Ref ref;
 
   Future<TimerGroup> getTimerGroup(String title) async =>
@@ -42,6 +44,8 @@ class timerGroupRepository {
 
   Future<void> removeTimerGroup(int id) async {
     await _db.delete(id);
+    await _optionsDb.delete(id);
+    await _timersDb.delete(id);
     ref.refresh(savedTimerGroupProvider);
   }
 }
@@ -83,7 +87,6 @@ class TimerGroupOptionsRepository {
     ref.refresh(timerGroupOptionsProvider(id));
   }
 }
-
 
 String getFormatName(TimerGroupOptions options) {
   if (options.timeFormat == TimeFormat.minuteSecond) {

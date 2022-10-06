@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/groupOptionsProvider.dart';
+import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
@@ -8,6 +8,7 @@ import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/components/tg_subtitle_row.dart';
 import 'package:timer_group/views/detail/detail_page_list.dart';
+import 'package:timer_group/views/detail/detail_page_list_tile.dart';
 
 class DetailPageBody extends ConsumerStatefulWidget {
   DetailPageBody({
@@ -37,11 +38,17 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   String get totalTime => widget.totalTime;
   String totalTimeText = '';
   String format = '';
+  String timerCount = '';
 
   @override
   void initState() {
     totalTimeText = getFormattedTime(options, totalTime);
     format = getFormatName(options);
+    if (options.overTime == 'ON'){
+      timerCount = (timers.length -1).toString();
+    } else {
+      timerCount = timers.length.toString();
+    }
     super.initState();
   }
 
@@ -64,8 +71,8 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SingleChildScrollView(
-        child: SizedBox(
-          height: 800,
+        child: Container(
+          height: 900,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +89,10 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                   ),
                 ),
                 subtitle: tgSubtitleRow(
-                    totalTimeText, timers.length.toString(), format),
+                    totalTimeText, timerCount, format),
               ),
-              if (timerGroup.description == '')
+              if (timerGroup.description == " " ||
+                  timerGroup.description == null)
                 SizedBox(
                   height: 100,
                   child: Column(
@@ -92,10 +100,10 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                       spacer(),
                       Text(timerGroup.description.toString(),
                           style: const TextStyle(fontSize: 16)),
-                      spacer(),
                     ],
                   ),
                 ),
+              spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -122,7 +130,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('× ${timers.length}'),
+                      Text('× $timerCount'),
                       const SizedBox(
                         width: 16,
                       ),
@@ -141,6 +149,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
               const SizedBox(
                 height: 16,
               ),
+              spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -168,6 +177,16 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 8,
+              ),
+              if (options.overTime == 'ON')
+                Expanded(
+                  child: DetailPageListTile(
+                      title: timerGroup.title,
+                      timer: timers.last,
+                      options: options),
+                ),
               const Expanded(
                 child: SizedBox(
                   height: 16,

@@ -208,6 +208,11 @@ CREATE TABLE IF NOT EXISTS timers (
     await db.delete('timers', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<void> deleteAllTimers(int groupId) async {
+    final db = await _getDatabase();
+    await db.delete('timers', where: 'groupId = ?', whereArgs: [groupId]);
+  }
+
   Future calculateTotal(int id) async {
     final db = await _getDatabase();
     var result = await db.rawQuery(
@@ -219,7 +224,7 @@ CREATE TABLE IF NOT EXISTS timers (
   Future getTotal(int id) async {
     final db = await _getDatabase();
     var result =
-        await db.rawQuery("SELECT SUM(time) FROM timers where id = ?", [id]);
+        await db.rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
     int? value = result[0]["SUM(time)"] as int;
     return value.toString();
   }

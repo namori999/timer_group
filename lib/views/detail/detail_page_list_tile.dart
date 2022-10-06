@@ -45,13 +45,11 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   void initState() {
     final timer = this.timer;
 
-    if (timer != null) {
-      time = intToTimeLeft(timer.time);
-      alarmTitle = timer.soundPath;
-      bgmTitle = timer.bgmPath;
-      imageTitle = timer.imagePath;
-      notification = timer.notification;
-    }
+    time = intToTimeLeft(timer.time);
+    alarmTitle = timer.soundPath;
+    bgmTitle = timer.bgmPath;
+    imageTitle = timer.imagePath;
+    notification = timer.notification;
     super.initState();
   }
 
@@ -72,6 +70,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(8),
+      color: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
         side: BorderSide(
@@ -80,13 +79,15 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+        padding: const EdgeInsets.all(8),
         child: SizedBox(
           width: 180,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(timer.number.toString()),
+              if (timer.number != 0)
+                Text(timer.number.toString()),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   const Icon(Icons.timer_outlined),
