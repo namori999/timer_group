@@ -9,13 +9,12 @@ import '../configure/theme.dart';
 
 class DetailPageListTile extends ConsumerStatefulWidget {
   const DetailPageListTile({
-    this.index,
     required this.title,
     required this.timer,
     required this.options,
     Key? key,
   }) : super(key: key);
-  final int? index;
+
   final String title;
   final Timer timer;
   final TimerGroupOptions options;
@@ -81,7 +80,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: SizedBox(
-          width: 180,
+          width: MediaQuery.of(context).size.width,
           height: 200,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -95,6 +94,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   const SizedBox(
                     width: 16,
                   ),
+                  const Text('最大時間'),
                   Text(
                     getFormattedTime(options, timer.time.toString()),
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -107,6 +107,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   const SizedBox(
                     width: 16,
                   ),
+                  const Text('アラーム音'),
                   Text(
                     alarmTitle,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -120,6 +121,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   const SizedBox(
                     width: 16,
                   ),
+                  const Text('BGM'),
                   Text(
                     bgmTitle,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -128,8 +130,10 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   const Icon(Icons.image_outlined),
+                  const Text('背景'),
                   const SizedBox(
                     width: 16,
                   ),

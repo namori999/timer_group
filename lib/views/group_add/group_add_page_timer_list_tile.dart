@@ -39,14 +39,14 @@ class GroupAddPageListTileState
 
   Timer? get timer => widget.timer;
 
-  String time = '';
+  static String time = '';
   AlarmSounds alarm = AlarmSounds.sample;
-  String alarmTitle = '';
+  static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
-  String bgmTitle = '';
+  static String bgmTitle = '';
   BackGroundImages image = BackGroundImages.sample;
-  String imageTitle = BackGroundImages.sample.name;
-  String notification = 'ON';
+  static String imageTitle = BackGroundImages.sample.name;
+  static String notification = 'ON';
   bool isNotifyEnabled = true;
   String timerRowText = 'タイマー';
   String alarmRowText = 'アラーム';
@@ -79,22 +79,36 @@ class GroupAddPageListTileState
     );
   }
 
-  Future<Timer> addTimer() async {
-    final repo = ref.watch(timerGroupRepositoryProvider);
-    final id = await repo.getId(title);
-    final provider = ref.watch(timerRepositoryProvider);
-
+  Timer getTImer() {
     var timer = Timer(
-        groupId: id,
+        groupId: 0,
         number: index,
         time: timeToSecond(time),
         soundPath: alarmTitle,
         bgmPath: bgmTitle,
         imagePath: imageTitle,
         notification: notification);
-
-    await provider.addTimer(timer);
     return timer;
+  }
+
+  Future<Timer?> addTimer() async {
+    if(mounted) {
+      final repo = ref.watch(timerGroupRepositoryProvider);
+      final id = await repo.getId(title);
+      var timer = Timer(
+          groupId: id,
+          number: index,
+          time: timeToSecond(time),
+          soundPath: alarmTitle,
+          bgmPath: bgmTitle,
+          imagePath: imageTitle,
+          notification: notification);
+
+      final provider = ref.watch(timerRepositoryProvider);
+      await provider.addTimer(timer);
+      return timer;
+    }
+    return null;
   }
 
   @override

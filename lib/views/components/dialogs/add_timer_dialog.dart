@@ -30,17 +30,6 @@ class AddTimerDialog extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if (overTime != null)
-                const ListTile(
-                  title:  Text(
-                    'オーバータイム追加',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle:  Text(
-                      'グループ内の全てのタイマーが終了した後に、'
-                          'もう一つタイマーを追加します。'
-                  ),
-                ),
               IconButton(
                   onPressed: () {
                     index = index - 1;
@@ -66,7 +55,7 @@ class AddTimerDialog extends StatelessWidget {
               ),
             ),
             onPressed: () async {
-              Timer timer = await globalKey.currentState!.addTimer();
+              Timer? timer = await globalKey.currentState!.addTimer();
               Navigator.pop<Timer>(context, timer);
             },
             child: Row(

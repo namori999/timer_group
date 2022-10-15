@@ -18,8 +18,7 @@ class GroupAddPageTimerList extends ConsumerStatefulWidget {
 
 class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   final timerList = <Widget>[];
-  int index = 0;
-
+  static int index = 0;
   get title => widget.title;
 
   int addIndex() {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
+import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/components/outlined_drop_down_button.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -29,6 +32,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
   String totalTime = '';
   int id = 0;
   var timer;
+  GlobalKey<GroupAddPageListTileState> globalKey = GlobalKey();
 
   @override
   initState() {
@@ -74,31 +78,23 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
                       ref.watch(timerGroupOptionsRepositoryProvider);
                   final options = await optionsProvider.getOptions(id);
 
+                  if (value) {
+                    await optionsProvider.update(TimerGroupOptions(
+                        id: id,
+                        title: title,
+                        timeFormat: options.timeFormat,
+                        overTime: 'ON'));
+                  } else {
+                    await optionsProvider.update(TimerGroupOptions(
+                        id: id,
+                        title: title,
+                        timeFormat: options.timeFormat,
+                        overTime: 'OFF'));
+                  }
+
                   setState(() {
                     overTimeEnabled = value;
                   });
-
-                  timer = await showModalBottomSheet(
-                      context: context,
-                      elevation: 20,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(10)),
-                      ),
-                      builder: (context) {
-                        return AddTimerDialog(
-                          index: 0,
-                          title: title,
-                          overTime: true,
-                        );
-                      });
-
-                  await optionsProvider.update(TimerGroupOptions(
-                      id: id,
-                      title: title,
-                      timeFormat: options.timeFormat,
-                      overTime: overTimeText));
                 }),
           ],
         ),
@@ -121,7 +117,29 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
+            if (GroupAddPageTimerListState.index == 0) {
+              Fluttertoast.showToast(
+                  msg: 'タイマーを１つ以上追加してください',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+              return;
+            }
+            if (overTimeEnabled) {
+              final provider = ref.watch(timerRepositoryProvider);
+              await provider.addTimer(Timer(
+                  groupId: id,
+                  number: 0,
+                  time: timeToSecond(GroupAddPageListTileState.time),
+                  soundPath: GroupAddPageListTileState.alarmTitle,
+                  bgmPath:  GroupAddPageListTileState.bgmTitle,
+                  imagePath:  GroupAddPageListTileState.imageTitle,
+                  notification: GroupAddPageListTileState.notification));
+            }
             Navigator.of(context).pop();
           },
           child: Padding(

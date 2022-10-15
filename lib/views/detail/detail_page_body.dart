@@ -71,8 +71,8 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SingleChildScrollView(
-        child: Container(
-          height: 900,
+        child: SizedBox(
+          height: 1200,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +181,8 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                 height: 8,
               ),
               if (options.overTime == 'ON')
-                Expanded(
+                SizedBox(
+                  height: 300,
                   child: DetailPageListTile(
                       title: timerGroup.title,
                       timer: timers.last,

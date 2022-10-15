@@ -51,6 +51,7 @@ dependencies:
   pin_code_fields: ^7.4.0
   soundpool: ^2.3.0
   flutter_launcher_icons: ^0.10.0
+  flutter_slidable: ^2.0.0
 
 dev_dependencies:
   flutter_test:

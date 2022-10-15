@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,47 +16,67 @@ class GroupListBodyData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     Future<TimerGroupOptions> _getFutureValue(int index) async {
       final id = timerGroups[index].id!;
       final option =
           await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
-        final repo = ref.read(timerRepositoryProvider);
-        final timers = await repo.getTimers(id);
-        this.timers = timers;
-        final totalTime = await repo.getTotal(id);
-        this.totalTime = totalTime;
-        return option;
+      final repo = ref.read(timerRepositoryProvider);
+      final timers = await repo.getTimers(id);
+      this.timers = timers;
+      final totalTime = await repo.getTotal(id);
+      this.totalTime = totalTime;
+      return option;
     }
 
     if (timerGroups.isEmpty) {
-      return const Text("まだ登録されてないよ");
+      return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: const [
+              Spacer(),
+              Text("まだ登録されてないよ"),
+              Spacer(),
+              Text(
+                "ここからタイマーグループを追加",
+                style: TextStyle(fontSize: 12),
+              ),
+              Icon(Icons.south_east),
+              Spacer(),
+            ]),
+      );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 16),
-      itemCount: timerGroups.length,
-      itemBuilder: (context, index) {
-        return FutureBuilder(
-          future: _getFutureValue(index),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.data == null) {
-                return Text('no data');
-              } else {
-                return GroupListItem(
+    return RefreshIndicator(
+      onRefresh: () async {
+
+      },
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 16),
+        itemCount: timerGroups.length,
+        itemBuilder: (context, index) {
+          return FutureBuilder(
+            future: _getFutureValue(index),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.data == null) {
+                  return const SizedBox();
+                } else {
+                  return GroupListItem(
                     timerGroups[index],
                     snapshot.data,
                     totalTime,
                     timers,
-                );
+                    index,
+                  );
+                }
+              } else {
+                return const Center(
+                    child: CircularProgressIndicator()); // loading
               }
-            } else {
-              return const Center(child: CircularProgressIndicator()); // loading
-            }
-          },
-        );
-      },
+            },
+          );
+        },
+      ),
     );
   }
 }

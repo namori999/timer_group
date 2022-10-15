@@ -133,6 +133,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           maxLength: 10,
           onSubmitted: (String value) => titleText = value,
           textInputAction: TextInputAction.next,
+          readOnly: onSecondStep,
           decoration: const InputDecoration(
             label: Text(
               "タイトル",
@@ -152,6 +153,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           keyboardType: TextInputType.name,
           maxLength: 50,
           onSubmitted: (String value) => descriptionText = value,
+          readOnly: onSecondStep,
           decoration: const InputDecoration(
             label: Text(
               "説明",
