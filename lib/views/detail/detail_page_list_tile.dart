@@ -57,10 +57,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
     return Column(
       children: const [
         SizedBox(height: 8),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
+        Divider(color: Themes.grayColor, height: 2),
         SizedBox(height: 8),
       ],
     );
@@ -69,7 +66,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       color: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
@@ -82,12 +79,11 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
         padding: const EdgeInsets.all(8),
         child: SizedBox(
           width: 180,
-          height: 200,
+          height: 100,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (timer.number != 0)
-                Text(timer.number.toString()),
+              if (timer.number != 0) Text(timer.number.toString()),
               const SizedBox(height: 8),
               Row(
                 children: [

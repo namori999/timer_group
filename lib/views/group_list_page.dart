@@ -26,11 +26,7 @@ class GroupListPage extends ConsumerStatefulWidget {
 class _GroupListPageState extends ConsumerState<GroupListPage> {
   var isSheetOpen = false;
 
-  Icon floatingButtonIcon = const Icon(
-    Icons.add,
-    color: Colors.white,
-  );
-
+  Icon floatingButtonIcon = const Icon(Icons.add, color: Colors.white);
   Color backGroundColor = Colors.white;
 
   void showCancelAlert() {
@@ -114,7 +110,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       appBar: appBar(),
       backgroundColor: backGroundColor,
       body: const GroupListBody(),

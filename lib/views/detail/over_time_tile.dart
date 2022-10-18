@@ -7,8 +7,8 @@ import 'package:timer_group/domein/models/timer_group_options.dart';
 
 import '../configure/theme.dart';
 
-class DetailPageListTile extends ConsumerStatefulWidget {
-  const DetailPageListTile({
+class OverTimeTile extends ConsumerStatefulWidget {
+  const OverTimeTile({
     required this.title,
     required this.timer,
     required this.options,
@@ -24,7 +24,7 @@ class DetailPageListTile extends ConsumerStatefulWidget {
       DetailPageListTileState();
 }
 
-class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
+class DetailPageListTileState extends ConsumerState<OverTimeTile> {
   get title => widget.title;
 
   Timer get timer => widget.timer;
@@ -85,16 +85,19 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (timer.number != 0)
-                Text(timer.number.toString()),
+              if (timer.number != 0) Text(timer.number.toString()),
               const SizedBox(height: 8),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.timer_outlined),
-                  const SizedBox(
-                    width: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      Icon(Icons.timer_outlined),
+                      SizedBox(width: 16),
+                      Text('最大時間'),
+                    ],
                   ),
-                  const Text('最大時間'),
                   Text(
                     getFormattedTime(options, timer.time.toString()),
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -102,40 +105,49 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.volume_up_outlined),
-                  const SizedBox(
-                    width: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      Icon(Icons.volume_up_outlined),
+                      SizedBox(width: 16),
+                      Text('アラーム音'),
+                    ],
                   ),
-                  const Text('アラーム音'),
                   Text(
                     alarmTitle,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  spacer()
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.music_note_outlined),
-                  const SizedBox(
-                    width: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      Icon(Icons.music_note_outlined),
+                      SizedBox(width: 16),
+                      Text('BGM'),
+                    ],
                   ),
-                  const Text('BGM'),
                   Text(
                     bgmTitle,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  spacer()
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.image_outlined),
-                  const Text('背景'),
-                  const SizedBox(
-                    width: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      Icon(Icons.image_outlined),
+                      SizedBox(width: 16),
+                      Text('背景'),
+                    ],
                   ),
                   Container(
                     width: 130,
@@ -151,16 +163,22 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.notifications_active_outlined),
-                  const SizedBox(
-                    width: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                   Icon(Icons.notifications_active_outlined),
+                   SizedBox(
+                    width: 16
+                  ),
+                      Text('通知')
+                    ],
                   ),
                   Text(
-                    notification,
+                    '通知$notification',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  spacer()
                 ],
               ),
             ],

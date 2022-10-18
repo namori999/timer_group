@@ -16,7 +16,7 @@ class GroupListBodyData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<TimerGroupOptions> _getFutureValue(int index) async {
+    Future<TimerGroupOptions> getTimerGroup(int index) async {
       final id = timerGroups[index].id!;
       final option =
           await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
@@ -47,35 +47,36 @@ class GroupListBodyData extends ConsumerWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: () async {
-
-      },
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 16),
-        itemCount: timerGroups.length,
-        itemBuilder: (context, index) {
-          return FutureBuilder(
-            future: _getFutureValue(index),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.data == null) {
-                  return const SizedBox();
+      onRefresh: () async {},
+      child: Padding(
+        padding: EdgeInsets.only(right: 8, left: 8),
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 16),
+          itemCount: timerGroups.length,
+          itemBuilder: (context, index) {
+            return FutureBuilder(
+              future: getTimerGroup(index),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.data == null) {
+                    return const SizedBox();
+                  } else {
+                    return GroupListItem(
+                      timerGroups[index],
+                      snapshot.data,
+                      totalTime,
+                      timers,
+                      index,
+                    );
+                  }
                 } else {
-                  return GroupListItem(
-                    timerGroups[index],
-                    snapshot.data,
-                    totalTime,
-                    timers,
-                    index,
-                  );
+                  return const Center(
+                      child: CircularProgressIndicator()); // loading
                 }
-              } else {
-                return const Center(
-                    child: CircularProgressIndicator()); // loading
-              }
-            },
-          );
-        },
+              },
+            );
+          },
+        ),
       ),
     );
   }
