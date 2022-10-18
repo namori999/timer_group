@@ -84,7 +84,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
 
         onSecondStep = true;
         final provider = ref.watch(timerGroupRepositoryProvider);
-        final id = await provider.addTimerGroup(
+        final id = await provider.addNewTimerGroup(
             TimerGroupInfo(title: title, description: description));
 
         final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);

@@ -8,24 +8,36 @@ import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/group_list/group_list_item.dart';
 
-class GroupListBodyData extends ConsumerWidget {
+class GroupListBodyData extends ConsumerStatefulWidget {
   GroupListBodyData(this.timerGroups, {Key? key}) : super(key: key);
   final List<TimerGroup> timerGroups;
-  String totalTime = 'OFF';
-  List<Timer> timers = [];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Future<TimerGroupOptions> getTimerGroup(int index) async {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      GroupListBodyDataState();
+}
+
+class GroupListBodyDataState extends ConsumerState<GroupListBodyData> {
+  List<TimerGroup> get timerGroups => widget.timerGroups;
+  TimerGroup? timerGroup;
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Future<TimerGroup> getTimerGroup(int index) async {
       final id = timerGroups[index].id!;
-      final option =
+      final options =
           await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
       final repo = ref.read(timerRepositoryProvider);
       final timers = await repo.getTimers(id);
-      this.timers = timers;
       final totalTime = await repo.getTotal(id);
-      this.totalTime = totalTime;
-      return option;
+
+      return TimerGroup(
+          title: timerGroups[index].title,
+          description: timerGroups[index].description,
+          options: options,
+          timers: timers,
+          totalTime: totalTime);
     }
 
     if (timerGroups.isEmpty) {
@@ -46,38 +58,50 @@ class GroupListBodyData extends ConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {},
-      child: Padding(
-        padding: EdgeInsets.only(right: 8, left: 8),
-        child: ListView.builder(
-          padding: const EdgeInsets.only(top: 16),
-          itemCount: timerGroups.length,
-          itemBuilder: (context, index) {
-            return FutureBuilder(
-              future: getTimerGroup(index),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.data == null) {
-                    return const SizedBox();
-                  } else {
-                    return GroupListItem(
-                      timerGroups[index],
-                      snapshot.data,
-                      totalTime,
-                      timers,
-                      index,
-                    );
-                  }
-                } else {
-                  return const Center(
-                      child: CircularProgressIndicator()); // loading
-                }
-              },
-            );
-          },
-        ),
-      ),
-    );
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : RefreshIndicator(
+            onRefresh: () async {
+              setState(() {});
+              setState(() {
+                _isLoading = false;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8, left: 8),
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 16),
+                itemCount: timerGroups.length,
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                    future: getTimerGroup(index),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.data == null) {
+                          _isLoading = false;
+                          return const SizedBox();
+                        } else {
+                          _isLoading = false;
+                          return GroupListItem(
+                            timerGroups[index],
+                            snapshot.data.options,
+                            snapshot.data.totalTime,
+                            snapshot.data.timers,
+                            index,
+                          );
+                        }
+                      } else {
+                        _isLoading = true;
+                        return const SizedBox();
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          );
   }
 }

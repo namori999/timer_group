@@ -196,6 +196,19 @@ CREATE TABLE IF NOT EXISTS timers (
     );
   }
 
+  Future<void> insertTimerList(List<Timer> timers) async {
+    final db = await _getDatabase();
+
+    timers.forEach((timer) async {
+      print("insert timers: timers=$timer");
+      await db.insert(
+        'timer',
+        timer.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+  }
+
   Future<void> update(Timer timer) async {
     final db = await _getDatabase();
     print("update timers: timers = $timer");

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +31,9 @@ class GroupListItem extends ConsumerStatefulWidget {
 
 class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
-
   TimerGroupOptions get options => widget.options;
-
   String get totalTime => widget.totalTime;
-
   List<Timer> get timers => widget.timers;
-
   int get index => widget.index;
 
   @override
@@ -43,38 +41,25 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
     super.initState();
   }
 
-  void showCancelAlert() {
-    showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('グループを削除します'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: const Text('キャンセル'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            CupertinoDialogAction(
-                child: const Text(
-                  '削除',
-                  style: TextStyle(color: Colors.red),
-                ),
-                onPressed: () async {
-                  removeGroup();
-                  Navigator.pop(context);
-                }),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> removeGroup() async {
     final repo = ref.watch(timerGroupRepositoryProvider);
     final timerProvider = ref.watch(timerRepositoryProvider);
     final id = await repo.getId(timerGroup.title);
+    final group = await repo.getTimerGroup(timerGroup.title);
     await repo.removeTimerGroup(id);
     await timerProvider.removeAllTimers(id);
+
+    final snackBar = SnackBar(
+      content: const Text('タイマーグループを削除しました'),
+      action: SnackBarAction(
+        label: '取り消し',
+        onPressed: () async {
+          await repo.recoverTimerGroup(group,id);
+          setState(() {});
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -93,8 +78,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             label: '編集',
           ),
           SlidableAction(
-            onPressed: (_) {
-              showCancelAlert();
+            onPressed: (_) async {
+              removeGroup();
             },
             foregroundColor: Colors.red,
             icon: Icons.delete_outline,

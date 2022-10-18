@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
 
 part 'timer_group.freezed.dart';
 part 'timer_group.g.dart';
@@ -11,6 +13,9 @@ class TimerGroup with _$TimerGroup {
     int? id,
     required String title,
     String? description,
+    TimerGroupOptions? options,
+    List<Timer>? timers,
+    String? totalTime,
   }) = _TimerGroup;
 
   factory TimerGroup.fromJson(Map<String, dynamic> json) =>

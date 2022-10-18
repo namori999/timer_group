@@ -140,14 +140,14 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                         builder: (context) {
                           return GroupAddPage();
                         }).closed.whenComplete(() {
-                      setState(() {
-                        floatingButtonIcon = const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        );
-                        isSheetOpen = false;
-                        backGroundColor = Colors.white;
-                      });
+                            setState(() {
+                              floatingButtonIcon = const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              );
+                              isSheetOpen = false;
+                              backGroundColor = Colors.white;
+                            });
                     });
                   });
                 }
