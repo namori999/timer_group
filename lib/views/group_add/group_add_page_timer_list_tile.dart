@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
-import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/image_input_dialog.dart';
@@ -113,9 +112,6 @@ class GroupAddPageListTileState
 
   @override
   Widget build(BuildContext context) {
-    final tgRepo = ref.watch(timerGroupRepositoryProvider);
-    final repo = ref.watch(timerGroupOptionsRepositoryProvider);
-
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
@@ -163,14 +159,11 @@ class GroupAddPageListTileState
                         ],
                       ),
                       onPressed: () async {
-                        final id = await tgRepo.getId(title);
-                        final options = await repo.getOptions(id);
                         String result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
                             return TimeInputDialog(
-                              timeFormat: options.timeFormat!,
                               selectedTime: time,
                             );
                           },

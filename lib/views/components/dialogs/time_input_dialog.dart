@@ -1,18 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
 
 class TimeInputDialog extends ConsumerStatefulWidget {
   TimeInputDialog({
     Key? key,
-    required this.timeFormat,
     this.selectedTime,
   }) : super(key: key);
 
-  TimeFormat timeFormat;
   String? selectedTime;
-
 
   @override
   TimeInputDialogState createState() => TimeInputDialogState();
@@ -20,6 +16,7 @@ class TimeInputDialog extends ConsumerStatefulWidget {
 
 class TimeInputDialogState extends ConsumerState<TimeInputDialog> {
   Duration initialTimer = const Duration();
+
   String? get selectedTime => widget.selectedTime;
 
   @override

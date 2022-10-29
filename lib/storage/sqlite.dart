@@ -30,11 +30,6 @@ Future<Database> _getDatabase() async {
     onCreate: (db, version) async => await _initDatabase(db, -1, version),
     onUpgrade: (db, oldVersion, newVersion) async =>
         await _initDatabase(db, oldVersion, newVersion),
-    // onDowngrade: (db, oldVersion, newVersion) async => await deleteDatabase(dbPath),
-    // onOpen: (db) async {
-    //  // deleteDatabase(dbPath);
-    //  //  logger.d(await db.query('sqlite_master'));
-    // },
   );
 }
 
@@ -68,10 +63,10 @@ CREATE TABLE IF NOT EXISTS timerGroup (
     return saved.map(TimerGroup.fromJson).toList();
   }
 
-  Future<TimerGroup> get(String title) async {
+  Future<TimerGroup> get(int id) async {
     final db = await _getDatabase();
     final rows =
-        await db.rawQuery('SELECT * FROM timerGroup WHERE title = ?', [title]);
+        await db.rawQuery('SELECT * FROM timerGroup WHERE id = ?', [id]);
     return TimerGroup.fromJson(rows.first);
   }
 
@@ -127,7 +122,7 @@ CREATE TABLE IF NOT EXISTS timerGroupOptions (
     final db = await _getDatabase();
     final result = await db.query(
       'timerGroupOptions',
-      where: 'id = ?', // 渡されたidをキーにしてcatsテーブルを読み込む
+      where: 'id = ?',
       whereArgs: [id],
     );
     if (result.isEmpty) return TimerGroupOptions(id: id, title: title);
@@ -202,7 +197,7 @@ CREATE TABLE IF NOT EXISTS timers (
     timers.forEach((timer) async {
       print("insert timers: timers=$timer");
       await db.insert(
-        'timer',
+        'timers',
         timer.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -236,8 +231,8 @@ CREATE TABLE IF NOT EXISTS timers (
 
   Future getTotal(int id) async {
     final db = await _getDatabase();
-    var result =
-        await db.rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
+    var result = await db
+        .rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
     int? value = result[0]["SUM(time)"] as int;
     return value.toString();
   }

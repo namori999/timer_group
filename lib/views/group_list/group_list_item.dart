@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/timerGroupProvider.dart';
-import 'package:timer_group/domein/timerProvider.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
@@ -31,35 +28,42 @@ class GroupListItem extends ConsumerStatefulWidget {
 
 class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
+
   TimerGroupOptions get options => widget.options;
+
   String get totalTime => widget.totalTime;
+
   List<Timer> get timers => widget.timers;
+
   int get index => widget.index;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> removeGroup() async {
-    final repo = ref.watch(timerGroupRepositoryProvider);
-    final timerProvider = ref.watch(timerRepositoryProvider);
-    final id = await repo.getId(timerGroup.title);
-    final group = await repo.getTimerGroup(timerGroup.title);
-    await repo.removeTimerGroup(id);
-    await timerProvider.removeAllTimers(id);
+  void removeGroup() {
+    final provider = ref.watch(savedTimerGroupProvider.notifier);
+    final group = TimerGroup(
+      id: timerGroup.id,
+      title: timerGroup.title,
+      description: timerGroup.title,
+      options: options,
+      timers: timers,
+      totalTime: totalTime,
+    );
 
     final snackBar = SnackBar(
-      content: const Text('タイマーグループを削除しました'),
+      content: Text('${group.title}を削除しました'),
       action: SnackBarAction(
         label: '取り消し',
-        onPressed: () async {
-          await repo.recoverTimerGroup(group,id);
-          setState(() {});
+        onPressed: () {
+          provider.recoverTimerGroup(timerGroup: group);
+          return;
         },
       ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar).closed.then(
+      (value) {
+        provider.deleteTimerGroup(timerGroup: group);
+      },
+    );
   }
 
   @override
@@ -78,7 +82,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             label: '編集',
           ),
           SlidableAction(
-            onPressed: (_) async {
+            onPressed: (_) {
               removeGroup();
             },
             foregroundColor: Colors.red,

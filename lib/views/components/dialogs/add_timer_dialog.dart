@@ -32,7 +32,6 @@ class AddTimerDialog extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    index = index - 1;
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(Icons.close_rounded)),

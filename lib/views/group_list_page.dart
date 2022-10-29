@@ -7,7 +7,7 @@ import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
 import 'configure/theme.dart';
-import 'group_list/group_list_body.dart';
+import 'group_list/group_list_data.dart';
 
 class GroupListPage extends ConsumerStatefulWidget {
   static Route<GroupListPage> route() {
@@ -62,18 +62,20 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     return AppBar(
       backgroundColor: backGroundColor,
       leading: Builder(
-        builder: (context) => Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: IconButton(
-              splashColor: isSheetOpen ? Colors.transparent : Themes.themeColor,
-              highlightColor:
+        builder: (context) =>
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: IconButton(
+                  splashColor: isSheetOpen ? Colors.transparent : Themes
+                      .themeColor,
+                  highlightColor:
                   isSheetOpen ? Colors.transparent : Themes.themeColor,
-              icon: const Icon(Icons.person_outlined),
-              color: Themes.grayColor.shade700,
-              onPressed: () {
-                isSheetOpen ? null : Scaffold.of(context).openDrawer();
-              }),
-        ),
+                  icon: const Icon(Icons.person_outlined),
+                  color: Themes.grayColor.shade700,
+                  onPressed: () {
+                    isSheetOpen ? null : Scaffold.of(context).openDrawer();
+                  }),
+            ),
       ),
       centerTitle: true,
       title: Image.asset(
@@ -87,9 +89,9 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
                 splashColor:
-                    isSheetOpen ? Colors.transparent : Themes.themeColor,
+                isSheetOpen ? Colors.transparent : Themes.themeColor,
                 highlightColor:
-                    isSheetOpen ? Colors.transparent : Themes.themeColor,
+                isSheetOpen ? Colors.transparent : Themes.themeColor,
                 icon: Icon(Icons.settings_outlined,
                     color: Themes.grayColor.shade700),
                 onPressed: () {
@@ -113,7 +115,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       drawer: const AppDrawer(),
       appBar: appBar(),
       backgroundColor: backGroundColor,
-      body: const GroupListBody(),
+      body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
@@ -138,16 +140,16 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                               BorderRadius.vertical(top: Radius.circular(30)),
                         ),
                         builder: (context) {
-                          return GroupAddPage();
+                          return const GroupAddPage();
                         }).closed.whenComplete(() {
-                            setState(() {
-                              floatingButtonIcon = const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              );
-                              isSheetOpen = false;
-                              backGroundColor = Colors.white;
-                            });
+                      setState(() {
+                        floatingButtonIcon = const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        );
+                        isSheetOpen = false;
+                        backGroundColor = Colors.white;
+                      });
                     });
                   });
                 }

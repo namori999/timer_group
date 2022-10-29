@@ -19,6 +19,7 @@ class GroupAddPageTimerList extends ConsumerStatefulWidget {
 class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   final timerList = <Widget>[];
   static int index = 0;
+
   get title => widget.title;
 
   int addIndex() {
@@ -45,7 +46,8 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
               padding: const EdgeInsets.only(right: 32),
               child: Text(
                 '× $index',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -62,7 +64,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
               ),
               IconButton(
                 onPressed: () async {
-                  Timer timer = await showModalBottomSheet(
+                  Timer? timer = await showModalBottomSheet(
                       context: context,
                       elevation: 20,
                       isScrollControlled: true,
@@ -76,13 +78,18 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                           title: title,
                         );
                       });
-                  setState(() {
-                    timerList.add(GroupAddPageTimerListTile(
-                      index: index,
-                      title: title,
-                      timer: timer,
-                    ));
-                  });
+
+                  if (timer == null) {
+                    index = index - 1;
+                  } else {
+                    setState(() {
+                      timerList.add(GroupAddPageTimerListTile(
+                        index: index,
+                        title: title,
+                        timer: timer,
+                      ));
+                    });
+                  }
                 },
                 iconSize: 80,
                 icon: const Icon(

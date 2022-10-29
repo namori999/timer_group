@@ -1,31 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/timerGroupProvider.dart';
-import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/group_list/group_list_item.dart';
 
-class GroupListBodyData extends ConsumerStatefulWidget {
-  GroupListBodyData(this.timerGroups, {Key? key}) : super(key: key);
-  final List<TimerGroup> timerGroups;
+class GroupListBodyData extends ConsumerWidget {
+  GroupListBodyData({Key? key}) : super(key: key);
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      GroupListBodyDataState();
-}
-
-class GroupListBodyDataState extends ConsumerState<GroupListBodyData> {
-  List<TimerGroup> get timerGroups => widget.timerGroups;
   TimerGroup? timerGroup;
-  bool _isLoading = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timerGroups = ref.watch(savedTimerGroupProvider);
+
     Future<TimerGroup> getTimerGroup(int index) async {
-      final id = timerGroups[index].id!;
+      final id = timerGroups.value![index].id!;
       final options =
           await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
       final repo = ref.read(timerRepositoryProvider);
@@ -33,14 +23,15 @@ class GroupListBodyDataState extends ConsumerState<GroupListBodyData> {
       final totalTime = await repo.getTotal(id);
 
       return TimerGroup(
-          title: timerGroups[index].title,
-          description: timerGroups[index].description,
-          options: options,
-          timers: timers,
-          totalTime: totalTime);
+        title: timerGroups.value![index].title,
+        description: timerGroups.value![index].description,
+        options: options,
+        timers: timers,
+        totalTime: totalTime,
+      );
     }
 
-    if (timerGroups.isEmpty) {
+    if (timerGroups.value == null || timerGroups.value!.isEmpty) {
       return Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -58,50 +49,45 @@ class GroupListBodyDataState extends ConsumerState<GroupListBodyData> {
       );
     }
 
-    return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : RefreshIndicator(
-            onRefresh: () async {
-              setState(() {});
-              setState(() {
-                _isLoading = false;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8, left: 8),
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 16),
-                itemCount: timerGroups.length,
-                itemBuilder: (context, index) {
-                  return FutureBuilder(
-                    future: getTimerGroup(index),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.data == null) {
-                          _isLoading = false;
-                          return const SizedBox();
-                        } else {
-                          _isLoading = false;
-                          return GroupListItem(
-                            timerGroups[index],
-                            snapshot.data.options,
-                            snapshot.data.totalTime,
-                            snapshot.data.timers,
-                            index,
-                          );
-                        }
-                      } else {
-                        _isLoading = true;
-                        return const SizedBox();
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-          );
+    return Padding(
+      padding: const EdgeInsets.only(right: 8, left: 8),
+      child: timerGroups.when(
+        data: (tg) => ListView.builder(
+          padding: const EdgeInsets.only(top: 16),
+          itemCount: tg.length,
+          itemBuilder: (context, index) {
+            return FutureBuilder(
+              future: getTimerGroup(index),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.data == null) {
+                    return const SizedBox();
+                  } else {
+                    return GroupListItem(
+                      timerGroups.value![index],
+                      snapshot.data.options,
+                      snapshot.data.totalTime,
+                      snapshot.data.timers,
+                      index,
+                    );
+                  }
+                } else {
+                  return const SizedBox();
+                }
+              },
+            );
+          },
+        ),
+        error: (e, st) => Center(
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text('再読み込み'),
+          ),
+        ),
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 }

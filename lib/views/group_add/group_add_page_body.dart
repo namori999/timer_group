@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/timerProvider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_second.dart';
 
@@ -82,24 +80,20 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           return;
         }
 
-        onSecondStep = true;
-        final provider = ref.watch(timerGroupRepositoryProvider);
-        final id = await provider.addNewTimerGroup(
-            TimerGroupInfo(title: title, description: description));
-
-        final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);
-        optionsProvider.addOption(TimerGroupOptions(
-            id: id,
-            title: title,
-            timeFormat: TimeFormat.minuteSecond,
-            overTime: 'OFF'));
-
         setState(() {
           children.clear();
           children.add(GroupAddPageSecond(
             title: title,
           ));
         });
+
+        onSecondStep = true;
+        final provider = ref.watch(savedTimerGroupProvider.notifier);
+        provider.addNewTimerGroup(
+          timerGroupInfo:
+              TimerGroupInfo(title: title, description: description),
+        );
+
       },
       iconSize: 80,
       icon: const Icon(
