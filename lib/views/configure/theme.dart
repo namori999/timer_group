@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 
 class Themes {
-  static ThemeData get defaultTheme => ThemeData(primarySwatch: grayColor);
+  static ThemeData get defaultTheme => ThemeData(
+        primarySwatch: grayColor,
+        primaryColor: grayColor,
+        backgroundColor:const Color(0xFFF4FDF4),
+        shadowColor: Themes.themeColor.shade900,
+        splashColor: Themes.themeColor,
+        cardColor: Colors.white,
+        iconTheme: IconThemeData(color: grayColor[500]),
+        fontFamily: 'inter',
+      );
 
-  static ThemeData get darkTheme =>
-      defaultTheme.copyWith(brightness: Brightness.dark);
+  static ThemeData get darkTheme => defaultTheme.copyWith(
+      brightness: Brightness.dark,
+      primaryColor: Colors.white,
+      backgroundColor: const Color(0xFF404240),
+      shadowColor: Themes.themeColor.shade800,
+      splashColor: Themes.themeColor,
+      cardColor: const Color(0xFF5F625F),
+      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)));
 
   static const MaterialColor themeColor =
-  MaterialColor(_accentPrimaryValue, <int, Color>{
+      MaterialColor(_accentPrimaryValue, <int, Color>{
     50: Color(0xFFD2E7C9),
     100: Color(0xFFB4D0A7),
     200: Color(0xFFA1CE80),
@@ -22,7 +37,7 @@ class Themes {
   static const int _accentPrimaryValue = 0xFF7AC74A;
 
   static const MaterialColor grayColor =
-  MaterialColor(_grayPrimaryValue, <int, Color>{
+      MaterialColor(_grayPrimaryValue, <int, Color>{
     50: Color(0xFFFFFFFF),
     100: Color(0xFFE7E5E5),
     200: Color(0xFFDBDBDB),

@@ -67,7 +67,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8),
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
         side: BorderSide(

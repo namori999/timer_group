@@ -59,10 +59,19 @@ class SavedGroupsStateNotifier
   Future recoverTimerGroup({
     required TimerGroup timerGroup,
   }) async {
-    await lock.synchronized(() {
-      ref
-          .read(timerGroupRepositoryProvider)
-          .recoverTimerGroup(timerGroup, timerGroup.id!);
+    await lock.synchronized(() async {
+      final id = await ref.watch(timerGroupRepositoryProvider).addNewTimerGroup(
+          TimerGroupInfo(
+              title: timerGroup.title, description: timerGroup.description));
+
+      await ref.watch(timerGroupOptionsRepositoryProvider).addOption(
+          TimerGroupOptions(
+              id: id,
+              title: timerGroup.title,
+              timeFormat: timerGroup.options!.timeFormat,
+              overTime: timerGroup.options!.overTime));
+
+      await ref.watch(timerRepositoryProvider).addTimers(timerGroup.timers!);
     });
   }
 
@@ -70,7 +79,7 @@ class SavedGroupsStateNotifier
     required TimerGroup timerGroup,
   }) async {
     await lock.synchronized(() async {
-      ref.read(timerGroupRepositoryProvider).removeTimerGroup(timerGroup.id!);
+      ref.watch(timerGroupRepositoryProvider).removeTimerGroup(timerGroup.id!);
       ref
           .watch(timerGroupOptionsRepositoryProvider)
           .removeOption(timerGroup.id!);
@@ -114,17 +123,6 @@ class TimerGroupRepository {
     final int = await _db.insert(info);
     ref.refresh(savedTimerGroupProvider);
     return int;
-  }
-
-  Future<void> recoverTimerGroup(TimerGroup timerGroup, int id) async {
-    await _db.insert(TimerGroupInfo(
-        title: timerGroup.title, description: timerGroup.description));
-    await _optionsDb.insert(timerGroup.options!);
-    await _timersDb.insertTimerList(timerGroup.timers!);
-
-    ref.refresh(timerGroupOptionsProvider(id));
-    ref.refresh(timerRepositoryProvider);
-    ref.refresh(savedTimerGroupProvider);
   }
 
   Future<void> removeTimerGroup(int id) async {
@@ -192,6 +190,13 @@ class timerRepository {
 
   Future<void> update(Timer timer) async {
     await _db.insert(timer);
+    ref.refresh(timerRepositoryProvider);
+  }
+
+  Future<void> addTimers(List<Timer> timers) async {
+    for (Timer t in timers) {
+      await _db.insert(t);
+    }
     ref.refresh(timerRepositoryProvider);
   }
 

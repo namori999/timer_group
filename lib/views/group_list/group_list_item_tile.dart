@@ -5,6 +5,7 @@ import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/views/configure/theme.dart';
 
 class GroupListItemTile extends ConsumerStatefulWidget {
   const GroupListItemTile({
@@ -27,8 +28,11 @@ class GroupListItemTile extends ConsumerStatefulWidget {
 
 class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
   TimerGroup get timerGroup => widget.timerGroup;
+
   TimerGroupOptions get options => widget.options;
+
   List<Timer> get timers => widget.timers;
+
   String get totalTime => widget.totalTime;
 
   String totalTimeText = '';
@@ -39,14 +43,13 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
   void initState() {
     format = getFormatName(options);
     totalTimeText = getFormattedTime(options, totalTime);
-    if (options.overTime == 'ON'){
-      timerCount = (timers.length -1).toString();
+    if (options.overTime == 'ON') {
+      timerCount = (timers.length - 1).toString();
     } else {
       timerCount = timers.length.toString();
     }
     super.initState();
   }
-
 
   Widget separator() {
     return Row(
@@ -85,7 +88,10 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
               separator(),
               Row(
                 children: [
-                  const Icon(Icons.notifications_active_outlined),
+                  const Icon(
+                    Icons.notifications_active_outlined,
+                    color: Themes.grayColor,
+                  ),
                   Text('× $timerCount'),
                 ],
               ),

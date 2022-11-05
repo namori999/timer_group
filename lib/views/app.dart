@@ -11,15 +11,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          primarySwatch: Themes.grayColor,
-          splashColor: Themes.themeColor,
-          fontFamily: 'inter'),
-      darkTheme: ThemeData(
-          primarySwatch: Themes.grayColor,
-          brightness: Brightness.dark,
-          splashColor: Themes.themeColor,
-          fontFamily: 'inter'),
+      theme: Themes.defaultTheme,
+      darkTheme: Themes.darkTheme,
       home: const GroupListPage(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

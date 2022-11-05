@@ -26,7 +26,7 @@ class GroupListPage extends ConsumerStatefulWidget {
 class _GroupListPageState extends ConsumerState<GroupListPage> {
   var isSheetOpen = false;
 
-  Icon floatingButtonIcon = const Icon(Icons.add, color: Colors.white);
+  Icon floatingButtonIcon = const Icon(Icons.add);
   Color backGroundColor = Colors.white;
 
   void showCancelAlert() {
@@ -60,22 +60,20 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: backGroundColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       leading: Builder(
-        builder: (context) =>
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: IconButton(
-                  splashColor: isSheetOpen ? Colors.transparent : Themes
-                      .themeColor,
-                  highlightColor:
+        builder: (context) => Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: IconButton(
+              splashColor: isSheetOpen ? Colors.transparent : Themes.themeColor,
+              highlightColor:
                   isSheetOpen ? Colors.transparent : Themes.themeColor,
-                  icon: const Icon(Icons.person_outlined),
-                  color: Themes.grayColor.shade700,
-                  onPressed: () {
-                    isSheetOpen ? null : Scaffold.of(context).openDrawer();
-                  }),
-            ),
+              icon: const Icon(Icons.person_outlined),
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                isSheetOpen ? null : Scaffold.of(context).openDrawer();
+              }),
+        ),
       ),
       centerTitle: true,
       title: Image.asset(
@@ -89,11 +87,11 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
                 splashColor:
-                isSheetOpen ? Colors.transparent : Themes.themeColor,
+                    isSheetOpen ? Colors.transparent : Themes.themeColor,
                 highlightColor:
-                isSheetOpen ? Colors.transparent : Themes.themeColor,
+                    isSheetOpen ? Colors.transparent : Themes.themeColor,
                 icon: Icon(Icons.settings_outlined,
-                    color: Themes.grayColor.shade700),
+                    color: Theme.of(context).primaryColor),
                 onPressed: () {
                   isSheetOpen
                       ? null
@@ -114,12 +112,16 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: appBar(),
-      backgroundColor: backGroundColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-              backgroundColor: Colors.black,
+              backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.6),
+              elevation: 0,
+              shape: StadiumBorder(
+                  side: BorderSide(
+                      color: Theme.of(context).primaryColor, width: 4)),
               child: floatingButtonIcon,
               onPressed: () {
                 if (isSheetOpen) {
@@ -128,7 +130,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                   setState(() {
                     floatingButtonIcon = const Icon(
                       Icons.clear,
-                      color: Colors.white,
+                      color: Themes.grayColor,
                     );
                     isSheetOpen = true;
                     backGroundColor = Themes.grayColor[700]!;
@@ -145,7 +147,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                       setState(() {
                         floatingButtonIcon = const Icon(
                           Icons.add,
-                          color: Colors.white,
+                          color: Themes.grayColor,
                         );
                         isSheetOpen = false;
                         backGroundColor = Colors.white;

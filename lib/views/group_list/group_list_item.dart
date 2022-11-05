@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/logic/undo_stack.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
@@ -28,17 +29,22 @@ class GroupListItem extends ConsumerStatefulWidget {
 
 class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
-
   TimerGroupOptions get options => widget.options;
-
   String get totalTime => widget.totalTime;
-
   List<Timer> get timers => widget.timers;
 
   int get index => widget.index;
 
-  void removeGroup() {
+  final undo = UndoStack();
+
+  void setUndo(TimerGroup group) async {
     final provider = ref.watch(savedTimerGroupProvider.notifier);
+    undo.push(() {
+      provider.recoverTimerGroup(timerGroup: group);
+    });
+  }
+
+  void removeGroup() {
     final group = TimerGroup(
       id: timerGroup.id,
       title: timerGroup.title,
@@ -48,22 +54,23 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       totalTime: totalTime,
     );
 
+    final provider = ref.watch(savedTimerGroupProvider.notifier);
+    setUndo(group);
+    provider.deleteTimerGroup(timerGroup: group);
+
     final snackBar = SnackBar(
       content: Text('${group.title}を削除しました'),
       action: SnackBarAction(
         label: '取り消し',
         onPressed: () {
-          provider.recoverTimerGroup(timerGroup: group);
-          return;
+          if (undo.isNotEmpty) {
+            undo.undo();
+          }
         },
       ),
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar).closed.then(
-      (value) {
-        provider.deleteTimerGroup(timerGroup: group);
-      },
-    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -77,7 +84,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
         children: [
           SlidableAction(
             onPressed: (_) {},
-            foregroundColor: Themes.grayColor,
+            foregroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             icon: Icons.edit_outlined,
             label: '編集',
           ),
@@ -85,7 +93,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             onPressed: (_) {
               removeGroup();
             },
-            foregroundColor: Colors.red,
+            foregroundColor: Theme.of(context).errorColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             icon: Icons.delete_outline,
             label: '削除',
           ),
@@ -93,6 +102,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       ),
       child: Card(
         elevation: 3,
+        shadowColor: Theme.of(context).shadowColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
