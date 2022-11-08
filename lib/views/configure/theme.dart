@@ -4,9 +4,9 @@ class Themes {
   static ThemeData get defaultTheme => ThemeData(
         primarySwatch: grayColor,
         primaryColor: grayColor,
-        backgroundColor:const Color(0xFFF4FDF4),
+        backgroundColor: grayColor.shade50,
         shadowColor: Themes.themeColor.shade900,
-        splashColor: Themes.themeColor,
+        splashColor: Themes.themeColor.shade100,
         cardColor: Colors.white,
         iconTheme: IconThemeData(color: grayColor[500]),
         fontFamily: 'inter',
@@ -23,18 +23,18 @@ class Themes {
 
   static const MaterialColor themeColor =
       MaterialColor(_accentPrimaryValue, <int, Color>{
-    50: Color(0xFFD2E7C9),
-    100: Color(0xFFB4D0A7),
-    200: Color(0xFFA1CE80),
-    300: Color(0xFF97D471),
-    400: Color(0xFF89D45F),
-    500: Color(_accentPrimaryValue),
-    600: Color(0xFF64A53C),
-    700: Color(0xFF4C8B28),
-    800: Color(0xFF458020),
-    900: Color(0xFF224707),
+    50: Color(0xFFADE0CE),
+    100: Color(0xFF96CCB4),
+    200: Color(0xFF9EE0C3),
+    300: Color(0xFF6DDCAB),
+    400: Color(0xFF4EE5A1),
+    500: Color(0xFF36C485),
+    600: Color(0xFF3CA576),
+    700: Color(0xFF3F8366),
+    800: Color(0xFF294D3C),
+    900: Color(0xFF1C3D2F),
   });
-  static const int _accentPrimaryValue = 0xFF7AC74A;
+  static const int _accentPrimaryValue = 0xFF36C485;
 
   static const MaterialColor grayColor =
       MaterialColor(_grayPrimaryValue, <int, Color>{

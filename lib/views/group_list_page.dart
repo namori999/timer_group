@@ -26,7 +26,7 @@ class GroupListPage extends ConsumerStatefulWidget {
 class _GroupListPageState extends ConsumerState<GroupListPage> {
   var isSheetOpen = false;
 
-  Icon floatingButtonIcon = const Icon(Icons.add);
+  Icon floatingButtonIcon = const Icon(Icons.add, color: Themes.grayColor,);
   Color backGroundColor = Colors.white;
 
   void showCancelAlert() {

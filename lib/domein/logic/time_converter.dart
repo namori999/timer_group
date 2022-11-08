@@ -33,9 +33,13 @@ String secondToHour(int value) {
 }
 
 String secondToMinute(int value) {
-  double m = value / 60.0;
-  String result = "$m分";
-  return result;
+  if(value < 60) {
+    return "$value秒";
+  } else {
+    double m = value / 60.0;
+    String result = "$m分";
+    return result;
+  }
 }
 
 String getFormattedTime(TimerGroupOptions options,int time) {
