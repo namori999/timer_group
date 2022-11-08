@@ -215,5 +215,5 @@ class timerRepository {
     ref.refresh(timerRepositoryProvider);
   }
 
-  Future<String> getTotal(int id) async => await _db.getTotal(id);
+  Future<int> getTotal(int id) async => await _db.getTotal(id);
 }

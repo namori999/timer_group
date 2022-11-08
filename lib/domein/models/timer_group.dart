@@ -15,7 +15,7 @@ class TimerGroup with _$TimerGroup {
     String? description,
     TimerGroupOptions? options,
     List<Timer>? timers,
-    String? totalTime,
+    int? totalTime,
   }) = _TimerGroup;
 
   factory TimerGroup.fromJson(Map<String, dynamic> json) =>

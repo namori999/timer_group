@@ -25,7 +25,7 @@ mixin _$TimerGroup {
   String? get description => throw _privateConstructorUsedError;
   TimerGroupOptions? get options => throw _privateConstructorUsedError;
   List<Timer>? get timers => throw _privateConstructorUsedError;
-  String? get totalTime => throw _privateConstructorUsedError;
+  int? get totalTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +44,7 @@ abstract class $TimerGroupCopyWith<$Res> {
       String? description,
       TimerGroupOptions? options,
       List<Timer>? timers,
-      String? totalTime});
+      int? totalTime});
 
   $TimerGroupOptionsCopyWith<$Res>? get options;
 }
@@ -90,7 +90,7 @@ class _$TimerGroupCopyWithImpl<$Res> implements $TimerGroupCopyWith<$Res> {
       totalTime: totalTime == freezed
           ? _value.totalTime
           : totalTime // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ));
   }
 
@@ -119,7 +119,7 @@ abstract class _$$_TimerGroupCopyWith<$Res>
       String? description,
       TimerGroupOptions? options,
       List<Timer>? timers,
-      String? totalTime});
+      int? totalTime});
 
   @override
   $TimerGroupOptionsCopyWith<$Res>? get options;
@@ -168,7 +168,7 @@ class __$$_TimerGroupCopyWithImpl<$Res> extends _$TimerGroupCopyWithImpl<$Res>
       totalTime: totalTime == freezed
           ? _value.totalTime
           : totalTime // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ));
   }
 }
@@ -207,7 +207,7 @@ class _$_TimerGroup extends _TimerGroup {
   }
 
   @override
-  final String? totalTime;
+  final int? totalTime;
 
   @override
   String toString() {
@@ -259,7 +259,7 @@ abstract class _TimerGroup extends TimerGroup {
       final String? description,
       final TimerGroupOptions? options,
       final List<Timer>? timers,
-      final String? totalTime}) = _$_TimerGroup;
+      final int? totalTime}) = _$_TimerGroup;
   _TimerGroup._() : super._();
 
   factory _TimerGroup.fromJson(Map<String, dynamic> json) =
@@ -276,7 +276,7 @@ abstract class _TimerGroup extends TimerGroup {
   @override
   List<Timer>? get timers;
   @override
-  String? get totalTime;
+  int? get totalTime;
   @override
   @JsonKey(ignore: true)
   _$$_TimerGroupCopyWith<_$_TimerGroup> get copyWith =>

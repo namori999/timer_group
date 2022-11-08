@@ -38,10 +38,10 @@ String secondToMinute(int value) {
   return result;
 }
 
-String getFormattedTime(TimerGroupOptions options,String totalTime) {
+String getFormattedTime(TimerGroupOptions options,int time) {
   if (options.timeFormat == TimeFormat.minuteSecond) {
-    return secondToMinute(int.parse(totalTime));
+    return secondToMinute(time);
   } else {
-    return secondToHour(int.parse(totalTime));
+    return secondToHour(time);
   }
 }

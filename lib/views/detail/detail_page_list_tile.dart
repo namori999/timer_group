@@ -92,7 +92,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                     width: 16,
                   ),
                   Text(
-                    getFormattedTime(options, timer.time.toString()),
+                    getFormattedTime(options, timer.time),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

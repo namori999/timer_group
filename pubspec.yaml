@@ -52,6 +52,8 @@ dependencies:
   soundpool: ^2.3.0
   flutter_launcher_icons: ^0.10.0
   flutter_slidable: ^2.0.0
+  custom_timer: ^0.1.2
+  slide_countdown: ^0.3.4
 
 dev_dependencies:
   flutter_test:

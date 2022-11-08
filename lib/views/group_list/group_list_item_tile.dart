@@ -19,7 +19,7 @@ class GroupListItemTile extends ConsumerStatefulWidget {
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
   final List<Timer> timers;
-  final String totalTime;
+  final int totalTime;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -33,7 +33,7 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
 
   List<Timer> get timers => widget.timers;
 
-  String get totalTime => widget.totalTime;
+  int get totalTime => widget.totalTime;
 
   String totalTimeText = '';
   String format = '分秒表示';

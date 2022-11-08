@@ -8,7 +8,6 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
-import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 
@@ -19,7 +18,7 @@ class GroupListItem extends ConsumerStatefulWidget {
       : super(key: key);
   final TimerGroup timerGroup;
   TimerGroupOptions options;
-  String totalTime;
+  int totalTime;
   List<Timer> timers;
   int index;
 
@@ -30,7 +29,7 @@ class GroupListItem extends ConsumerStatefulWidget {
 class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
   TimerGroupOptions get options => widget.options;
-  String get totalTime => widget.totalTime;
+  int get totalTime => widget.totalTime;
   List<Timer> get timers => widget.timers;
 
   int get index => widget.index;

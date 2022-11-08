@@ -17,7 +17,7 @@ _$_TimerGroup _$$_TimerGroupFromJson(Map<String, dynamic> json) =>
       timers: (json['timers'] as List<dynamic>?)
           ?.map((e) => Timer.fromJson(e as Map<String, dynamic>))
           .toList(),
-      totalTime: json['totalTime'] as String?,
+      totalTime: json['totalTime'] as int?,
     );
 
 Map<String, dynamic> _$$_TimerGroupToJson(_$_TimerGroup instance) =>

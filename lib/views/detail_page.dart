@@ -3,14 +3,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/views/configure/theme.dart';
+import 'package:timer_group/views/count_down_page.dart';
 import 'detail/detail_page_body.dart';
 
 class DetailPage extends ConsumerWidget {
   static Route<DetailPage> route({
     required TimerGroup timerGroup,
     required TimerGroupOptions options,
-    required String totalTime,
+    required int totalTime,
     required List<Timer> timers,
   }) {
     return MaterialPageRoute<DetailPage>(
@@ -34,11 +36,14 @@ class DetailPage extends ConsumerWidget {
 
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
-  final String totalTime;
+  final int totalTime;
   final List<Timer> timers;
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final timerProvider = ref.watch(timerRepositoryProvider);
+
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: CustomScrollView(
@@ -69,7 +74,18 @@ class DetailPage extends ConsumerWidget {
         ],
       ),
       floatingActionButton: MaterialButton(
-        onPressed: () {},
+        onPressed: () async {
+          final totalTimeSecond = await timerProvider.getTotal(timerGroup.id!);
+
+          Navigator.of(context).push(
+            CountDownPage.route(
+              timerGroup: timerGroup,
+              options: options,
+              timers: timers,
+              totalTimeSecond: totalTimeSecond as int,
+            ),
+          );
+        },
         shape: const StadiumBorder(
             side: BorderSide(color: Colors.white, width: 4)),
         color: Themes.themeColor.shade900.withOpacity(0.7),

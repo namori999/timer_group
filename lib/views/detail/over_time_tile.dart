@@ -99,7 +99,7 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                     ],
                   ),
                   Text(
-                    getFormattedTime(options, timer.time.toString()),
+                    getFormattedTime(options, timer.time),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

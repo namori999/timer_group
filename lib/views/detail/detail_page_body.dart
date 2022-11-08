@@ -21,7 +21,7 @@ class DetailPageBody extends ConsumerStatefulWidget {
 
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
-  final String totalTime;
+  final int totalTime;
   final List<Timer> timers;
 
   @override
@@ -35,7 +35,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
 
   List<Timer> get timers => widget.timers;
 
-  String get totalTime => widget.totalTime;
+  int get totalTime => widget.totalTime;
   String totalTimeText = '';
   String format = '';
   String timerCount = '';
@@ -58,177 +58,141 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipPath(
-          clipper: CurveClipper(),
-          child: Container(
-            color: Theme.of(context).colorScheme.background,
-            height: topHeight,
-            width: MediaQuery.of(context).size.width,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: 1200,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    title: Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        timerGroup.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: 1200,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    timerGroup.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    subtitle: Container(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      alignment: AlignmentDirectional.topStart,
-                      child: Column(
-                        children: [
-                          tgSubtitleRow(totalTimeText, timerCount, format),
-                          if (timerGroup.description != "" ||
-                              timerGroup.description != null)
-                            Container(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              alignment: AlignmentDirectional.topStart,
-                              child: Column(
-                                children: [
-                                  spacer(),
-                                  Text(
-                                    timerGroup.description.toString(),
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
+                  ),
+                ),
+                subtitle: Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  alignment: AlignmentDirectional.topStart,
+                  child: Column(
+                    children: [
+                      tgSubtitleRow(totalTimeText, timerCount, format),
+                      if (timerGroup.description != "" ||
+                          timerGroup.description != null)
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          alignment: AlignmentDirectional.topStart,
+                          child: Column(
+                            children: [
+                              spacer(),
+                              Text(
+                                timerGroup.description.toString(),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(fontSize: 12),
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          SizedBox(width: 16),
-                          Icon(Icons.notifications_active_outlined, size: 16),
-                          SizedBox(width: 8),
-                          Text(
-                            'タイマー',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12),
-                          )
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('× $timerCount'),
-                          const SizedBox(
-                            width: 16,
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                      height: 300,
-                      child: DetailPageList(
-                        title: timerGroup.title,
-                        timers: timers,
-                        options: options,
-                      )),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  spacer(),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Text(
-                            'オーバータイム',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12),
-                          )
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(options.overTime.toString()),
-                          const SizedBox(
-                            width: 32,
-                          ),
-                        ],
-                      ),
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      SizedBox(width: 16),
+                      Icon(Icons.notifications_active_outlined, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        'タイマー',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12),
+                      )
                     ],
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  if (options.overTime == 'ON')
-                    SizedBox(
-                      height: 300,
-                      child: OverTimeTile(
-                        title: timerGroup.title,
-                        timer: timers.last,
-                        options: options,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('× $timerCount'),
+                      const SizedBox(
+                        width: 16,
                       ),
-                    ),
-                  const Expanded(
-                    child: SizedBox(
-                      height: 16,
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ),
+              const SizedBox(
+                height: 8,
+              ),
+              SizedBox(
+                  height: 300,
+                  child: DetailPageList(
+                    title: timerGroup.title,
+                    timers: timers,
+                    options: options,
+                  )),
+              const SizedBox(
+                height: 16,
+              ),
+              spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Text(
+                        'オーバータイム',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12),
+                      )
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(options.overTime.toString()),
+                      const SizedBox(
+                        width: 32,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              if (options.overTime == 'ON')
+                SizedBox(
+                  height: 300,
+                  child: OverTimeTile(
+                    title: timerGroup.title,
+                    timer: timers.last,
+                    options: options,
+                  ),
+                ),
+              const Expanded(
+                child: SizedBox(
+                  height: 16,
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
-}
-
-class CurveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    int curveHeight = 40; //曲線の高さ
-
-    Path path = Path()
-      ..lineTo(0, size.height - curveHeight) //lineTo()は指定した座標まで直線を引く
-      ..quadraticBezierTo(
-        size.width / 2,
-        size.height + curveHeight,
-        size.width,
-        size.height - curveHeight,
-      )
-//quadraticBezierTo(コントロールポイントのx座標, コントロールポイントのy座標, 最終地点のx座標,最終地点のy座標)
-      ..lineTo(size.width, 0) //直線
-      ..close(); //最初の位置まで戻る
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
