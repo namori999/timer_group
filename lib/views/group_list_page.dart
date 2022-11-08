@@ -25,9 +25,11 @@ class GroupListPage extends ConsumerStatefulWidget {
 
 class _GroupListPageState extends ConsumerState<GroupListPage> {
   var isSheetOpen = false;
-
-  Icon floatingButtonIcon = const Icon(Icons.add, color: Themes.grayColor,);
   Color backGroundColor = Colors.white;
+  late Icon floatingButtonIcon = Icon(
+    Icons.add,
+    color: Theme.of(context).primaryColor,
+  );
 
   void showCancelAlert() {
     final addPageBody = GroupAddPageBodyState();
@@ -117,7 +119,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-              backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.6),
+              backgroundColor:
+                  Theme.of(context).backgroundColor.withOpacity(0.6),
               elevation: 0,
               shape: StadiumBorder(
                   side: BorderSide(
@@ -128,9 +131,9 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                   showCancelAlert();
                 } else {
                   setState(() {
-                    floatingButtonIcon = const Icon(
+                    floatingButtonIcon = Icon(
                       Icons.clear,
-                      color: Themes.grayColor,
+                      color: Theme.of(context).primaryColor,
                     );
                     isSheetOpen = true;
                     backGroundColor = Themes.grayColor[700]!;
@@ -145,9 +148,9 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                           return const GroupAddPage();
                         }).closed.whenComplete(() {
                       setState(() {
-                        floatingButtonIcon = const Icon(
+                        floatingButtonIcon = Icon(
                           Icons.add,
-                          color: Themes.grayColor,
+                          color: Theme.of(context).primaryColor,
                         );
                         isSheetOpen = false;
                         backGroundColor = Colors.white;

@@ -19,6 +19,7 @@ class Themes {
       shadowColor: Themes.themeColor.shade800,
       splashColor: Themes.themeColor,
       cardColor: const Color(0xFF5F625F),
+      iconTheme: IconThemeData(color: grayColor[50]),
       textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)));
 
   static const MaterialColor themeColor =

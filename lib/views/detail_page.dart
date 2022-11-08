@@ -39,23 +39,27 @@ class DetailPage extends ConsumerWidget {
   final int totalTime;
   final List<Timer> timers;
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timerProvider = ref.watch(timerRepositoryProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             centerTitle: true,
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: Theme.of(context).backgroundColor,
+            iconTheme: IconThemeData(
+              color: Theme.of(context).primaryColor,
+            ),
             elevation: 0,
             actions: [
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.edit_outlined),
+                icon: const Icon(
+                  Icons.edit_outlined,
+                ),
               )
             ],
           ),
