@@ -6,7 +6,7 @@ import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
-import 'package:timer_group/views/components/dialogs/image_input_dialog.dart';
+import 'package:timer_group/views/components/dialogs/background_input_dialog/image_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 
 import '../configure/theme.dart';

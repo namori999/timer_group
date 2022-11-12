@@ -50,7 +50,7 @@ class GroupListBodyData extends ConsumerWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(right: 8, left: 8),
+      padding: const EdgeInsets.only(right: 16, left: 16,bottom: 72),
       child: timerGroups.when(
         data: (tg) => ListView.builder(
           padding: const EdgeInsets.only(top: 16),
