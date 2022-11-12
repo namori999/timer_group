@@ -1,10 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
-import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'detail/detail_page_body.dart';
 
@@ -77,41 +78,48 @@ class DetailPage extends ConsumerWidget {
           ),
         ],
       ),
-      floatingActionButton: MaterialButton(
-        onPressed: () async {
-          final totalTimeSecond = await timerProvider.getTotal(timerGroup.id!);
-
-          Navigator.of(context).push(
-            CountDownPage.route(
-              timerGroup: timerGroup,
-              options: options,
-              timers: timers,
-              totalTimeSecond: totalTimeSecond as int,
+      floatingActionButton: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+          child: MaterialButton(
+            onPressed: () async {
+              final totalTimeSecond =
+                  await timerProvider.getTotal(timerGroup.id!);
+              
+              Navigator.of(context).push(
+                CountDownPage.route(
+                  timerGroup: timerGroup,
+                  options: options,
+                  timers: timers,
+                  totalTimeSecond: totalTimeSecond,
+                ),
+              );
+            },
+            color: Theme.of(context).backgroundColor.withOpacity(0.9),
+            shape: StadiumBorder(
+                side: BorderSide(
+                    color: Theme.of(context).primaryColor, width: 4)),
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.play_arrow_rounded,
+                    color: Theme.of(context).primaryColor,
+                    size: 32,
+                  ),
+                  Text(
+                    'スタート',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-        shape: const StadiumBorder(
-            side: BorderSide(color: Colors.white, width: 4)),
-        color: Themes.themeColor.shade900.withOpacity(0.7),
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(
-                Icons.play_arrow_rounded,
-                color: Colors.white,
-                size: 32,
-              ),
-              Text(
-                'スタート',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 12),
-              ),
-            ],
           ),
         ),
       ),

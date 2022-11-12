@@ -1,14 +1,14 @@
+import 'dart:core';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stream_duration/stream_duration.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:slide_countdown/slide_countdown.dart';
+import 'package:stream_duration/stream_duration.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 
 class CountDownPage extends ConsumerStatefulWidget {
   static Route<CountDownPage> route({
@@ -52,26 +52,37 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   TimerGroupOptions get options => widget.options;
 
-  int totalTime = 0;
-  int timerIndex = 0;
+  int get totalTime => widget.totalTimeSecond;
   late Duration remainingTime;
-  late StreamDuration streamDuration;
+  Duration duration = const Duration(seconds: 0);
+  late Image backGroundImage = Image.asset(timers[currentIndex].imagePath);
 
-  @override
-  void initState() {
-    timerIndex = timerIndex;
-    streamDuration = StreamDuration(
-      Duration(seconds: timers[0].time),
-    );
+  int currentIndex = 0;
+  late var streamDuration = (StreamDuration(
+    Duration(seconds: timers[currentIndex].time),
+    onDone: () {
+      nextDuration();
+    },
+  ));
 
-    if (mounted) {
-      Future(() async {
-        final timerProvider = ref.watch(timerRepositoryProvider);
-        totalTime = await timerProvider.getTotal(timerGroup.id!);
-      });
+  void nextDuration() {
+    if (currentIndex < timers.length - 1) {
+      currentIndex++;
+      streamDuration = StreamDuration(
+        Duration(seconds: timers[currentIndex].time),
+        onDone: () {
+          nextDuration();
+        },
+      );
+    } else {
+      print('All Done');
+      Navigator.pop(context);
     }
-    super.initState();
+    setState(() {
+      backGroundImage = Image.asset(timers[currentIndex].imagePath);
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +96,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
             child: FittedBox(
               fit: BoxFit.cover,
               child: Image.asset(
-                  'assets/images/${timers[timerIndex].imagePath}.jpg'),
+                  'assets/images/${timers[currentIndex].imagePath}.jpg'),
             ),
           ),
           Center(
@@ -103,6 +114,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const SizedBox(height: 16),
                           const Icon(
                             Icons.alarm,
                             color: Colors.white,
@@ -139,7 +151,8 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                           ),
                           const SizedBox(height: 16),
                           SlideCountdown(
-                            duration: streamDuration.duration,
+                            key: UniqueKey(),
+                            duration: const Duration(seconds: 10),
                             streamDuration: streamDuration,
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0),
@@ -150,14 +163,6 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                               decoration: TextDecoration.none,
                               fontSize: 24,
                             ),
-                            onDone: () {
-                              timerIndex++;
-                              streamDuration.add(
-                                Duration(seconds: timers[timerIndex].time),
-                              );
-                              streamDuration.play();
-                              setState(() {});
-                            },
                           ),
                         ],
                       )),

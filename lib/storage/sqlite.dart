@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS timers (
     var result = await db
         .rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
     int? value = result[0]["SUM(time)"] as int;
+    value.toStringAsFixed(2);
     return value;
   }
 }

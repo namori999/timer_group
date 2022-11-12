@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_group/views/settings/settings_body.dart';
 
 class SettingsPage extends StatelessWidget {
   static Route<SettingsPage> route() {
@@ -38,7 +39,7 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: null, //const SettingsBody(),
+      body: const SettingsBody(),
       backgroundColor: Colors.white,
     );
   }

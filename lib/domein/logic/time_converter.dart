@@ -37,7 +37,7 @@ String secondToMinute(int value) {
     return "$value秒";
   } else {
     double m = value / 60.0;
-    String result = "$m分";
+    String result = "${double.parse(m.toStringAsFixed(1))}分";
     return result;
   }
 }
