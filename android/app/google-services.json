@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "707190494312",
+    "project_id": "sample-image-174ec",
+    "storage_bucket": "sample-image-174ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707190494312:android:282b89b1385ff845f4d7dd",
+        "android_client_info": {
+          "package_name": "com.giorno.timer_group"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707190494312-59brro6noh2ch5guj9k770o6vvhlo4q7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc1wwX5UVFX8D7UDdaQGIBKSYg5N5f-u8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707190494312-59brro6noh2ch5guj9k770o6vvhlo4q7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707190494312-a015qc4q9q3vpo7d41cie7e56kcnf6qu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giorno.timerGroup"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

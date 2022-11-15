@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/image_input_dialog.dart';
@@ -91,7 +92,7 @@ class GroupAddPageListTileState
   }
 
   Future<Timer?> addTimer() async {
-    if(mounted) {
+    if (mounted) {
       final repo = ref.watch(timerGroupRepositoryProvider);
       final id = await repo.getId(title);
       var timer = Timer(
@@ -281,11 +282,13 @@ class GroupAddPageListTileState
                         ),
                       ),
                       onPressed: () async {
+                        final List<Image> imageList =
+                            await FirebaseMethods().getImages();
                         BackGroundImages result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
-                            return ImageInputDialog();
+                            return ImageInputDialog(imageList);
                           },
                         );
                         setState(() {

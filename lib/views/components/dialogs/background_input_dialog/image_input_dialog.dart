@@ -1,21 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/video_imput_dialog.dart';
 import 'package:timer_group/views/components/toggle_text_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
-class ImageInputDialog extends ConsumerStatefulWidget {
-  ImageInputDialog({Key? key}) : super(key: key);
+class ImageInputDialog extends StatefulWidget {
+  ImageInputDialog(this.imageList, {Key? key}) : super(key: key);
+
+  final List<Image> imageList;
 
   @override
   ImageInputDialogState createState() => ImageInputDialogState();
 }
 
-class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
-  List<BackGroundImages> images = BackGroundImages.values;
-  BackGroundImages selectedImage = BackGroundImages.sample;
+class ImageInputDialogState extends State<ImageInputDialog> {
+  //List<BackGroundImages> images = BackGroundImages.values;
+  List<Image> get images => widget.imageList;
+  late Image selectedImage = Image.asset('sample.jpg');
   bool isImageSelected = true;
 
   Widget spacer() {
@@ -47,43 +48,76 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
     setState(() {});
   }
 
+  void showImageDialog(Image imageWidget) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: InteractiveViewer(
+          child: Dialog(
+            child: imageWidget,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget content() {
     if (isImageSelected) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: ListView.separated(
-            itemCount: images.length,
-            controller: ScrollController(),
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: ((context, index) => RadioListTile(
-                  title: Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(
-                              'assets/images/${images[index].name}.jpg'),
-                        ),
+          itemCount: images.length,
+          controller: ScrollController(),
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
+          itemBuilder: ((context, index) => RadioListTile(
+                title: Card(
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          showImageDialog(images[index]);
+                        },
+                        icon: const Icon(Icons.center_focus_weak_outlined),
                       ),
-                      height: 50,
-                      width: 400,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          images[index].name,
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.0),
-                            fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: () {
+                          showImageDialog(images[index]);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: images[index].image,
+                              /*
+                            image: AssetImage(
+                                'assets/images/${images[index].name}.jpg'),
+                             */
+                            ),
+                          ),
+                          height: 50,
+                          width: 400,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              images[index].semanticLabel.toString(),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  value: images[index],
-                  groupValue: selectedImage,
-                  onChanged: (value) => _onRadioSelected(value),
-                ))),
+                ),
+                value: images[index],
+                groupValue: selectedImage,
+                onChanged: (value) => _onRadioSelected(value),
+              )),
+        ),
       );
     } else {
       return VideoImputDialog();
@@ -106,7 +140,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
             ),
           ),
           onPressed: () {
-            Navigator.pop<BackGroundImages>(context, selectedImage);
+            Navigator.pop<Image>(context, selectedImage);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
