@@ -7,6 +7,7 @@ import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/views/count_down_page.dart';
+import 'package:timer_group/views/group_edit_page.dart';
 import 'detail/detail_page_body.dart';
 
 class DetailPage extends ConsumerWidget {
@@ -57,7 +58,16 @@ class DetailPage extends ConsumerWidget {
             elevation: 0,
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      GroupEditPage.route(
+                        timerGroup: timerGroup,
+                        options: options,
+                        timers: timers,
+                        totalTime: totalTime,
+                      ));
+                },
                 icon: const Icon(
                   Icons.edit_outlined,
                 ),
@@ -85,7 +95,7 @@ class DetailPage extends ConsumerWidget {
             onPressed: () async {
               final totalTimeSecond =
                   await timerProvider.getTotal(timerGroup.id!);
-              
+
               Navigator.of(context).push(
                 CountDownPage.route(
                   timerGroup: timerGroup,

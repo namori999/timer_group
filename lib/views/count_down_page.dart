@@ -83,7 +83,6 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -152,7 +151,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                           const SizedBox(height: 16),
                           SlideCountdown(
                             key: UniqueKey(),
-                            duration: const Duration(seconds: 10),
+                            duration: streamDuration.duration,
                             streamDuration: streamDuration,
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0),
