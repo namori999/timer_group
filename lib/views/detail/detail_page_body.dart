@@ -6,7 +6,6 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/views/components/separoter.dart';
-import 'package:timer_group/views/components/tg_subtitle_row.dart';
 import 'package:timer_group/views/detail/detail_page_list.dart';
 import 'package:timer_group/views/detail/over_time_tile.dart';
 
@@ -59,58 +58,61 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: SingleChildScrollView(
         child: SizedBox(
           height: 1200,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    timerGroup.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+               ListTile(
+                title: Column(
+                  children: [
+                    Text(
+                      timerGroup.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ),
-                subtitle: Container(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  alignment: AlignmentDirectional.topStart,
-                  child: Column(
-                    children: [
-                      tgSubtitleRow(totalTimeText, timerCount, format),
-                      if (timerGroup.description != "" ||
-                          timerGroup.description != null)
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          alignment: AlignmentDirectional.topStart,
-                          child: Column(
-                            children: [
-                              spacer(),
-                              Text(
-                                timerGroup.description.toString(),
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
+                    if (timerGroup.description != "" ||
+                        timerGroup.description != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          timerGroup.description.toString(),
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontSize: 12),
                         ),
-                    ],
-                  ),
+                      ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                  ],
                 ),
               ),
+
+              spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "表示単位",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+
+                  Text(getFormatName(options)),
+
+
+                ],
+              ),
+              spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: const [
-                      SizedBox(width: 16),
                       Icon(Icons.notifications_active_outlined, size: 16),
                       SizedBox(width: 8),
                       Text(
@@ -120,15 +122,10 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                       )
                     ],
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('× $timerCount'),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                    ],
-                  ),
+
+                  Text('× $timerCount'),
+
+
                 ],
               ),
               const SizedBox(
@@ -148,28 +145,11 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        'オーバータイム',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12),
-                      )
-                    ],
+                  const Text(
+                    'オーバータイム',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(options.overTime.toString()),
-                      const SizedBox(
-                        width: 32,
-                      ),
-                    ],
-                  ),
+                  Text(options.overTime.toString()),
                 ],
               ),
               const SizedBox(

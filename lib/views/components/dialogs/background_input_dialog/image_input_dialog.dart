@@ -140,7 +140,11 @@ class ImageInputDialogState extends State<ImageInputDialog> {
             ),
           ),
           onPressed: () {
-            Navigator.pop<Image>(context, selectedImage);
+            Navigator.pop<Image>(
+                context,
+                Image(
+                    image: selectedImage.image,
+                    semanticLabel: selectedImage.semanticLabel));
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -182,7 +186,7 @@ class ImageInputDialogState extends State<ImageInputDialog> {
                   icon: const Icon(Icons.close_rounded)),
             ],
           ),
-          Divider(
+          const Divider(
             height: 16,
           ),
           ToggleTextButton(

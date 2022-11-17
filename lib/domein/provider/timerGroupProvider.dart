@@ -116,12 +116,12 @@ class TimerGroupRepository {
 
   Future<void> update(TimerGroupInfo info) async {
     await _db.insert(info);
-    ref.refresh(savedTimerGroupProvider);
+    //ref.refresh(savedTimerGroupProvider);
   }
 
   Future<int> addNewTimerGroup(TimerGroupInfo info) async {
     final int = await _db.insert(info);
-    ref.refresh(savedTimerGroupProvider);
+    //ref.refresh(savedTimerGroupProvider);
     return int;
   }
 
@@ -129,7 +129,7 @@ class TimerGroupRepository {
     await _db.delete(id);
     await _optionsDb.delete(id);
     await _timersDb.delete(id);
-    ref.refresh(savedTimerGroupProvider);
+    //ref.refresh(savedTimerGroupProvider);
   }
 }
 
@@ -156,25 +156,25 @@ class TimerGroupOptionsRepository {
 
   Future<void> update(TimerGroupOptions timerGroupOptions) async {
     await _db.update(timerGroupOptions);
-    ref.refresh(savedTimerGroupProvider);
+    //ref.refresh(savedTimerGroupProvider);
   }
 
   Future<void> addOption(TimerGroupOptions timerGroupOptions) async {
     await _db.insert(timerGroupOptions);
-    ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
+    //ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
 
   Future<void> removeOption(int id) async {
     await _db.delete(id);
-    ref.refresh(timerGroupOptionsProvider(id));
+    //ref.refresh(timerGroupOptionsProvider(id));
   }
 }
 
 String getFormatName(TimerGroupOptions options) {
   if (options.timeFormat == TimeFormat.minuteSecond) {
-    return '分秒表示';
+    return '分秒';
   } else {
-    return '時分表示';
+    return '時分';
   }
 }
 
@@ -190,29 +190,29 @@ class timerRepository {
 
   Future<void> update(Timer timer) async {
     await _db.insert(timer);
-    ref.refresh(timerRepositoryProvider);
+    //ref.refresh(timerRepositoryProvider);
   }
 
   Future<void> addTimers(List<Timer> timers) async {
     for (Timer t in timers) {
       await _db.insert(t);
     }
-    ref.refresh(timerRepositoryProvider);
+    //ref.refresh(timerRepositoryProvider);
   }
 
   Future<void> addTimer(Timer timer) async {
     await _db.insert(timer);
-    ref.refresh(timerRepositoryProvider);
+    //ref.refresh(timerRepositoryProvider);
   }
 
   Future<void> removeTimer(int id) async {
     await _db.delete(id);
-    ref.refresh(timerRepositoryProvider);
+    //ref.refresh(timerRepositoryProvider);
   }
 
   Future<void> removeAllTimers(int groupId) async {
     await _db.deleteAllTimers(groupId);
-    ref.refresh(timerRepositoryProvider);
+    //ref.refresh(timerRepositoryProvider);
   }
 
   Future<int> getTotal(int id) async => await _db.getTotal(id);

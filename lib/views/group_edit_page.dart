@@ -1,13 +1,10 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
-import 'package:timer_group/views/count_down_page.dart';
-import 'detail/detail_page_body.dart';
+import 'group_edit/group_edit body.dart';
 
 class GroupEditPage extends ConsumerWidget {
   static Route<GroupEditPage> route({
@@ -42,8 +39,6 @@ class GroupEditPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerProvider = ref.watch(timerRepositoryProvider);
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(
@@ -65,11 +60,15 @@ class GroupEditPage extends ConsumerWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                DetailPageBody(
-                  timerGroup: timerGroup,
+                GroupEditPageBody(
+                  timerGroup: TimerGroup(
+                    id: timerGroup.id,
+                title: timerGroup.title,
+                  description: timerGroup.description,
                   options: options,
                   totalTime: totalTime,
                   timers: timers,
+                ),
                 ),
               ],
             ),

@@ -65,6 +65,9 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
 
   @override
   Widget build(BuildContext context) {
+    String format(Duration duration) =>
+        '$duration'.split('.')[0].padLeft(8, '0');
+
     return Card(
       margin: const EdgeInsets.all(8),
       color: Theme.of(context).cardColor,
@@ -92,7 +95,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                     width: 16,
                   ),
                   Text(
-                    getFormattedTime(options, timer.time),
+                    format(Duration(seconds: timer.time)),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

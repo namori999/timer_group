@@ -44,7 +44,7 @@ class GroupAddPageListTileState
   static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
   static String bgmTitle = '';
-  BackGroundImages image = BackGroundImages.sample;
+  Image image = Image.asset('sample.jpg');
   static String imageTitle = BackGroundImages.sample.name;
   static String notification = 'ON';
   bool isNotifyEnabled = true;
@@ -284,7 +284,7 @@ class GroupAddPageListTileState
                       onPressed: () async {
                         final List<Image> imageList =
                             await FirebaseMethods().getImages();
-                        BackGroundImages result = await showDialog(
+                        Image result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
@@ -293,7 +293,7 @@ class GroupAddPageListTileState
                         );
                         setState(() {
                           image = result;
-                          imageTitle = result.name;
+                          imageTitle = result.semanticLabel!;
                         });
                       },
                       child: Text(''),
