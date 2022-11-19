@@ -69,52 +69,46 @@ class ImageInputDialogState extends State<ImageInputDialog> {
           itemCount: images.length,
           controller: ScrollController(),
           separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: ((context, index) => RadioListTile(
-                title: Card(
-                  child: Stack(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          showImageDialog(images[index]);
-                        },
-                        icon: const Icon(Icons.center_focus_weak_outlined),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          showImageDialog(images[index]);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: images[index].image,
-                              /*
-                            image: AssetImage(
-                                'assets/images/${images[index].name}.jpg'),
-                             */
-                            ),
+          itemBuilder: ((context, index) => Stack(
+                alignment: Alignment.center,
+                children: [
+                  RadioListTile(
+                    title: Card(
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: images[index].image,
                           ),
-                          height: 50,
-                          width: 400,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                              images[index].semanticLabel.toString(),
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.0),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                        ),
+                        height: 50,
+                        width: 400,
+                        child: Text(
+                          images[index].semanticLabel.toString(),
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.0),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ],
+                    ),
+                    value: images[index],
+                    groupValue: selectedImage,
+                    onChanged: (value) => _onRadioSelected(value),
                   ),
-                ),
-                value: images[index],
-                groupValue: selectedImage,
-                onChanged: (value) => _onRadioSelected(value),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: MaterialButton(
+                      onPressed: () {
+                        showImageDialog(images[index]);
+                      },
+                      shape: const CircleBorder(),
+                      color: Theme.of(context).cardColor.withOpacity(0.5),
+                      child: const Icon(Icons.center_focus_weak_outlined),
+                    ),
+                  ),
+                ],
               )),
         ),
       );
