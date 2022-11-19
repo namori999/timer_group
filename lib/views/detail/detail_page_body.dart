@@ -4,7 +4,6 @@ import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/detail/detail_page_list.dart';
 import 'package:timer_group/views/detail/over_time_tile.dart';
@@ -12,16 +11,10 @@ import 'package:timer_group/views/detail/over_time_tile.dart';
 class DetailPageBody extends ConsumerStatefulWidget {
   DetailPageBody({
     required this.timerGroup,
-    required this.options,
-    required this.totalTime,
-    required this.timers,
     Key? key,
   }) : super(key: key);
 
-  final TimerGroup timerGroup;
-  final TimerGroupOptions options;
-  final int totalTime;
-  final List<Timer> timers;
+  TimerGroup timerGroup;
 
   @override
   ConsumerState createState() => DetailPageBodyState();
@@ -30,28 +23,23 @@ class DetailPageBody extends ConsumerStatefulWidget {
 class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   TimerGroup get timerGroup => widget.timerGroup;
 
-  TimerGroupOptions get options => widget.options;
+  List<Timer> timers = [];
 
-  List<Timer> get timers => widget.timers;
-
-  int get totalTime => widget.totalTime;
   String totalTimeText = '';
   String format = '';
   String timerCount = '';
 
-  double topHeight = 0;
-
   @override
   void initState() {
-    totalTimeText = getFormattedTime(options, totalTime);
-    format = getFormatName(options);
-    if (options.overTime == 'ON') {
+    totalTimeText =
+        getFormattedTime(timerGroup.options!, timerGroup.totalTime!);
+    format = getFormatName(timerGroup.options!);
+    timers = timerGroup.timers!;
+    if (timerGroup.options!.overTime == 'ON') {
       timerCount = (timers.length - 1).toString();
     } else {
       timerCount = timers.length.toString();
     }
-    topHeight = timerGroup.description != null ? 180 : 100;
-
     super.initState();
   }
 
@@ -65,7 +53,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-               ListTile(
+              ListTile(
                 title: Column(
                   children: [
                     Text(
@@ -91,7 +79,6 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                   ],
                 ),
               ),
-
               spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,10 +87,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                     "表示単位",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-
-                  Text(getFormatName(options)),
-
-
+                  Text(getFormatName(timerGroup.options!)),
                 ],
               ),
               spacer(),
@@ -122,10 +106,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                       )
                     ],
                   ),
-
                   Text('× $timerCount'),
-
-
                 ],
               ),
               const SizedBox(
@@ -136,7 +117,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                   child: DetailPageList(
                     title: timerGroup.title,
                     timers: timers,
-                    options: options,
+                    options: timerGroup.options!,
                   )),
               const SizedBox(
                 height: 16,
@@ -149,19 +130,19 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                     'オーバータイム',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  Text(options.overTime.toString()),
+                  Text(timerGroup.options!.overTime.toString()),
                 ],
               ),
               const SizedBox(
                 height: 8,
               ),
-              if (options.overTime == 'ON')
+              if (timerGroup.options!.overTime == 'ON')
                 SizedBox(
                   height: 300,
                   child: OverTimeTile(
                     title: timerGroup.title,
                     timer: timers.last,
-                    options: options,
+                    options: timerGroup.options!,
                   ),
                 ),
               const Expanded(

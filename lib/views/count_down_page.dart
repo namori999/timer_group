@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,7 +56,9 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
   int get totalTime => widget.totalTimeSecond;
   late Duration remainingTime;
   Duration duration = const Duration(seconds: 0);
-  late Image backGroundImage = Image.asset(timers[currentIndex].imagePath);
+  late Image backGroundImage = Image(
+    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+  );
 
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
@@ -79,7 +82,9 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
       Navigator.pop(context);
     }
     setState(() {
-      backGroundImage = Image.asset(timers[currentIndex].imagePath);
+      backGroundImage = Image(
+        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+      );
     });
   }
 
@@ -94,8 +99,10 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
             width: double.infinity,
             child: FittedBox(
               fit: BoxFit.cover,
-              child: Image.asset(
-                  'assets/images/${timers[currentIndex].imagePath}.jpg'),
+              child: Image(
+                image:
+                    CachedNetworkImageProvider(timers[currentIndex].imagePath),
+              ),
             ),
           ),
           Center(

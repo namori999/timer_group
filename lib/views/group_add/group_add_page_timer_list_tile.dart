@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -160,7 +161,7 @@ class GroupAddPageListTileState
                         ],
                       ),
                       onPressed: () async {
-                        String result = await showDialog(
+                        Duration result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
@@ -169,8 +170,16 @@ class GroupAddPageListTileState
                             );
                           },
                         );
+                        final timerProvider =
+                            ref.watch(timerRepositoryProvider);
+                        timerProvider
+                            .update(timer!.copyWith(time: result.inSeconds));
                         setState(() {
-                          time = result;
+                          time = result
+                              .toString()
+                              .split('.')
+                              .first
+                              .padLeft(8, "0");
                         });
                       }),
                 ],
@@ -269,7 +278,7 @@ class GroupAddPageListTileState
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/$imageTitle.jpg'),
+                        image: CachedNetworkImageProvider(imageTitle),
                         fit: BoxFit.fitWidth,
                       ),
                     ),
@@ -284,16 +293,16 @@ class GroupAddPageListTileState
                       onPressed: () async {
                         final List<Image> imageList =
                             await FirebaseMethods().getImages();
-                        Image result = await showDialog(
+                        String result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
                             return ImageInputDialog(imageList);
                           },
                         );
+                        imageTitle = result;
+
                         setState(() {
-                          image = result;
-                          imageTitle = result.semanticLabel!;
                         });
                       },
                       child: Text(''),

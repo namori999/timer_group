@@ -2,9 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
@@ -12,38 +10,33 @@ import 'detail/detail_page_body.dart';
 
 class DetailPage extends ConsumerWidget {
   static Route<DetailPage> route({
-    required TimerGroup timerGroup,
-    required TimerGroupOptions options,
-    required int totalTime,
-    required List<Timer> timers,
+    required int id
   }) {
     return MaterialPageRoute<DetailPage>(
       settings: const RouteSettings(name: "/detail"),
       builder: (_) => DetailPage(
-        timerGroup: timerGroup,
-        options: options,
-        totalTime: totalTime,
-        timers: timers,
+        id: id,
       ),
     );
   }
 
   const DetailPage({
     Key? key,
-    required this.timerGroup,
-    required this.options,
-    required this.totalTime,
-    required this.timers,
+    required this.id,
   }) : super(key: key);
 
-  final TimerGroup timerGroup;
-  final TimerGroupOptions options;
-  final int totalTime;
-  final List<Timer> timers;
+  final int id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timerProvider = ref.watch(timerRepositoryProvider);
+    final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
+
+    Future<TimerGroup?> getTimerGroup() async{
+      final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
+      final timerGroup = await timerGroupProvider.getTimerGroup(id);
+      return timerGroup;
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -58,14 +51,15 @@ class DetailPage extends ConsumerWidget {
             elevation: 0,
             actions: [
               IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  final timerGroup = await timerGroupProvider.getTimerGroup(id);
                   Navigator.push(
                       context,
                       GroupEditPage.route(
-                        timerGroup: timerGroup,
-                        options: options,
-                        timers: timers,
-                        totalTime: totalTime,
+                        timerGroup: timerGroup!,
+                        options: timerGroup.options!,
+                        timers: timerGroup.timers!,
+                        totalTime: timerGroup.totalTime!,
                       ));
                 },
                 icon: const Icon(
@@ -77,11 +71,15 @@ class DetailPage extends ConsumerWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                DetailPageBody(
-                  timerGroup: timerGroup,
-                  options: options,
-                  totalTime: totalTime,
-                  timers: timers,
+                FutureBuilder(
+                  future: getTimerGroup(),
+                  builder: (BuildContext context, AsyncSnapshot<TimerGroup?> snapshot) {
+                    if (snapshot.hasData) {
+                    return DetailPageBody(timerGroup: snapshot.data!);
+                    } else {
+                    return Text("データが存在しません");
+                    }
+                  },
                 ),
               ],
             ),
@@ -93,14 +91,15 @@ class DetailPage extends ConsumerWidget {
           filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
           child: MaterialButton(
             onPressed: () async {
+              final timerGroup = await timerGroupProvider.getTimerGroup(id);
               final totalTimeSecond =
-                  await timerProvider.getTotal(timerGroup.id!);
+                  await timerProvider.getTotal(id);
 
               Navigator.of(context).push(
                 CountDownPage.route(
-                  timerGroup: timerGroup,
-                  options: options,
-                  timers: timers,
+                  timerGroup: timerGroup!,
+                  options: timerGroup.options!,
+                  timers: timerGroup.timers!,
                   totalTimeSecond: totalTimeSecond,
                 ),
               );

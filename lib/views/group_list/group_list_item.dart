@@ -12,8 +12,8 @@ import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 
 class GroupListItem extends ConsumerStatefulWidget {
-  GroupListItem(
-      this.timerGroup, this.options, this.totalTime, this.timers, this.index,
+  GroupListItem(this.timerGroup, this.options, this.totalTime, this.timers,
+      this.index,
       {Key? key})
       : super(key: key);
   final TimerGroup timerGroup;
@@ -28,8 +28,11 @@ class GroupListItem extends ConsumerStatefulWidget {
 
 class GroupListItemState extends ConsumerState<GroupListItem> {
   TimerGroup get timerGroup => widget.timerGroup;
+
   TimerGroupOptions get options => widget.options;
+
   int get totalTime => widget.totalTime;
+
   List<Timer> get timers => widget.timers;
 
   int get index => widget.index;
@@ -83,8 +86,12 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
         children: [
           SlidableAction(
             onPressed: (_) {},
-            foregroundColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).backgroundColor,
+            foregroundColor: Theme
+                .of(context)
+                .primaryColor,
+            backgroundColor: Theme
+                .of(context)
+                .backgroundColor,
             icon: Icons.edit_outlined,
             label: '編集',
           ),
@@ -92,8 +99,12 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             onPressed: (_) {
               removeGroup();
             },
-            foregroundColor: Theme.of(context).errorColor,
-            backgroundColor: Theme.of(context).backgroundColor,
+            foregroundColor: Theme
+                .of(context)
+                .errorColor,
+            backgroundColor: Theme
+                .of(context)
+                .backgroundColor,
             icon: Icons.delete_outline,
             label: '削除',
           ),
@@ -101,7 +112,9 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       ),
       child: Card(
         elevation: 3,
-        shadowColor: Theme.of(context).shadowColor,
+        shadowColor: Theme
+            .of(context)
+            .shadowColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -109,10 +122,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
           onTap: () {
             Navigator.of(context).push(
               DetailPage.route(
-                timerGroup: timerGroup,
-                options: options,
-                timers: timers,
-                totalTime: totalTime,
+                  id: timerGroup.id!,
               ),
             );
           },

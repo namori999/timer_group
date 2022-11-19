@@ -14,7 +14,6 @@ class ImageInputDialog extends StatefulWidget {
 }
 
 class ImageInputDialogState extends State<ImageInputDialog> {
-  //List<BackGroundImages> images = BackGroundImages.values;
   List<Image> get images => widget.imageList;
   late Image selectedImage = Image.asset('sample.jpg');
   bool isImageSelected = true;
@@ -140,11 +139,7 @@ class ImageInputDialogState extends State<ImageInputDialog> {
             ),
           ),
           onPressed: () {
-            Navigator.pop<Image>(
-                context,
-                Image(
-                    image: selectedImage.image,
-                    semanticLabel: selectedImage.semanticLabel));
+            Navigator.pop<String>(context, selectedImage.semanticLabel);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),

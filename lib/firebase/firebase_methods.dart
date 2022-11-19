@@ -17,7 +17,7 @@ class FirebaseMethods {
       imageList.add(
         Image(
             image: CachedNetworkImageProvider(url),
-            semanticLabel: item.fullPath),
+            semanticLabel: url),
       );
     }
     print(imageList);

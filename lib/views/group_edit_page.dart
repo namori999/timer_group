@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
@@ -41,39 +40,35 @@ class GroupEditPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            centerTitle: true,
-            backgroundColor: Theme.of(context).backgroundColor,
-            iconTheme: IconThemeData(
-              color: Theme.of(context).primaryColor,
-            ),
-            elevation: 0,
-            actions: [
-              TextButton(
-                onPressed: () {},
-                child: Text('完了'),
-              )
-            ],
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                GroupEditPageBody(
-                  timerGroup: TimerGroup(
-                    id: timerGroup.id,
-                title: timerGroup.title,
-                  description: timerGroup.description,
-                  options: options,
-                  totalTime: totalTime,
-                  timers: timers,
-                ),
-                ),
-              ],
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
+        ),
+        elevation: 0,
+        actions: [
+          MaterialButton(
+            onPressed: () {},
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: const Text(
+                '完了',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ],
+      ),
+      body: GroupEditPageBody(
+        timerGroup: TimerGroup(
+          id: timerGroup.id,
+          title: timerGroup.title,
+          description: timerGroup.description,
+          options: options,
+          totalTime: totalTime,
+          timers: timers,
+        ),
       ),
     );
   }

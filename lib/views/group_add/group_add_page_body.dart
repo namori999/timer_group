@@ -28,13 +28,11 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
   final children = <Widget>[];
   bool isEmpty = false;
   bool onSecondStep = false;
+  var groupId = 0;
 
   @override
   void initState() {
     super.initState();
-    children.add(
-      nextStepButton(),
-    );
     titleController.addListener(() {
       if (titleController.text.isEmpty) {
         isEmpty = true;
@@ -43,6 +41,9 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
       }
       setState(() {});
     });
+    children.add(
+      nextStepButton(),
+    );
   }
 
   @override
@@ -56,9 +57,9 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     if (onSecondStep) {
       final repo = ref.watch(timerGroupRepositoryProvider);
       final timerProvider = ref.watch(timerRepositoryProvider);
-      final id = await repo.getId(titleText);
-      await repo.removeTimerGroup(id);
-      await timerProvider.removeAllTimers(id);
+      final groupId = await repo.getId(titleText);
+      await repo.removeTimerGroup(groupId);
+      await timerProvider.removeAllTimers(groupId);
     }
   }
 
@@ -80,20 +81,23 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           return;
         }
 
-        setState(() {
-          children.clear();
-          children.add(GroupAddPageSecond(
-            title: title,
-          ));
-        });
-
         onSecondStep = true;
         final provider = ref.watch(savedTimerGroupProvider.notifier);
         provider.addNewTimerGroup(
           timerGroupInfo:
-              TimerGroupInfo(title: title, description: description),
+          TimerGroupInfo(title: title, description: description),
         );
 
+        final repo = ref.watch(timerGroupRepositoryProvider);
+        groupId = await repo.getId(titleText);
+
+        setState(() {
+          children.clear();
+          children.add(GroupAddPageSecond(
+            title: title,
+            groupId: groupId,
+          ));
+        });
       },
       iconSize: 80,
       icon: const Icon(

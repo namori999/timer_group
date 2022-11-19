@@ -7,9 +7,14 @@ import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
 
 class GroupAddPageTimerList extends ConsumerStatefulWidget {
-  GroupAddPageTimerList({required this.title, Key? key}) : super(key: key);
+  GroupAddPageTimerList({
+    required this.title,
+    this.timers,
+    Key? key,
+  }) : super(key: key);
 
   String title;
+  List<Timer>? timers;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -22,6 +27,8 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   get title => widget.title;
 
+  get timers => widget.timers;
+
   int addIndex() {
     ++index;
     return index;
@@ -29,8 +36,21 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   @override
   void initState() {
-    index = -1;
-    addIndex();
+    if (timers != null) {
+      index = timers.length;
+      for (Timer t in timers) {
+        if (t.number != 0) {
+          timerList.add(GroupAddPageTimerListTile(
+            index: t.number,
+            title: title,
+            timer: t,
+          ));
+        }
+      }
+    } else {
+      index = -1;
+      addIndex();
+    }
     super.initState();
   }
 

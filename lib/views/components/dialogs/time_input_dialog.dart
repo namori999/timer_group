@@ -58,9 +58,7 @@ class TimeInputDialogState extends ConsumerState<TimeInputDialog> {
               ),
             ),
             onPressed: () {
-              final result =
-                  initialTimer.toString().split('.').first.padLeft(8, "0");
-              Navigator.pop<String>(context, result);
+              Navigator.pop<Duration>(context, initialTimer);
             },
             child: Padding(
               padding: const EdgeInsets.all(8),

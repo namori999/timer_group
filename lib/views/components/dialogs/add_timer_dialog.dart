@@ -60,13 +60,16 @@ class AddTimerDialog extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Text(
-                  'タイマーを追加',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    'タイマーを追加',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
