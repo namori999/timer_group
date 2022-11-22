@@ -8,30 +8,21 @@ import 'package:timer_group/views/group_list/group_list_item.dart';
 class GroupListBodyData extends ConsumerWidget {
   GroupListBodyData({Key? key}) : super(key: key);
 
-  TimerGroup? timerGroup;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerGroups = ref.watch(savedTimerGroupProvider);
-
-    Future<TimerGroup> getTimerGroup(int index) async {
-      final id = timerGroups.value![index].id!;
-      final options =
-          await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
-      final repo = ref.read(timerRepositoryProvider);
-      final timers = await repo.getTimers(id);
-      final totalTime = await repo.getTotal(id);
-
-      return TimerGroup(
-        title: timerGroups.value![index].title,
-        description: timerGroups.value![index].description,
-        options: options,
-        timers: timers,
-        totalTime: totalTime,
-      );
+    Future<List<TimerGroup>?> getTimerGroupsList() async {
+      final timerGroups =
+          await ref.watch(timerGroupRepositoryProvider).getAll();
+      return timerGroups;
     }
 
-    if (timerGroups.value == null || timerGroups.value!.isEmpty) {
+    Future<TimerGroup> getTimerGroup(int id) async {
+      final timerGroup =
+          await ref.watch(timerGroupRepositoryProvider).getTimerGroup(id);
+      return timerGroup!;
+    }
+
+    Widget emptyLayout() {
       return Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -51,42 +42,47 @@ class GroupListBodyData extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 16, left: 16, bottom: 56),
-      child: timerGroups.when(
-        data: (tg) => ListView.builder(
-          padding: const EdgeInsets.only(top: 16),
-          itemCount: tg.length,
-          itemBuilder: (context, index) {
-            return FutureBuilder(
-              future: getTimerGroup(index),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.data == null) {
-                    return const SizedBox();
-                  } else {
-                    return GroupListItem(
-                      timerGroups.value![index],
-                      snapshot.data.options,
-                      snapshot.data.totalTime,
-                      snapshot.data.timers,
-                      index,
-                    );
-                  }
-                } else {
-                  return const SizedBox();
-                }
+      child: FutureBuilder(
+        future: getTimerGroupsList(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> groups) {
+          if (groups.hasData) {
+            if (groups.data.isEmpty) {
+              return emptyLayout();
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 16),
+              itemCount: groups.data.length,
+              itemBuilder: (context, index) {
+                return FutureBuilder(
+                  future: getTimerGroup(groups.data[index].id!),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
+                    if (tg.hasData) {
+                      return GroupListItem(
+                        tg.data!,
+                        tg.data!.options!,
+                        tg.data!.totalTime!,
+                        tg.data!.timers!,
+                        index,
+                      );
+                    } else if (tg.hasError) {
+                      return const SizedBox();
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                );
               },
             );
-          },
-        ),
-        error: (e, st) => Center(
-          child: ElevatedButton(
-            onPressed: () {},
-            child: const Text('再読み込み'),
-          ),
-        ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
+          } else if (groups.hasError) {
+            return ElevatedButton(
+              onPressed: () {},
+              child: const Text('再読み込み'),
+            );
+          } else {
+            return emptyLayout();
+          }
+        },
       ),
     );
   }
