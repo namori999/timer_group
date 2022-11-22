@@ -82,9 +82,8 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
         }
 
         onSecondStep = true;
-        final provider = ref.watch(savedTimerGroupProvider.notifier);
+        final provider = ref.watch(timerGroupRepositoryProvider);
         provider.addNewTimerGroup(
-          timerGroupInfo:
           TimerGroupInfo(title: title, description: description),
         );
 
@@ -130,6 +129,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           keyboardType: TextInputType.name,
           maxLength: 10,
           onSubmitted: (String value) => titleText = value,
+          onChanged: (String value) => titleText = value,
           textInputAction: TextInputAction.next,
           readOnly: onSecondStep,
           decoration: const InputDecoration(
@@ -151,6 +151,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           keyboardType: TextInputType.name,
           maxLength: 50,
           onSubmitted: (String value) => descriptionText = value,
+          onChanged: (String value) => descriptionText = value,
           readOnly: onSecondStep,
           decoration: const InputDecoration(
             label: Text(

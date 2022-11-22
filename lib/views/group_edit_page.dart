@@ -1,40 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'group_edit/group_edit body.dart';
+import 'group_edit/group_edit_page_data.dart';
 
 class GroupEditPage extends ConsumerWidget {
   static Route<GroupEditPage> route({
-    required TimerGroup timerGroup,
-    required TimerGroupOptions options,
-    required int totalTime,
-    required List<Timer> timers,
+    required timerGroup,
   }) {
     return MaterialPageRoute<GroupEditPage>(
       settings: const RouteSettings(name: "/edit"),
       builder: (_) => GroupEditPage(
         timerGroup: timerGroup,
-        options: options,
-        totalTime: totalTime,
-        timers: timers,
       ),
     );
   }
 
   const GroupEditPage({
-    Key? key,
     required this.timerGroup,
-    required this.options,
-    required this.totalTime,
-    required this.timers,
+    Key? key,
   }) : super(key: key);
 
   final TimerGroup timerGroup;
-  final TimerGroupOptions options;
-  final int totalTime;
-  final List<Timer> timers;
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,16 +47,7 @@ class GroupEditPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: GroupEditPageBody(
-        timerGroup: TimerGroup(
-          id: timerGroup.id,
-          title: timerGroup.title,
-          description: timerGroup.description,
-          options: options,
-          totalTime: totalTime,
-          timers: timers,
-        ),
-      ),
+      body: GroupEditPageData(id: timerGroup.id!,)
     );
   }
 }

@@ -2,16 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
-import 'detail/detail_page_body.dart';
+import 'detail/detail_page_data.dart';
 
 class DetailPage extends ConsumerWidget {
-  static Route<DetailPage> route({
-    required int id
-  }) {
+  static Route<DetailPage> route({required int id}) {
     return MaterialPageRoute<DetailPage>(
       settings: const RouteSettings(name: "/detail"),
       builder: (_) => DetailPage(
@@ -32,11 +29,6 @@ class DetailPage extends ConsumerWidget {
     final timerProvider = ref.watch(timerRepositoryProvider);
     final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
 
-    Future<TimerGroup?> getTimerGroup() async{
-      final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
-      final timerGroup = await timerGroupProvider.getTimerGroup(id);
-      return timerGroup;
-    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -57,9 +49,6 @@ class DetailPage extends ConsumerWidget {
                       context,
                       GroupEditPage.route(
                         timerGroup: timerGroup!,
-                        options: timerGroup.options!,
-                        timers: timerGroup.timers!,
-                        totalTime: timerGroup.totalTime!,
                       ));
                 },
                 icon: const Icon(
@@ -70,18 +59,7 @@ class DetailPage extends ConsumerWidget {
           ),
           SliverList(
             delegate: SliverChildListDelegate(
-              [
-                FutureBuilder(
-                  future: getTimerGroup(),
-                  builder: (BuildContext context, AsyncSnapshot<TimerGroup?> snapshot) {
-                    if (snapshot.hasData) {
-                    return DetailPageBody(timerGroup: snapshot.data!);
-                    } else {
-                    return Text("データが存在しません");
-                    }
-                  },
-                ),
-              ],
+              [DetailPageData(id: id)],
             ),
           ),
         ],
@@ -92,8 +70,7 @@ class DetailPage extends ConsumerWidget {
           child: MaterialButton(
             onPressed: () async {
               final timerGroup = await timerGroupProvider.getTimerGroup(id);
-              final totalTimeSecond =
-                  await timerProvider.getTotal(id);
+              final totalTimeSecond = await timerProvider.getTotal(id);
 
               Navigator.of(context).push(
                 CountDownPage.route(

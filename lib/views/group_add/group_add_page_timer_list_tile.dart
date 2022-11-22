@@ -172,8 +172,10 @@ class GroupAddPageListTileState
                         );
                         final timerProvider =
                             ref.watch(timerRepositoryProvider);
-                        timerProvider
-                            .update(timer!.copyWith(time: result.inSeconds));
+                        if(timer!= null) {
+                          timerProvider
+                              .update(timer!.copyWith(time: result.inSeconds));
+                        }
                         setState(() {
                           time = result
                               .toString()
