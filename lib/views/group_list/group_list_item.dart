@@ -12,8 +12,8 @@ import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 
 class GroupListItem extends ConsumerStatefulWidget {
-  GroupListItem(this.timerGroup, this.options, this.totalTime, this.timers,
-      this.index,
+  GroupListItem(
+      this.timerGroup, this.options, this.totalTime, this.timers, this.index,
       {Key? key})
       : super(key: key);
   final TimerGroup timerGroup;
@@ -40,7 +40,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
   final undo = UndoStack();
 
   void setUndo(TimerGroup group) async {
-    final provider = ref.watch(savedTimerGroupProvider.notifier);
+    final provider = ref.watch(timerGroupRepositoryProvider);
     undo.push(() {
       provider.recoverTimerGroup(timerGroup: group);
     });
@@ -56,9 +56,9 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       totalTime: totalTime,
     );
 
-    final provider = ref.watch(savedTimerGroupProvider.notifier);
+    final provider = ref.watch(timerGroupRepositoryProvider);
     setUndo(group);
-    provider.deleteTimerGroup(timerGroup: group);
+    provider.removeTimerGroup(group.id!);
 
     final snackBar = SnackBar(
       content: Text('${group.title}を削除しました'),
@@ -86,12 +86,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
         children: [
           SlidableAction(
             onPressed: (_) {},
-            foregroundColor: Theme
-                .of(context)
-                .primaryColor,
-            backgroundColor: Theme
-                .of(context)
-                .backgroundColor,
+            foregroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             icon: Icons.edit_outlined,
             label: '編集',
           ),
@@ -99,12 +95,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             onPressed: (_) {
               removeGroup();
             },
-            foregroundColor: Theme
-                .of(context)
-                .errorColor,
-            backgroundColor: Theme
-                .of(context)
-                .backgroundColor,
+            foregroundColor: Theme.of(context).errorColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             icon: Icons.delete_outline,
             label: '削除',
           ),
@@ -112,9 +104,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       ),
       child: Card(
         elevation: 3,
-        shadowColor: Theme
-            .of(context)
-            .shadowColor,
+        shadowColor: Theme.of(context).shadowColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -122,7 +112,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
           onTap: () {
             Navigator.of(context).push(
               DetailPage.route(
-                  id: timerGroup.id!,
+                id: timerGroup.id!,
               ),
             );
           },
