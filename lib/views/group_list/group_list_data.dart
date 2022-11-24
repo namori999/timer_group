@@ -10,11 +10,7 @@ class GroupListBodyData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<List<TimerGroup>?> getTimerGroupsList() async {
-      final timerGroups =
-          await ref.watch(timerGroupRepositoryProvider).getAll();
-      return timerGroups;
-    }
+    final timerGroups = ref.watch(savedTimerGroupProvider);
 
     Future<TimerGroup> getTimerGroup(int id) async {
       final timerGroup =
@@ -42,47 +38,37 @@ class GroupListBodyData extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 16, left: 16, bottom: 56),
-      child: FutureBuilder(
-        future: getTimerGroupsList(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> groups) {
-          if (groups.hasData) {
-            if (groups.data.isEmpty) {
-              return emptyLayout();
-            }
-            return ListView.builder(
-              padding: const EdgeInsets.only(top: 16),
-              itemCount: groups.data.length,
-              itemBuilder: (context, index) {
-                return FutureBuilder(
-                  future: getTimerGroup(groups.data[index].id!),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
-                    if (tg.hasData) {
-                      return GroupListItem(
-                        tg.data!,
-                        tg.data!.options!,
-                        tg.data!.totalTime!,
-                        tg.data!.timers!,
-                        index,
-                      );
-                    } else if (tg.hasError) {
-                      return const SizedBox();
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                );
-              },
-            );
-          } else if (groups.hasError) {
-            return ElevatedButton(
-              onPressed: () {},
-              child: const Text('再読み込み'),
-            );
-          } else {
+      child: Center(
+        child: timerGroups.when(
+          loading: () => const CircularProgressIndicator(),
+          data: (groups) => ListView.builder(
+            padding: const EdgeInsets.only(top: 16),
+            itemCount: groups.length,
+            itemBuilder: (context, index) {
+              return FutureBuilder(
+                future: getTimerGroup(groups[index].id!),
+                builder: (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
+                  if (tg.hasData) {
+                    return GroupListItem(
+                      tg.data!,
+                      tg.data!.options!,
+                      tg.data!.totalTime!,
+                      tg.data!.timers!,
+                      index,
+                    );
+                  } else if (tg.hasError) {
+                    return const SizedBox();
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              );
+            },
+          ),
+          error: (error, stackTrace) {
             return emptyLayout();
-          }
-        },
+          },
+        ),
       ),
     );
   }
