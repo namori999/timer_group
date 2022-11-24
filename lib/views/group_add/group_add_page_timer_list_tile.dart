@@ -45,8 +45,7 @@ class GroupAddPageListTileState
   static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
   static String bgmTitle = '';
-  Image image = Image.asset('sample.jpg');
-  static String imageTitle = BackGroundImages.sample.name;
+  static String imageTitle = 'fb_1.jpg';
   static String notification = 'ON';
   bool isNotifyEnabled = true;
   String timerRowText = 'タイマー';
@@ -303,7 +302,6 @@ class GroupAddPageListTileState
                           },
                         );
                         imageTitle = result;
-
                         setState(() {
                         });
                       },
