@@ -1,11 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-
-import '../configure/theme.dart';
 
 class OverTimeTile extends ConsumerStatefulWidget {
   const OverTimeTile({
@@ -43,7 +42,6 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
   @override
   void initState() {
     final timer = this.timer;
-
     time = intToTimeLeft(timer.time);
     alarmTitle = timer.soundPath;
     bgmTitle = timer.bgmPath;
@@ -52,23 +50,9 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
     super.initState();
   }
 
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 8),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
-        SizedBox(height: 8),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8),
       color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // if you need this
@@ -78,15 +62,13 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 200,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (timer.number != 0) Text(timer.number.toString()),
-              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -155,7 +137,7 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/$imageTitle.jpg'),
+                        image: CachedNetworkImageProvider(imageTitle),
                         fit: BoxFit.fitWidth,
                       ),
                     ),

@@ -10,13 +10,13 @@ import '../configure/theme.dart';
 
 class DetailPageListTile extends ConsumerStatefulWidget {
   const DetailPageListTile({
-    this.index,
+    required this.index,
     required this.title,
     required this.timer,
     required this.options,
     Key? key,
   }) : super(key: key);
-  final int? index;
+  final int index;
   final String title;
   final Timer timer;
   final TimerGroupOptions options;
@@ -28,9 +28,8 @@ class DetailPageListTile extends ConsumerStatefulWidget {
 
 class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   get title => widget.title;
-
   Timer get timer => widget.timer;
-
+  int get index => widget.index;
   TimerGroupOptions get options => widget.options;
   String time = '';
   AlarmSounds alarm = AlarmSounds.sample;
@@ -87,7 +86,7 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (timer.number != 0) Text(timer.number.toString()),
+              Text((index + 1).toString()),
               const SizedBox(height: 8),
               Row(
                 children: [

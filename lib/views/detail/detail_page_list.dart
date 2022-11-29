@@ -51,6 +51,7 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
                 title: title,
                 timer: timers[index],
                 options: options,
+                index: index,
               );
             },
           ),
@@ -70,6 +71,7 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
             title: title,
             timer: timers[index],
             options: options,
+            index: index,
           );
         },
       ),
