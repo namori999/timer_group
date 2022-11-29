@@ -11,10 +11,14 @@ import 'package:timer_group/views/group_add/group_add_page_timer_list.dart';
 class GroupEditPageBody extends ConsumerStatefulWidget {
   GroupEditPageBody({
     required this.timerGroup,
+    required this.titleController,
+    required this.descriptionController,
     Key? key,
   }) : super(key: key);
 
   TimerGroup timerGroup;
+  TextEditingController titleController;
+  TextEditingController descriptionController;
 
   @override
   ConsumerState createState() => GroupEditPageBodyState();
@@ -23,8 +27,9 @@ class GroupEditPageBody extends ConsumerStatefulWidget {
 class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   TimerGroup get timerGroup => widget.timerGroup;
 
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  TextEditingController get titleController => widget.titleController;
+  TextEditingController get descriptionController =>
+      widget.descriptionController;
   final ScrollController listViewController = ScrollController();
 
   String titleText = '';
@@ -39,7 +44,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   @override
   void initState() {
     timerList = timerGroup.timers!;
-    if(timerGroup.options!.overTime! =='ON') {
+    if (timerGroup.options!.overTime! == 'ON') {
       overTimeTimer = timerList.last;
     }
     titleController.text = timerGroup.title;

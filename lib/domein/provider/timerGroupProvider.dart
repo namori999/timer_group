@@ -41,9 +41,9 @@ class TimerGroupRepository {
 
   Future<int> getId(String title) async => await _db.getId(title);
 
-  Future<void> update(TimerGroupInfo info) async {
-    await _db.insert(info);
-    //ref.refresh(savedTimerGroupProvider);
+  Future<void> update(int id, TimerGroupInfo info) async {
+    await _db.update(id, info);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<int> addNewTimerGroup(TimerGroupInfo info) async {

@@ -57,6 +57,11 @@ CREATE TABLE IF NOT EXISTS timerGroup (
   ''');
   }
 
+  @override
+  Future<void> onCreate(Database db) async {
+    await _initialize(db);
+  }
+
   Future<List<TimerGroup>> getAll() async {
     final db = await _getDatabase();
     final saved = await db.query('timerGroup');
@@ -87,6 +92,13 @@ CREATE TABLE IF NOT EXISTS timerGroup (
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     return insertedId;
+  }
+
+  Future<void> update(int id, TimerGroupInfo timerGroupInfo) async {
+    final db = await _getDatabase();
+    print("update timer group: $id,$timerGroupInfo");
+    await db.update("timerGroup", timerGroupInfo.toJson(),
+        where: "id = ?", whereArgs: [id]);
   }
 
   Future<void> delete(int id) async {
