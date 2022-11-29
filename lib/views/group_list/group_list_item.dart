@@ -40,10 +40,37 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
   final undo = UndoStack();
 
   void setUndo(TimerGroup group) async {
-    final provider = ref.watch(timerGroupRepositoryProvider);
+    final provider = ref.watch(savedTimerGroupProvider.notifier);
     undo.push(() {
-      provider.recoverTimerGroup(timerGroup: group);
+      provider.recoverGroup(group);
     });
+  }
+
+
+  void showRemoveAlert() {
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('タイマーグループを削除します'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text('キャンセル'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            CupertinoDialogAction(
+                child: const Text(
+                  '削除',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () async {
+                  removeGroup();
+                  Navigator.pop(this.context);
+                }),
+          ],
+        );
+      },
+    );
   }
 
   void removeGroup() {
@@ -56,20 +83,12 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
       totalTime: totalTime,
     );
 
-    final provider = ref.watch(timerGroupRepositoryProvider);
+    final provider = ref.watch(savedTimerGroupProvider.notifier);
     setUndo(group);
-    provider.removeTimerGroup(group.id!);
+    provider.removeGroup(group.id!);
 
     final snackBar = SnackBar(
       content: Text('${group.title}を削除しました'),
-      action: SnackBarAction(
-        label: '取り消し',
-        onPressed: () {
-          if (undo.isNotEmpty) {
-            undo.undo();
-          }
-        },
-      ),
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -93,7 +112,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
           ),
           SlidableAction(
             onPressed: (_) {
-              removeGroup();
+              showRemoveAlert();
             },
             foregroundColor: Theme.of(context).errorColor,
             backgroundColor: Theme.of(context).backgroundColor,
