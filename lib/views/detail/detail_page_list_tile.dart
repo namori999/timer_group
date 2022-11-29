@@ -5,8 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-
-import '../configure/theme.dart';
+import 'package:timer_group/views/components/separoter.dart';
 
 class DetailPageListTile extends ConsumerStatefulWidget {
   const DetailPageListTile({
@@ -51,16 +50,6 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
     imageTitle = timer.imagePath;
     notification = timer.notification;
     super.initState();
-  }
-
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 8),
-        Divider(color: Themes.grayColor, height: 2),
-        SizedBox(height: 8),
-      ],
-    );
   }
 
   @override

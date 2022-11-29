@@ -29,7 +29,6 @@ class DetailPage extends ConsumerWidget {
     final timerProvider = ref.watch(timerRepositoryProvider);
     final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
 
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(

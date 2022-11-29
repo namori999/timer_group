@@ -38,8 +38,7 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
   @override
   Widget build(BuildContext context) {
     if (options.overTime == 'ON') {
-      return Expanded(
-        child: Scrollbar(
+      return  Scrollbar(
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 16),
@@ -55,7 +54,6 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
               );
             },
           ),
-        ),
       );
     }
 

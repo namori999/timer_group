@@ -21,9 +21,7 @@ class DetailPageData extends ConsumerWidget {
       return timerGroup!;
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(right: 16, left: 16, bottom: 56),
-      child: FutureBuilder(
+    return FutureBuilder(
               future: getTimerGroup(),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -38,7 +36,7 @@ class DetailPageData extends ConsumerWidget {
                   return const SizedBox();
                 }
               },
-            ),
+
     );
   }
 }
