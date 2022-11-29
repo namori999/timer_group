@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/domein/provider/timerGroupOptionsProvider.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/detail/detail_page_list.dart';
 import 'package:timer_group/views/detail/over_time_tile.dart';
@@ -11,10 +13,12 @@ import 'package:timer_group/views/detail/over_time_tile.dart';
 class DetailPageBody extends ConsumerStatefulWidget {
   DetailPageBody({
     required this.timerGroup,
+    required this.options,
     Key? key,
   }) : super(key: key);
 
   TimerGroup timerGroup;
+  TimerGroupOptions options;
 
   @override
   ConsumerState createState() => DetailPageBodyState();
@@ -22,6 +26,7 @@ class DetailPageBody extends ConsumerStatefulWidget {
 
 class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   TimerGroup get timerGroup => widget.timerGroup;
+  TimerGroupOptions get options => widget.options;
 
   List<Timer> timers = [];
 
@@ -32,14 +37,16 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   @override
   void initState() {
     totalTimeText =
-        getFormattedTime(timerGroup.options!, timerGroup.totalTime!);
-    format = getFormatName(timerGroup.options!);
+        getFormattedTime(options, timerGroup.totalTime!);
+    format = getFormatName(options);
     timers = timerGroup.timers!;
-    if (timerGroup.options!.overTime == 'ON') {
+
+    if (options.overTime == 'ON') {
       timerCount = (timers.length - 1).toString();
     } else {
       timerCount = timers.length.toString();
     }
+
     super.initState();
   }
 
@@ -84,7 +91,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                 "表示単位",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
-              Text(getFormatName(timerGroup.options!)),
+              Text(getFormatName(options)),
             ],
           ),
           spacer(),
@@ -113,7 +120,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
               child: DetailPageList(
                 title: timerGroup.title,
                 timers: timers,
-                options: timerGroup.options!,
+                options: options,
               )),
           const SizedBox(
             height: 16,
@@ -126,19 +133,19 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                 'オーバータイム',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
-              Text(timerGroup.options!.overTime.toString()),
+              Text(options.overTime.toString()),
             ],
           ),
           const SizedBox(
             height: 8,
           ),
-          if (timerGroup.options!.overTime == 'ON')
+          if (options.overTime == 'ON')
             SizedBox(
               height: 300,
               child: OverTimeTile(
                 title: timerGroup.title,
                 timer: timers.last,
-                options: timerGroup.options!,
+                options: options,
               ),
             ),
         ],
