@@ -47,12 +47,12 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
   }
 
 
-  void showRemoveAlert() {
+  void showRemoveAlert(String title) {
     showDialog<bool>(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: const Text('タイマーグループを削除します'),
+          title: Text('$titleを削除します'),
           actions: <Widget>[
             CupertinoDialogAction(
               child: const Text('キャンセル'),
@@ -112,7 +112,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
           ),
           SlidableAction(
             onPressed: (_) {
-              showRemoveAlert();
+              showRemoveAlert(timerGroup.title);
             },
             foregroundColor: Theme.of(context).errorColor,
             backgroundColor: Theme.of(context).backgroundColor,
