@@ -46,7 +46,7 @@ class GroupAddPageListTileState
   static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
   static String bgmTitle = '';
-  static String imageTitle = 'fb_1.jpg';
+  static String imageTitle = '';
   static String notification = 'ON';
   bool isNotifyEnabled = true;
   String timerRowText = 'タイマー';
@@ -62,8 +62,15 @@ class GroupAddPageListTileState
       bgmTitle = timer.bgmPath;
       imageTitle = timer.imagePath;
       notification = timer.notification;
+    } else {
+      time = '00:00:00';
+      Future(() async {
+        final List<Image> imageList =
+        await FirebaseMethods().getImages();
+        imageTitle = imageList.first.semanticLabel!;
+        setState(() {});
+      });
     }
-
     super.initState();
   }
 
