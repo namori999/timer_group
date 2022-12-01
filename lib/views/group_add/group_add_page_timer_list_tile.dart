@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
@@ -17,14 +16,14 @@ import '../configure/theme.dart';
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
   GroupAddPageTimerListTile({
     this.index,
-    required this.title,
+    required this.groupId,
     this.timer,
     this.overTime,
     Key? key,
   }) : super(key: key);
 
   final int? index;
-  final String title;
+  final int groupId;
   final Timer? timer;
   bool? overTime;
 
@@ -36,9 +35,7 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get index => widget.index;
-
-  get title => widget.title;
-
+  get groupId => widget.groupId;
   Timer? get timer => widget.timer;
 
   static String time = '';
@@ -99,6 +96,7 @@ class GroupAddPageListTileState
     return timer;
   }
 
+  /*
   Future<Timer?> addTimer() async {
     if (mounted) {
       final repo = ref.watch(timerGroupRepositoryProvider);
@@ -118,6 +116,7 @@ class GroupAddPageListTileState
     }
     return null;
   }
+   */
 
   @override
   Widget build(BuildContext context) {

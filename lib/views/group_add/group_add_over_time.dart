@@ -84,7 +84,7 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
             children: [
               GroupAddPageTimerListTile(
                 index: 0,
-                title: title,
+                groupId: id,
                 timer: timer,
               ),
               spacer()

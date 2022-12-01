@@ -135,8 +135,8 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               SizedBox(
                   height: 360,
                   child: GroupAddPageTimerList(
-                    title: timerGroup.title,
                     timers: timerList,
+                    groupId: timerGroup.id!,
                   )),
               const SizedBox(
                 height: 16,

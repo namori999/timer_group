@@ -44,7 +44,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
     final option = await optionsProvider.getOptions(groupId);
     if (option.overTime == 'ON') {
       final provider = ref.watch(timerRepositoryProvider);
-      await provider.addTimer(Timer(
+      await provider.addOverTime(Timer(
           groupId: groupId,
           number: 0,
           time: timeToSecond(GroupAddPageListTileState.time),
@@ -77,7 +77,7 @@ class GroupAddPageSecondState extends ConsumerState<GroupAddPageSecond> {
         ),
         spacer(),
         GroupAddPageTimerList(
-          title: title,
+          groupId: groupId,
         ),
         spacer(),
         GroupAddOverTime(title: title),

@@ -9,7 +9,7 @@ import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
-const int _databaseVersion = 1;
+const int _databaseVersion = 2;
 Database? _database;
 
 Future<String> _getDbDirectory() async {
@@ -183,6 +183,11 @@ CREATE TABLE IF NOT EXISTS timers (
     );
   }
 
+  @override
+  Future<void> onCreate(Database db) async {
+    await _initialize(db);
+  }
+
   Future<List<Timer>> getTimers(int groupId) async {
     final db = await _getDatabase();
     final saved = await db.query(
@@ -191,6 +196,14 @@ CREATE TABLE IF NOT EXISTS timers (
       whereArgs: [groupId],
     );
     return saved.map(Timer.fromJson).toList();
+  }
+
+  Future<Timer> getTimer(int groupId, int number) async {
+    final db = await _getDatabase();
+    final result = await db.rawQuery(
+        'SELECT * FROM timers WHERE groupId = ? and number = ?',
+        [groupId, number]);
+    return result.map(Timer.fromJson).first;
   }
 
   Future<void> insert(Timer timer) async {

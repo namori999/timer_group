@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,6 +14,9 @@ class timerRepository {
 
   Future<List<Timer>> getTimers(int id) async => await _db.getTimers(id);
 
+  Future<Timer> getTimer(int id, int number) async =>
+      await _db.getTimer(id, number);
+
   Future<void> update(Timer timer) async {
     await _db.insert(timer);
     //ref.refresh(timerRepositoryProvider);
@@ -27,9 +29,21 @@ class timerRepository {
     //ref.refresh(timerRepositoryProvider);
   }
 
-  Future<void> addTimer(Timer timer) async {
+  Future<void> addTimer(int groupId, int number) async {
+    await _db.insert(Timer(
+        groupId: groupId,
+        number: number,
+        time: 0,
+        soundPath: '',
+        bgmPath: '',
+        imagePath: '',
+        notification: 'ON'));
+    ref.invalidate(timerRepositoryProvider);
+  }
+
+  Future<void> addOverTime(Timer timer) async {
     await _db.insert(timer);
-    //ref.refresh(timerRepositoryProvider);
+    ref.invalidate(timerRepositoryProvider);
   }
 
   Future<void> removeTimer(int id) async {

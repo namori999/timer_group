@@ -2,25 +2,25 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:timer_group/domein/models/timer.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
-class AddTimerDialog extends StatelessWidget {
+class AddTimerDialog extends ConsumerWidget {
   AddTimerDialog({
     Key? key,
     required this.index,
-    required this.title,
+    required this.groupId,
     this.overTime,
   }) : super(key: key);
 
   int index;
-  String title;
+  int groupId;
   bool? overTime;
 
   GlobalKey<GroupAddPageListTileState> globalKey = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: 500,
       margin: const EdgeInsets.all(16),
@@ -32,14 +32,14 @@ class AddTimerDialog extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.pop<bool>(context, false);
                   },
                   icon: const Icon(Icons.close_rounded)),
             ],
           ),
           GroupAddPageTimerListTile(
             index: index,
-            title: title,
+            groupId: groupId,
             overTime: true,
             key: globalKey,
           ),
@@ -54,8 +54,7 @@ class AddTimerDialog extends StatelessWidget {
               ),
             ),
             onPressed: () async {
-              Timer? timer = await globalKey.currentState!.addTimer();
-              Navigator.pop<Timer>(context, timer);
+              Navigator.pop<bool>(context, true);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
