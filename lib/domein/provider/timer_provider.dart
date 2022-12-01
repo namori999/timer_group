@@ -18,7 +18,7 @@ class timerRepository {
       await _db.getTimer(id, number);
 
   Future<void> update(Timer timer) async {
-    await _db.insert(timer);
+    await _db.update(timer);
     //ref.refresh(timerRepositoryProvider);
   }
 
