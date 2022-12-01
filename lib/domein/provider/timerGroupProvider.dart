@@ -50,7 +50,11 @@ class TimerGroupRepository {
 
   Future<int> addNewTimerGroup(TimerGroupInfo info) async {
     final int = await _db.insert(info);
-    await _optionsDb.insert(TimerGroupOptions(id: int, title: info.title));
+    await _optionsDb.insert(TimerGroupOptions(
+        id: int,
+        title: info.title,
+        timeFormat: TimeFormat.minuteSecond,
+        overTime: 'OFF'));
     return int;
   }
 
