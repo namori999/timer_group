@@ -2,7 +2,51 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/storage/sqlite.dart';
+import 'package:synchronized/synchronized.dart';
+
+final TimersProvider =
+    StateNotifierProvider<TimersNotifier, AsyncValue<List<Timer>>>(
+  (ref) => TimersNotifier(ref),
+);
+
+class TimersNotifier extends StateNotifier<AsyncValue<List<Timer>>> {
+  // 初期値
+  TimersNotifier(this.ref) : super(const AsyncValue.loading()) {
+    _load().ignore();
+  }
+
+  final lock = Lock(reentrant: true);
+  final Ref ref;
+
+  Future<void> _load() async {
+    state = (await AsyncValue.guard(_loadImpl));
+  }
+
+  Future<List<Timer>> _loadImpl() async {
+    final value = state.asData?.value;
+    if (value != null) return value;
+
+    final timers = await ref.read(timerRepositoryProvider).getTimers(0);
+    return timers;
+  }
+
+  Future<void> addTimer(int groupId, int number) async {
+    await ref.read(timerRepositoryProvider).addTimer(groupId, number);
+    await updateState(groupId);
+  }
+
+  Future<void> removeTimer(int groupId, int number) async {
+    await ref.read(timerRepositoryProvider).removeTimer(groupId, number);
+    await updateState(groupId);
+  }
+
+  Future<void> updateState(int groupId) async {
+    final value = await ref.read(timerRepositoryProvider).getTimers(0);
+    state = AsyncData(value);
+  }
+}
 
 final timerRepositoryProvider = Provider((ref) => timerRepository(ref));
 
@@ -39,6 +83,7 @@ class timerRepository {
         imagePath: '',
         notification: 'ON'));
     ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> addOverTime(Timer timer) async {
@@ -46,9 +91,10 @@ class timerRepository {
     ref.invalidate(timerRepositoryProvider);
   }
 
-  Future<void> removeTimer(int id) async {
-    await _db.delete(id);
-    //ref.refresh(timerRepositoryProvider);
+  Future<void> removeTimer(int groupId, int number) async {
+    await _db.delete(groupId, number);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> removeAllTimers(int groupId) async {

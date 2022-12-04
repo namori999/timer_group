@@ -236,9 +236,11 @@ CREATE TABLE IF NOT EXISTS timers (
         where: 'id = ?', whereArgs: [timer.id]);
   }
 
-  Future<void> delete(int id) async {
+  Future<void> delete(int groupId, int number) async {
     final db = await _getDatabase();
-    await db.delete('timers', where: 'id = ?', whereArgs: [id]);
+    await db.delete('timers',
+        where: 'id = ? and number = ?', whereArgs: [groupId, number]);
+    print("delete timer");
   }
 
   Future<void> deleteAllTimers(int groupId) async {

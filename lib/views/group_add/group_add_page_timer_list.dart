@@ -27,7 +27,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   static int index = 0;
 
   get groupId => widget.groupId;
-
   get timers => widget.timers;
 
   int addIndex() {
@@ -105,7 +104,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                       });
 
                   if (!timerAdded) {
-                    ref.read(timerRepositoryProvider).removeTimer(groupId);
+                    ref.read(timerRepositoryProvider).removeTimer(groupId,index);
                     index = index - 1;
                   } else {
                     setState(() {

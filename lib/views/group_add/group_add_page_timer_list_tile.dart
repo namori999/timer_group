@@ -35,7 +35,9 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get index => widget.index;
+
   get groupId => widget.groupId;
+
   Timer? get timer => widget.timer;
 
   static String time = '';
@@ -62,8 +64,7 @@ class GroupAddPageListTileState
     } else {
       time = '00:00:00';
       Future(() async {
-        final List<Image> imageList =
-        await FirebaseMethods().getImages();
+        final List<Image> imageList = await FirebaseMethods().getImages();
         imageTitle = imageList.first.semanticLabel!;
         setState(() {});
       });
@@ -101,15 +102,26 @@ class GroupAddPageListTileState
         child: SizedBox(
           width: 250,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (index != 0)
-                Column(
-                  children: [
-                    Text(index.toString()),
-                    spacer(),
-                  ],
-                ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Text(index.toString()),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: IconButton(
+                      onPressed: () {
+                        timerProvider.removeTimer(groupId, index);
+                      },
+                      icon: const Icon(Icons.close_rounded),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
+              ),
+              spacer(),
               Row(
                 children: [
                   const Icon(Icons.timer_outlined),
@@ -145,7 +157,7 @@ class GroupAddPageListTileState
                           },
                         );
 
-                        if(timer!= null) {
+                        if (timer != null) {
                           timerProvider
                               .update(timer!.copyWith(time: result.inSeconds));
                         }
@@ -193,7 +205,7 @@ class GroupAddPageListTileState
                           return const AlarmInputDialog();
                         },
                       );
-                      if(timer!= null) {
+                      if (timer != null) {
                         timerProvider
                             .update(timer!.copyWith(soundPath: result.name));
                       }
@@ -238,7 +250,7 @@ class GroupAddPageListTileState
                           return const BgmInputDialog();
                         },
                       );
-                      if(timer!= null) {
+                      if (timer != null) {
                         timerProvider
                             .update(timer!.copyWith(bgmPath: result.name));
                       }
@@ -283,7 +295,7 @@ class GroupAddPageListTileState
                             return ImageInputDialog(imageList);
                           },
                         );
-                        if(timer!= null) {
+                        if (timer != null) {
                           timerProvider
                               .update(timer!.copyWith(imagePath: result));
                         }
@@ -316,7 +328,7 @@ class GroupAddPageListTileState
                       onPressed: () {
                         if (isNotifyEnabled) {
                           isNotifyEnabled = false;
-                          if(timer!= null) {
+                          if (timer != null) {
                             timerProvider
                                 .update(timer!.copyWith(notification: 'OFF'));
                           }
@@ -325,7 +337,7 @@ class GroupAddPageListTileState
                           });
                         } else {
                           isNotifyEnabled = true;
-                          if(timer!= null) {
+                          if (timer != null) {
                             timerProvider
                                 .update(timer!.copyWith(notification: 'ON'));
                           }
