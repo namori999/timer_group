@@ -41,6 +41,7 @@ class GroupAddPageListTileState
   Timer? get timer => widget.timer;
 
   static String time = '';
+  static int timeSecond = 0;
   AlarmSounds alarm = AlarmSounds.sample;
   static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
@@ -64,8 +65,8 @@ class GroupAddPageListTileState
     } else {
       time = '00:00:00';
       Future(() async {
-        final List<Image> imageList = await FirebaseMethods().getImages();
-        imageTitle = imageList.first.semanticLabel!;
+        final sampleImageTitle = await FirebaseMethods().getSampleImageTitle();
+        imageTitle = sampleImageTitle;
         setState(() {});
       });
     }
@@ -87,7 +88,7 @@ class GroupAddPageListTileState
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = ref.watch(timerRepositoryProvider);
+    final timerProvider = ref.watch(TimersProvider.notifier);
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -112,7 +113,7 @@ class GroupAddPageListTileState
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         timerProvider.removeTimer(groupId, index);
                       },
                       icon: const Icon(Icons.close_rounded),
@@ -158,8 +159,9 @@ class GroupAddPageListTileState
                         );
 
                         if (timer != null) {
-                          timerProvider
-                              .update(timer!.copyWith(time: result.inSeconds));
+                          timeSecond = result.inSeconds;
+                          timerProvider.updateTimer(
+                              timer!.copyWith(time: result.inSeconds));
                         }
                         setState(() {
                           time = result
@@ -206,8 +208,8 @@ class GroupAddPageListTileState
                         },
                       );
                       if (timer != null) {
-                        timerProvider
-                            .update(timer!.copyWith(soundPath: result.name));
+                        timerProvider.updateTimer(
+                            timer!.copyWith(soundPath: result.name));
                       }
                       setState(() {
                         alarm = result;
@@ -252,7 +254,7 @@ class GroupAddPageListTileState
                       );
                       if (timer != null) {
                         timerProvider
-                            .update(timer!.copyWith(bgmPath: result.name));
+                            .updateTimer(timer!.copyWith(bgmPath: result.name));
                       }
                       setState(() {
                         bgm = result;
@@ -297,7 +299,7 @@ class GroupAddPageListTileState
                         );
                         if (timer != null) {
                           timerProvider
-                              .update(timer!.copyWith(imagePath: result));
+                              .updateTimer(timer!.copyWith(imagePath: result));
                         }
                         imageTitle = result;
                         setState(() {});
@@ -329,8 +331,8 @@ class GroupAddPageListTileState
                         if (isNotifyEnabled) {
                           isNotifyEnabled = false;
                           if (timer != null) {
-                            timerProvider
-                                .update(timer!.copyWith(notification: 'OFF'));
+                            timerProvider.updateTimer(
+                                timer!.copyWith(notification: 'OFF'));
                           }
                           setState(() {
                             notification = 'OFF';
@@ -338,8 +340,8 @@ class GroupAddPageListTileState
                         } else {
                           isNotifyEnabled = true;
                           if (timer != null) {
-                            timerProvider
-                                .update(timer!.copyWith(notification: 'ON'));
+                            timerProvider.updateTimer(
+                                timer!.copyWith(notification: 'ON'));
                           }
                           setState(() {
                             notification = 'ON';

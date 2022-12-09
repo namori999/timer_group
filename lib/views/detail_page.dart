@@ -70,14 +70,18 @@ class DetailPage extends ConsumerWidget {
           child: MaterialButton(
             onPressed: () async {
               final timerGroup = await timerGroupProvider.getTimerGroup(id);
-              final totalTimeSecond = await timerProvider.getTotal(id);
+              int? totalTimeSecond = await timerProvider.getTotal(id);
+              var totalTime = 0;
+              if (totalTimeSecond != null) {
+                totalTimeSecond = totalTimeSecond;
+              }
 
               Navigator.of(context).push(
                 CountDownPage.route(
                   timerGroup: timerGroup!,
                   options: timerGroup.options!,
                   timers: timerGroup.timers!,
-                  totalTimeSecond: totalTimeSecond,
+                  totalTimeSecond: totalTime,
                 ),
               );
             },

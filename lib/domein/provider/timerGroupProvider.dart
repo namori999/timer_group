@@ -10,8 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:synchronized/synchronized.dart';
 
 final timerGroupRepositoryProvider =
-    Provider((ref) => TimerGroupRepository(ref)
-    );
+    Provider((ref) => TimerGroupRepository(ref));
 
 class TimerGroupRepository {
   TimerGroupRepository(this.ref);
@@ -28,11 +27,20 @@ class TimerGroupRepository {
 
   Future<TimerGroup?> getTimerGroup(int id) async {
     final groupInfo = await _db.get(id);
-
     final options =
         await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
     final timers = await ref.watch(timerRepositoryProvider).getTimers(id);
     final totalTime = await ref.watch(timerRepositoryProvider).getTotal(id);
+
+    if (totalTime == null) {
+      return TimerGroup(
+        id: id,
+        title: groupInfo.title,
+        description: groupInfo.description,
+        options: options,
+        timers: timers,
+      );
+    }
 
     return TimerGroup(
       id: id,
@@ -81,6 +89,7 @@ class TimerGroupRepository {
     await _db.delete(id);
     await _optionsDb.delete(id);
     await _timersDb.deleteAllTimers(id);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 }
 

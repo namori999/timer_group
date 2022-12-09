@@ -3,6 +3,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
 class AddTimerDialog extends ConsumerWidget {
@@ -21,6 +24,8 @@ class AddTimerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final timer = ref.watch(TimersProvider.notifier);
+
     return Container(
       height: 500,
       margin: const EdgeInsets.all(16),
@@ -54,6 +59,14 @@ class AddTimerDialog extends ConsumerWidget {
               ),
             ),
             onPressed: () async {
+              timer.addTimer(Timer(
+                  groupId: groupId,
+                  number: index,
+                  time: timeToSecond(GroupAddPageListTileState.time),
+                  soundPath: GroupAddPageListTileState.alarmTitle,
+                  bgmPath: GroupAddPageListTileState.bgmTitle,
+                  imagePath: GroupAddPageListTileState.imageTitle,
+                  notification: GroupAddPageListTileState.notification));
               Navigator.pop<bool>(context, true);
             },
             child: Row(

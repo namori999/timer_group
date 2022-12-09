@@ -27,6 +27,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   static int index = 0;
 
   get groupId => widget.groupId;
+
   get timers => widget.timers;
 
   int addIndex() {
@@ -84,10 +85,9 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
               ),
               IconButton(
                 onPressed: () async {
-                  final timerProvider = ref.watch(timerRepositoryProvider);
-                  timerProvider.addTimer(groupId, index);
-                  final timer = await timerProvider.getTimer(groupId, index);
+                  final timerProvider = ref.watch(TimersProvider.notifier);
 
+                  index = addIndex();
                   bool timerAdded = await showModalBottomSheet(
                       context: context,
                       elevation: 20,
@@ -98,15 +98,21 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                       ),
                       builder: (context) {
                         return AddTimerDialog(
-                          index: index = addIndex(),
+                          index: index,
                           groupId: groupId,
                         );
                       });
 
                   if (!timerAdded) {
-                    ref.read(timerRepositoryProvider).removeTimer(groupId,index);
-                    index = index - 1;
+                    timerProvider.removeTimer(groupId, index);
+                    setState(() {
+                      index = index - 1;
+                    });
                   } else {
+                    final timer = await ref
+                        .read(timerRepositoryProvider)
+                        .getTimer(groupId, index);
+
                     setState(() {
                       timerList.add(GroupAddPageTimerListTile(
                         index: index,

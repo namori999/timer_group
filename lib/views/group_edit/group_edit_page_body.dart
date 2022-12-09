@@ -66,7 +66,6 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   Future<List<Timer>> getTimers() async {
     final timerProvider = ref.watch(timerRepositoryProvider);
     final timers = await timerProvider.getTimers(timerGroup.id!);
-
     return timers;
   }
 
@@ -96,7 +95,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
-                    BorderSide(color: Themes.themeColor, width: 1.0),
+                        BorderSide(color: Themes.themeColor, width: 1.0),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
@@ -117,7 +116,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
-                    BorderSide(color: Themes.themeColor, width: 1.0),
+                        BorderSide(color: Themes.themeColor, width: 1.0),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
@@ -147,11 +146,9 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                       AsyncSnapshot<List<Timer>> timers) {
                     if (timers.hasData) {
                       return GroupAddPageTimerList(
-                          timers: timers.data,
-                          groupId: timerGroup.id!
-                      );
+                          timers: timers.data, groupId: timerGroup.id!);
                     } else {
-                    return Text("データが存在しません");
+                      return Text("データが存在しません");
                     }
                   },
                 ),

@@ -231,16 +231,17 @@ CREATE TABLE IF NOT EXISTS timers (
 
   Future<void> update(Timer timer) async {
     final db = await _getDatabase();
-    print("update timers: timers = $timer");
+    print("update timer: timer = $timer");
     await db.update('timers', timer.toJson(),
-        where: 'id = ?', whereArgs: [timer.id]);
+        where: 'groupId = ? and number = ?',
+        whereArgs: [timer.groupId, timer.number]);
   }
 
   Future<void> delete(int groupId, int number) async {
     final db = await _getDatabase();
     await db.delete('timers',
-        where: 'id = ? and number = ?', whereArgs: [groupId, number]);
-    print("delete timer");
+        where: 'groupId = ? and number = ?', whereArgs: [groupId, number]);
+    print("deleted: $db");
   }
 
   Future<void> deleteAllTimers(int groupId) async {
@@ -256,12 +257,18 @@ CREATE TABLE IF NOT EXISTS timers (
     return result.toList();
   }
 
-  Future getTotal(int id) async {
+  Future<int?> getTotal(int id) async {
     final db = await _getDatabase();
     var result = await db
         .rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
-    int? value = result[0]["SUM(time)"] as int;
-    value.toStringAsFixed(2);
-    return value;
+    var value = result[0]["SUM(time)"] ;
+
+    if (value == null) {
+      return 0;
+    }
+
+    int resultInt = result[0]["SUM(time)"] as int;
+    resultInt.toStringAsFixed(2);
+    return resultInt;
   }
 }
