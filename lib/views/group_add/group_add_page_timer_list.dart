@@ -23,7 +23,7 @@ class GroupAddPageTimerList extends ConsumerStatefulWidget {
 }
 
 class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
-  final timerList = <Widget>[];
+  static final timerList = <Widget>[];
   static int index = 0;
 
   get groupId => widget.groupId;
@@ -38,7 +38,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   @override
   void initState() {
     if (timers != null) {
-      index = timers.length;
       for (Timer t in timers) {
         if (t.number != 0) {
           timerList.add(GroupAddPageTimerListTile(
@@ -49,16 +48,25 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
         }
       }
     } else {
-      index = -1;
       addIndex();
     }
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    timerList.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const SizedBox(
+          height: 8,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -66,7 +74,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             Padding(
               padding: const EdgeInsets.only(right: 32),
               child: Text(
-                '× $index',
+                '× ${timerList.length}',
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -79,16 +87,19 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: timerList,
+              SizedBox(
+                height: 380,
+                child: Row(
+                  children: timerList,
+                )
               ),
               IconButton(
                 onPressed: () async {
-                  final timerProvider = ref.watch(TimersProvider.notifier);
-
+                  final timerProvider = ref.watch(timerRepositoryProvider);
                   index = addIndex();
-                  bool timerAdded = await showModalBottomSheet(
+                  Timer addedTimer = await showModalBottomSheet(
                       context: context,
                       elevation: 20,
                       isScrollControlled: true,
@@ -103,21 +114,17 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                         );
                       });
 
-                  if (!timerAdded) {
+                  if (addedTimer == null) {
                     timerProvider.removeTimer(groupId, index);
                     setState(() {
                       index = index - 1;
                     });
                   } else {
-                    final timer = await ref
-                        .read(timerRepositoryProvider)
-                        .getTimer(groupId, index);
-
                     setState(() {
                       timerList.add(GroupAddPageTimerListTile(
                         index: index,
                         groupId: groupId,
-                        timer: timer,
+                        timer: addedTimer,
                       ));
                     });
                   }

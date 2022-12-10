@@ -24,10 +24,10 @@ class AddTimerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timer = ref.watch(TimersProvider.notifier);
+    final provider = ref.watch(timerRepositoryProvider);
 
     return Container(
-      height: 500,
+      height: 600,
       margin: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,15 +59,16 @@ class AddTimerDialog extends ConsumerWidget {
               ),
             ),
             onPressed: () async {
-              timer.addTimer(Timer(
+              final timer = Timer(
                   groupId: groupId,
                   number: index,
                   time: timeToSecond(GroupAddPageListTileState.time),
                   soundPath: GroupAddPageListTileState.alarmTitle,
                   bgmPath: GroupAddPageListTileState.bgmTitle,
                   imagePath: GroupAddPageListTileState.imageTitle,
-                  notification: GroupAddPageListTileState.notification));
-              Navigator.pop<bool>(context, true);
+                  notification: GroupAddPageListTileState.notification);
+              provider.addTimer(timer);
+              Navigator.pop<Timer>(context, timer);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

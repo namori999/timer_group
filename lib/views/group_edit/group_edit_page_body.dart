@@ -138,20 +138,17 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                 ],
               ),
               spacer(),
-              SizedBox(
-                height: 368,
-                child: FutureBuilder(
-                  future: getTimers(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Timer>> timers) {
-                    if (timers.hasData) {
-                      return GroupAddPageTimerList(
-                          timers: timers.data, groupId: timerGroup.id!);
-                    } else {
-                      return Text("データが存在しません");
-                    }
-                  },
-                ),
+              FutureBuilder(
+                future: getTimers(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Timer>> timers) {
+                  if (timers.hasData) {
+                    return GroupAddPageTimerList(
+                        timers: timers.data, groupId: timerGroup.id!);
+                  } else {
+                    return Text("データが存在しません");
+                  }
+                },
               ),
               const SizedBox(
                 height: 16,
@@ -165,11 +162,6 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                 child: GroupAddOverTime(
                   title: timerGroup.title,
                   overTimeTimer: overTimeTimer,
-                ),
-              ),
-              const Expanded(
-                child: SizedBox(
-                  height: 16,
                 ),
               ),
             ],

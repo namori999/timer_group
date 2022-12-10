@@ -6,9 +6,7 @@ import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_add_button.dart';
-import 'package:timer_group/views/group_edit/group_edit_page_body.dart';
 import 'package:timer_group/views/group_edit/group_edit_page_data.dart';
-import 'package:timer_group/views/group_edit_page.dart';
 
 class GroupAddPageBody extends ConsumerStatefulWidget {
   const GroupAddPageBody({

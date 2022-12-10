@@ -12,6 +12,7 @@ import 'package:timer_group/views/components/dialogs/background_input_dialog/ima
 import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 
 import '../configure/theme.dart';
+import 'group_add_page_timer_list.dart';
 
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
   GroupAddPageTimerListTile({
@@ -88,33 +89,38 @@ class GroupAddPageListTileState
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = ref.watch(TimersProvider.notifier);
+    final provider = ref.watch(timerRepositoryProvider);
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // if you need this
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.2),
-          width: 1,
+    return SizedBox(
+      width: 280,
+      height: 360,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // if you need this
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          width: 250,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
                 alignment: Alignment.center,
                 children: [
                   Center(
-                    child: Text(index.toString()),
+                    child: Text(index   .toString()),
                   ),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: IconButton(
                       onPressed: () async {
-                        timerProvider.removeTimer(groupId, index);
+                        provider.removeTimer(groupId, index + 1);
+                        GroupAddPageTimerListState.timerList.removeAt(index);
+                        setState(() {
+                        });
                       },
                       icon: const Icon(Icons.close_rounded),
                       padding: EdgeInsets.zero,
@@ -160,7 +166,7 @@ class GroupAddPageListTileState
 
                         if (timer != null) {
                           timeSecond = result.inSeconds;
-                          timerProvider.updateTimer(
+                          provider.updateTimer(
                               timer!.copyWith(time: result.inSeconds));
                         }
                         setState(() {
@@ -208,7 +214,7 @@ class GroupAddPageListTileState
                         },
                       );
                       if (timer != null) {
-                        timerProvider.updateTimer(
+                        provider.updateTimer(
                             timer!.copyWith(soundPath: result.name));
                       }
                       setState(() {
@@ -253,7 +259,7 @@ class GroupAddPageListTileState
                         },
                       );
                       if (timer != null) {
-                        timerProvider
+                        provider
                             .updateTimer(timer!.copyWith(bgmPath: result.name));
                       }
                       setState(() {
@@ -298,7 +304,7 @@ class GroupAddPageListTileState
                           },
                         );
                         if (timer != null) {
-                          timerProvider
+                          provider
                               .updateTimer(timer!.copyWith(imagePath: result));
                         }
                         imageTitle = result;
@@ -331,7 +337,7 @@ class GroupAddPageListTileState
                         if (isNotifyEnabled) {
                           isNotifyEnabled = false;
                           if (timer != null) {
-                            timerProvider.updateTimer(
+                            provider.updateTimer(
                                 timer!.copyWith(notification: 'OFF'));
                           }
                           setState(() {
@@ -340,7 +346,7 @@ class GroupAddPageListTileState
                         } else {
                           isNotifyEnabled = true;
                           if (timer != null) {
-                            timerProvider.updateTimer(
+                            provider.updateTimer(
                                 timer!.copyWith(notification: 'ON'));
                           }
                           setState(() {
