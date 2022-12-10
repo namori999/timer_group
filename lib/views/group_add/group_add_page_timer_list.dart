@@ -38,13 +38,16 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   @override
   void initState() {
     if (timers != null) {
+      int index = 1;
       for (Timer t in timers) {
         if (t.number != 0) {
           timerList.add(GroupAddPageTimerListTile(
-            index: t.number,
+            index: index,
+            number: t.number,
             groupId: t.groupId,
             timer: t,
           ));
+          index ++;
         }
       }
     } else {
@@ -123,6 +126,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                     setState(() {
                       timerList.add(GroupAddPageTimerListTile(
                         index: index,
+                        number: index,
                         groupId: groupId,
                         timer: addedTimer,
                       ));

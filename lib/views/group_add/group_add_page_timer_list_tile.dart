@@ -16,6 +16,7 @@ import 'group_add_page_timer_list.dart';
 
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
   GroupAddPageTimerListTile({
+    this.number,
     this.index,
     required this.groupId,
     this.timer,
@@ -23,6 +24,7 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
+  final int? number;
   final int? index;
   final int groupId;
   final Timer? timer;
@@ -35,10 +37,9 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
+  get number => widget.number;
   get index => widget.index;
-
   get groupId => widget.groupId;
-
   Timer? get timer => widget.timer;
 
   static String time = '';
@@ -117,7 +118,7 @@ class GroupAddPageListTileState
                     alignment: AlignmentDirectional.centerEnd,
                     child: IconButton(
                       onPressed: () async {
-                        provider.removeTimer(groupId, index);
+                        provider.removeTimer(groupId, number);
                         GroupAddPageTimerListState.timerList.removeAt(index);
                         setState(() {
                         });
