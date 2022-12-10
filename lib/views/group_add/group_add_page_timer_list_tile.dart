@@ -38,8 +38,11 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get number => widget.number;
+
   get index => widget.index;
+
   get groupId => widget.groupId;
+
   Timer? get timer => widget.timer;
 
   static String time = '';
@@ -94,7 +97,6 @@ class GroupAddPageListTileState
 
     return SizedBox(
       width: 280,
-      height: 360,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), // if you need this
@@ -108,28 +110,33 @@ class GroupAddPageListTileState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Text(index.toString()),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: IconButton(
-                      onPressed: () async {
-                        provider.removeTimer(groupId, number);
-                        GroupAddPageTimerListState.timerList.removeAt(index);
-                        setState(() {
-                        });
-                      },
-                      icon: const Icon(Icons.close_rounded),
-                      padding: EdgeInsets.zero,
+              if (number != 0)
+                Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Center(
+                          child: Text(index.toString()),
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: IconButton(
+                            onPressed: () async {
+                              provider.removeTimer(groupId, number);
+                              GroupAddPageTimerListState.timerList
+                                  .removeAt(index);
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.close_rounded),
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              spacer(),
+                    spacer(),
+                  ],
+                ),
               Row(
                 children: [
                   const Icon(Icons.timer_outlined),
