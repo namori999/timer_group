@@ -47,6 +47,7 @@ class timerRepository {
   Future<void> removeTimer(int groupId, int number) async {
     await _db.delete(groupId, number);
     ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> removeAllTimers(int groupId) async {

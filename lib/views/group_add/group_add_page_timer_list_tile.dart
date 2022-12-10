@@ -111,13 +111,13 @@ class GroupAddPageListTileState
                 alignment: Alignment.center,
                 children: [
                   Center(
-                    child: Text(index   .toString()),
+                    child: Text(index.toString()),
                   ),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: IconButton(
                       onPressed: () async {
-                        provider.removeTimer(groupId, index + 1);
+                        provider.removeTimer(groupId, index);
                         GroupAddPageTimerListState.timerList.removeAt(index);
                         setState(() {
                         });
