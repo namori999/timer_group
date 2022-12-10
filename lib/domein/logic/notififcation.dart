@@ -31,11 +31,6 @@ class FinishNotification {
     tz.setLocalLocation(tz.getLocation(timeZoneName));
   }
 
-  /// セットしてある通知をキャンセル
-  Future<void> cancelNotification() async {
-    await FlutterLocalNotificationsPlugin().cancelAll();
-  }
-
   ///通知をスケジュール
   Future<void> notify(
     int timerIndex, {
