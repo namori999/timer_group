@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:stream_duration/stream_duration.dart';
+import 'package:timer_group/domein/logic/notififcation.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
@@ -68,8 +69,14 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     },
   ));
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void nextDuration() {
     if (currentIndex < timers.length - 1) {
+      FinishNotification().notify(currentIndex);
       currentIndex++;
       streamDuration = StreamDuration(
         Duration(seconds: timers[currentIndex].time),

@@ -77,7 +77,6 @@ class DetailPage extends ConsumerWidget {
                 if (totalTimeSecond != null) {
                   totalTimeSecond = totalTimeSecond;
                 }
-
                 Navigator.of(context).push(
                   CountDownPage.route(
                     timerGroup: timerGroup!,
