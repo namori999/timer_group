@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/outlined_drop_down_button.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -28,13 +29,13 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   TimerGroup get timerGroup => widget.timerGroup;
 
   TextEditingController get titleController => widget.titleController;
+
   TextEditingController get descriptionController =>
       widget.descriptionController;
   final ScrollController listViewController = ScrollController();
 
   String titleText = '';
   String descriptionText = '';
-  List<Timer> timerList = [];
   Timer? overTimeTimer;
 
   final children = <Widget>[];
@@ -43,9 +44,8 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
 
   @override
   void initState() {
-    timerList = timerGroup.timers!;
     if (timerGroup.options!.overTime! == 'ON') {
-      overTimeTimer = timerList.last;
+      overTimeTimer = timerGroup.timers!.last;
     }
     titleController.text = timerGroup.title;
     if (timerGroup.description != null) {
@@ -61,6 +61,12 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
       setState(() {});
     });
     super.initState();
+  }
+
+  Future<List<Timer>> getTimers() async {
+    final timerProvider = ref.watch(timerRepositoryProvider);
+    final timers = await timerProvider.getTimers(timerGroup.id!);
+    return timers;
   }
 
   @override
@@ -132,12 +138,18 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                 ],
               ),
               spacer(),
-              SizedBox(
-                  height: 360,
-                  child: GroupAddPageTimerList(
-                    title: timerGroup.title,
-                    timers: timerList,
-                  )),
+              FutureBuilder(
+                future: getTimers(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Timer>> timers) {
+                  if (timers.hasData) {
+                    return GroupAddPageTimerList(
+                        timers: timers.data, groupId: timerGroup.id!);
+                  } else {
+                    return Text("データが存在しません");
+                  }
+                },
+              ),
               const SizedBox(
                 height: 16,
               ),
@@ -150,11 +162,6 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                 child: GroupAddOverTime(
                   title: timerGroup.title,
                   overTimeTimer: overTimeTimer,
-                ),
-              ),
-              const Expanded(
-                child: SizedBox(
-                  height: 16,
                 ),
               ),
             ],

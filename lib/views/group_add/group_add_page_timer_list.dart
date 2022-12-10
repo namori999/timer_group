@@ -2,19 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
 
 class GroupAddPageTimerList extends ConsumerStatefulWidget {
   GroupAddPageTimerList({
-    required this.title,
+    required this.groupId,
     this.timers,
     Key? key,
   }) : super(key: key);
 
-  String title;
   List<Timer>? timers;
+  int groupId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -22,10 +23,10 @@ class GroupAddPageTimerList extends ConsumerStatefulWidget {
 }
 
 class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
-  final timerList = <Widget>[];
+  static final timerList = <Widget>[];
   static int index = 0;
 
-  get title => widget.title;
+  get groupId => widget.groupId;
 
   get timers => widget.timers;
 
@@ -37,27 +38,38 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   @override
   void initState() {
     if (timers != null) {
-      index = timers.length;
+      int index = 1;
       for (Timer t in timers) {
         if (t.number != 0) {
           timerList.add(GroupAddPageTimerListTile(
-            index: t.number,
-            title: title,
+            index: index,
+            number: t.number,
+            groupId: t.groupId,
             timer: t,
           ));
+          index ++;
         }
       }
     } else {
-      index = -1;
       addIndex();
     }
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    timerList.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const SizedBox(
+          height: 8,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -65,7 +77,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             Padding(
               padding: const EdgeInsets.only(right: 32),
               child: Text(
-                '× $index',
+                '× ${timerList.length}',
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -78,13 +90,19 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: timerList,
+              SizedBox(
+                height: 380,
+                child: Row(
+                  children: timerList,
+                )
               ),
               IconButton(
                 onPressed: () async {
-                  Timer? timer = await showModalBottomSheet(
+                  final timerProvider = ref.watch(timerRepositoryProvider);
+                  index = addIndex();
+                  Timer addedTimer = await showModalBottomSheet(
                       context: context,
                       elevation: 20,
                       isScrollControlled: true,
@@ -94,19 +112,23 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                       ),
                       builder: (context) {
                         return AddTimerDialog(
-                          index: index = addIndex(),
-                          title: title,
+                          index: index,
+                          groupId: groupId,
                         );
                       });
 
-                  if (timer == null) {
-                    index = index - 1;
+                  if (addedTimer == null) {
+                    timerProvider.removeTimer(groupId, index);
+                    setState(() {
+                      index = index - 1;
+                    });
                   } else {
                     setState(() {
                       timerList.add(GroupAddPageTimerListTile(
                         index: index,
-                        title: title,
-                        timer: timer,
+                        number: index,
+                        groupId: groupId,
+                        timer: addedTimer,
                       ));
                     });
                   }

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
@@ -13,18 +12,21 @@ import 'package:timer_group/views/components/dialogs/background_input_dialog/ima
 import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 
 import '../configure/theme.dart';
+import 'group_add_page_timer_list.dart';
 
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
   GroupAddPageTimerListTile({
+    this.number,
     this.index,
-    required this.title,
+    required this.groupId,
     this.timer,
     this.overTime,
     Key? key,
   }) : super(key: key);
 
+  final int? number;
   final int? index;
-  final String title;
+  final int groupId;
   final Timer? timer;
   bool? overTime;
 
@@ -35,13 +37,13 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
+  get number => widget.number;
   get index => widget.index;
-
-  get title => widget.title;
-
+  get groupId => widget.groupId;
   Timer? get timer => widget.timer;
 
   static String time = '';
+  static int timeSecond = 0;
   AlarmSounds alarm = AlarmSounds.sample;
   static String alarmTitle = '';
   AlarmSounds bgm = AlarmSounds.sample;
@@ -65,9 +67,8 @@ class GroupAddPageListTileState
     } else {
       time = '00:00:00';
       Future(() async {
-        final List<Image> imageList =
-        await FirebaseMethods().getImages();
-        imageTitle = imageList.first.semanticLabel!;
+        final sampleImageTitle = await FirebaseMethods().getSampleImageTitle();
+        imageTitle = sampleImageTitle;
         setState(() {});
       });
     }
@@ -87,62 +88,48 @@ class GroupAddPageListTileState
     );
   }
 
-  Timer getTImer() {
-    var timer = Timer(
-        groupId: 0,
-        number: index,
-        time: timeToSecond(time),
-        soundPath: alarmTitle,
-        bgmPath: bgmTitle,
-        imagePath: imageTitle,
-        notification: notification);
-    return timer;
-  }
-
-  Future<Timer?> addTimer() async {
-    if (mounted) {
-      final repo = ref.watch(timerGroupRepositoryProvider);
-      final id = await repo.getId(title);
-      var timer = Timer(
-          groupId: id,
-          number: index,
-          time: timeToSecond(time),
-          soundPath: alarmTitle,
-          bgmPath: bgmTitle,
-          imagePath: imageTitle,
-          notification: notification);
-
-      final provider = ref.watch(timerRepositoryProvider);
-      await provider.addTimer(timer);
-      return timer;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // if you need this
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.2),
-          width: 1,
+    final provider = ref.watch(timerRepositoryProvider);
+
+    return SizedBox(
+      width: 280,
+      height: 360,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // if you need this
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          width: 250,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              if (index != 0)
-                Column(
-                  children: [
-                    Text(index.toString()),
-                    spacer(),
-                  ],
-                ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Text(index.toString()),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: IconButton(
+                      onPressed: () async {
+                        provider.removeTimer(groupId, number);
+                        GroupAddPageTimerListState.timerList.removeAt(index);
+                        setState(() {
+                        });
+                      },
+                      icon: const Icon(Icons.close_rounded),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
+              ),
+              spacer(),
               Row(
                 children: [
                   const Icon(Icons.timer_outlined),
@@ -177,11 +164,11 @@ class GroupAddPageListTileState
                             );
                           },
                         );
-                        final timerProvider =
-                            ref.watch(timerRepositoryProvider);
-                        if(timer!= null) {
-                          timerProvider
-                              .update(timer!.copyWith(time: result.inSeconds));
+
+                        if (timer != null) {
+                          timeSecond = result.inSeconds;
+                          provider.updateTimer(
+                              timer!.copyWith(time: result.inSeconds));
                         }
                         setState(() {
                           time = result
@@ -227,6 +214,10 @@ class GroupAddPageListTileState
                           return const AlarmInputDialog();
                         },
                       );
+                      if (timer != null) {
+                        provider.updateTimer(
+                            timer!.copyWith(soundPath: result.name));
+                      }
                       setState(() {
                         alarm = result;
                         alarmTitle = result.name;
@@ -261,16 +252,20 @@ class GroupAddPageListTileState
                       ],
                     ),
                     onPressed: () async {
-                      AlarmSounds sounds = await showDialog(
+                      AlarmSounds result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
                           return const BgmInputDialog();
                         },
                       );
+                      if (timer != null) {
+                        provider
+                            .updateTimer(timer!.copyWith(bgmPath: result.name));
+                      }
                       setState(() {
-                        bgm = sounds;
-                        bgmTitle = sounds.name;
+                        bgm = result;
+                        bgmTitle = result.name;
                       });
                     },
                   ),
@@ -309,9 +304,12 @@ class GroupAddPageListTileState
                             return ImageInputDialog(imageList);
                           },
                         );
+                        if (timer != null) {
+                          provider
+                              .updateTimer(timer!.copyWith(imagePath: result));
+                        }
                         imageTitle = result;
-                        setState(() {
-                        });
+                        setState(() {});
                       },
                       child: Text(''),
                     ),
@@ -339,11 +337,19 @@ class GroupAddPageListTileState
                       onPressed: () {
                         if (isNotifyEnabled) {
                           isNotifyEnabled = false;
+                          if (timer != null) {
+                            provider.updateTimer(
+                                timer!.copyWith(notification: 'OFF'));
+                          }
                           setState(() {
                             notification = 'OFF';
                           });
                         } else {
                           isNotifyEnabled = true;
+                          if (timer != null) {
+                            provider.updateTimer(
+                                timer!.copyWith(notification: 'ON'));
+                          }
                           setState(() {
                             notification = 'ON';
                           });

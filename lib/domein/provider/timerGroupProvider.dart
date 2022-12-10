@@ -19,6 +19,7 @@ class TimerGroupRepository {
   static const _optionsDb = SqliteLocalDatabase.timerGroupOptions;
   static const _timersDb = SqliteLocalDatabase.timers;
   final Ref ref;
+  late final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);
 
   Future<List<TimerGroup>> getAll() async {
     return await _db.getAll();
@@ -30,6 +31,16 @@ class TimerGroupRepository {
         await ref.watch(timerGroupOptionsRepositoryProvider).getOptions(id);
     final timers = await ref.watch(timerRepositoryProvider).getTimers(id);
     final totalTime = await ref.watch(timerRepositoryProvider).getTotal(id);
+
+    if (totalTime == null) {
+      return TimerGroup(
+        id: id,
+        title: groupInfo.title,
+        description: groupInfo.description,
+        options: options,
+        timers: timers,
+      );
+    }
 
     return TimerGroup(
       id: id,
@@ -77,7 +88,8 @@ class TimerGroupRepository {
   Future<void> removeTimerGroup(int id) async {
     await _db.delete(id);
     await _optionsDb.delete(id);
-    await _timersDb.delete(id);
+    await _timersDb.deleteAllTimers(id);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 }
 

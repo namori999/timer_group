@@ -18,10 +18,10 @@ class GroupEditPageData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<TimerGroup> getTimerGroup() async {
+    Future<TimerGroup?> getTimerGroup() async {
       final timerGroup =
-          await ref.watch(timerGroupRepositoryProvider).getTimerGroup(id);
-      return timerGroup!;
+          await ref.read(timerGroupRepositoryProvider).getTimerGroup(id);
+      return timerGroup;
     }
 
     return Padding(
@@ -31,7 +31,7 @@ class GroupEditPageData extends ConsumerWidget {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == null) {
-              return const SizedBox();
+              return const Text('data is null');
             } else {
               return GroupEditPageBody(
                 timerGroup: snapshot.data,
@@ -40,7 +40,7 @@ class GroupEditPageData extends ConsumerWidget {
               );
             }
           } else {
-            return const SizedBox();
+            return const Text('sorry,something went wrong');
           }
         },
       ),

@@ -5,7 +5,8 @@ import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/configure/theme.dart';
-import 'package:timer_group/views/group_add/group_add_page_second.dart';
+import 'package:timer_group/views/group_add/group_add_page_add_button.dart';
+import 'package:timer_group/views/group_edit/group_edit_page_data.dart';
 
 class GroupAddPageBody extends ConsumerStatefulWidget {
   const GroupAddPageBody({
@@ -40,25 +41,15 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
       } else {
         isEmpty = false;
       }
-      setState(() {});
     });
-    children.add(
-      nextStepButton(),
-    );
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    super.dispose();
+    children.add(textFields());
+    children.add(nextStepButton());
   }
 
   Future<void> cancelAdding() async {
     if (onSecondStep) {
       final repo = ref.watch(timerGroupRepositoryProvider);
       final timerProvider = ref.watch(timerRepositoryProvider);
-      final groupId = await repo.getId(titleText);
       await repo.removeTimerGroup(groupId);
       await timerProvider.removeAllTimers(groupId);
     }
@@ -87,14 +78,20 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
         final groupId = await provider.addNewGroup(
           TimerGroupInfo(title: title, description: description),
         );
+        final timerGroup = await ref
+            .watch(timerGroupRepositoryProvider)
+            .getTimerGroup(groupId);
 
-        setState(() {
-          children.clear();
-          children.add(GroupAddPageSecond(
-            title: title,
-            groupId: groupId,
-          ));
-        });
+        children.clear();
+        children.add(
+          GroupEditPageData(
+              id: timerGroup!.id!,
+              titleController: titleController,
+              descriptionController: descriptionController),
+        );
+        children.add(GroupAddPageAddButton(title: title, groupId: groupId));
+
+        setState(() {});
       },
       iconSize: 80,
       icon: const Icon(
@@ -117,8 +114,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget textFields() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -165,10 +161,14 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           ),
         ),
         spacer(),
-        Column(
-          children: children,
-        ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: children,
     );
   }
 }

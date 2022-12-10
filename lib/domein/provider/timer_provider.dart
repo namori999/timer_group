@@ -1,8 +1,8 @@
-
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
 final timerRepositoryProvider = Provider((ref) => timerRepository(ref));
@@ -15,32 +15,46 @@ class timerRepository {
 
   Future<List<Timer>> getTimers(int id) async => await _db.getTimers(id);
 
-  Future<void> update(Timer timer) async {
-    await _db.insert(timer);
-    //ref.refresh(timerRepositoryProvider);
+  Future<Timer> getTimer(int id, int number) async =>
+      await _db.getTimer(id, number);
+
+  Future<void> updateTimer(Timer timer) async {
+    await _db.update(timer);
+    print('timer updated at provider: $timer');
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> addTimers(List<Timer> timers) async {
     for (Timer t in timers) {
       await _db.insert(t);
     }
-    //ref.refresh(timerRepositoryProvider);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> addTimer(Timer timer) async {
     await _db.insert(timer);
-    //ref.refresh(timerRepositoryProvider);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
-  Future<void> removeTimer(int id) async {
-    await _db.delete(id);
-    //ref.refresh(timerRepositoryProvider);
+  Future<void> addOverTime(Timer timer) async {
+    await _db.insert(timer);
+    ref.invalidate(timerRepositoryProvider);
+  }
+
+  Future<void> removeTimer(int groupId, int number) async {
+    await _db.delete(groupId, number);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> removeAllTimers(int groupId) async {
     await _db.deleteAllTimers(groupId);
-    //ref.refresh(timerRepositoryProvider);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
-  Future<int> getTotal(int id) async => await _db.getTotal(id);
+  Future<int?> getTotal(int id) async => await _db.getTotal(id);
 }

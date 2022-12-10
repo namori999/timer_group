@@ -2,27 +2,32 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
-class AddTimerDialog extends StatelessWidget {
+class AddTimerDialog extends ConsumerWidget {
   AddTimerDialog({
     Key? key,
     required this.index,
-    required this.title,
+    required this.groupId,
     this.overTime,
   }) : super(key: key);
 
   int index;
-  String title;
+  int groupId;
   bool? overTime;
 
   GlobalKey<GroupAddPageListTileState> globalKey = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(timerRepositoryProvider);
+
     return Container(
-      height: 500,
+      height: 600,
       margin: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,14 +37,14 @@ class AddTimerDialog extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.pop<bool>(context, false);
                   },
                   icon: const Icon(Icons.close_rounded)),
             ],
           ),
           GroupAddPageTimerListTile(
             index: index,
-            title: title,
+            groupId: groupId,
             overTime: true,
             key: globalKey,
           ),
@@ -54,7 +59,15 @@ class AddTimerDialog extends StatelessWidget {
               ),
             ),
             onPressed: () async {
-              Timer? timer = await globalKey.currentState!.addTimer();
+              final timer = Timer(
+                  groupId: groupId,
+                  number: index,
+                  time: timeToSecond(GroupAddPageListTileState.time),
+                  soundPath: GroupAddPageListTileState.alarmTitle,
+                  bgmPath: GroupAddPageListTileState.bgmTitle,
+                  imagePath: GroupAddPageListTileState.imageTitle,
+                  notification: GroupAddPageListTileState.notification);
+              provider.addTimer(timer);
               Navigator.pop<Timer>(context, timer);
             },
             child: Row(
