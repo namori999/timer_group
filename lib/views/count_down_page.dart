@@ -69,14 +69,9 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     },
   ));
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void nextDuration() {
+    FinishNotification().notify(currentIndex);
     if (currentIndex < timers.length - 1) {
-      FinishNotification().notify(currentIndex);
       currentIndex++;
       streamDuration = StreamDuration(
         Duration(seconds: timers[currentIndex].time),
