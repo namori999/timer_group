@@ -213,11 +213,13 @@ class GroupAddPageListTileState
                       ],
                     ),
                     onPressed: () async {
+                      List<String> sounds = await FirebaseMethods().getSoundEffects();
+
                       AlarmSounds result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return const AlarmInputDialog();
+                          return AlarmInputDialog(sounds: sounds);
                         },
                       );
                       if (timer != null) {

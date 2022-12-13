@@ -6,17 +6,20 @@ import 'package:timer_group/views/components/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
 class AlarmInputDialog extends ConsumerStatefulWidget {
-  const AlarmInputDialog({Key? key}) : super(key: key);
+  const AlarmInputDialog({
+    required this.sounds,
+    Key? key,
+  }) : super(key: key);
+
+  final List<String> sounds;
 
   @override
   AlarmInputDialogState createState() => AlarmInputDialogState();
 }
 
 class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
-
-  List<AlarmSounds> alarms = AlarmSounds.values;
+  List<String> get sounds => widget.sounds;
   AlarmSounds selectedSound = AlarmSounds.sample;
-
 
   @override
   void initState() {
@@ -101,15 +104,15 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
       content: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: ListView.separated(
-          itemCount: alarms.length,
+          itemCount: sounds.length,
           controller: ScrollController(),
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: ((context, index) => Container(
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: alarms[index]),
-                  value: alarms[index],
+                  title: AudioPlayButton(sound: sounds[index]),
+                  value: sounds[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),
                 ),

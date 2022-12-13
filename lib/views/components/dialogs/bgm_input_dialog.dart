@@ -102,7 +102,7 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: musics[index]),
+                  title: AudioPlayButton(sound: musics[index].name),
                   value: musics[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),
