@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
@@ -315,8 +314,9 @@ class GroupAddPageListTileState
                           provider
                               .updateTimer(timer!.copyWith(imagePath: result));
                         }
-                        imageTitle = result;
-                        setState(() {});
+                        setState(() {
+                          imageTitle = result;
+                        });
                       },
                       child: Text(''),
                     ),

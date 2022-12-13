@@ -90,6 +90,8 @@ class TimerGroupRepository {
     await _optionsDb.delete(id);
     await _timersDb.deleteAllTimers(id);
     ref.invalidate(timerGroupRepositoryProvider);
+    ref.invalidate(timerGroupOptionsRepositoryProvider);
+    ref.invalidate(timerRepositoryProvider);
   }
 }
 

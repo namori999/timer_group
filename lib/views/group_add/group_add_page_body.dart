@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timerGroupProvider.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
-import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_add_button.dart';
 import 'package:timer_group/views/group_edit/group_edit_page_data.dart';
@@ -49,9 +48,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
   Future<void> cancelAdding() async {
     if (onSecondStep) {
       final repo = ref.watch(timerGroupRepositoryProvider);
-      final timerProvider = ref.watch(timerRepositoryProvider);
       await repo.removeTimerGroup(groupId);
-      await timerProvider.removeAllTimers(groupId);
     }
   }
 
@@ -73,7 +70,6 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
           return;
         }
 
-        onSecondStep = true;
         final provider = ref.watch(savedTimerGroupProvider.notifier);
         final groupId = await provider.addNewGroup(
           TimerGroupInfo(title: title, description: description),
@@ -90,6 +86,8 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
               descriptionController: descriptionController),
         );
         children.add(GroupAddPageAddButton(title: title, groupId: groupId));
+
+        onSecondStep = true;
 
         setState(() {});
       },
