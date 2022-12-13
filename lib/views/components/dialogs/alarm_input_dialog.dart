@@ -1,8 +1,8 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
-import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/components/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
@@ -20,7 +20,8 @@ class AlarmInputDialog extends ConsumerStatefulWidget {
 
 class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
   List<Sound> get sounds => widget.sounds;
-  AlarmSounds selectedSound = AlarmSounds.sample;
+  Sound? selectedSound;
+  AudioPlayer player = AudioPlayer();
 
   @override
   void initState() {
@@ -50,7 +51,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       insetPadding: const EdgeInsets.all(16),
       actions: [
@@ -62,7 +63,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
             ),
           ),
           onPressed: () {
-            Navigator.pop<AlarmSounds>(context, selectedSound);
+            Navigator.pop<Sound>(context, selectedSound);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -112,7 +113,10 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: sounds[index]),
+                  title: AudioPlayButton(
+                    sound: sounds[index],
+                    player: player,
+                  ),
                   value: sounds[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),

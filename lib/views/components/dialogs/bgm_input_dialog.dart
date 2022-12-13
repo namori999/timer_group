@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,6 +19,7 @@ class BgmInputDialog extends ConsumerStatefulWidget {
 class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
   List<Sound> get musics => widget.musics;
   AlarmSounds selectedSound = AlarmSounds.sample;
+  AudioPlayer player = AudioPlayer();
 
   Widget spacer() {
     return Column(
@@ -104,7 +106,7 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: musics[index]),
+                  title: AudioPlayButton(sound: musics[index],player: player,),
                   value: musics[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),

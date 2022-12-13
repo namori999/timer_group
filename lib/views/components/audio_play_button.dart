@@ -3,14 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
+import 'package:timer_group/views/configure/theme.dart';
 
 class AudioPlayButton extends ConsumerStatefulWidget {
   const AudioPlayButton({
     required this.sound,
+    required this.player,
     Key? key,
   }) : super(key: key);
 
   final Sound sound;
+  final AudioPlayer player;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => AudioPlayButtonState();
@@ -18,20 +21,35 @@ class AudioPlayButton extends ConsumerStatefulWidget {
 
 class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
   Sound get sound => widget.sound;
-  String currentText = "start";
   Icon icon = const Icon(Icons.play_arrow_rounded);
+  bool isPlaying = false;
 
-  final player = AudioPlayer();
+  AudioPlayer get player => widget.player;
 
   @override
   void initState() {
     super.initState();
+    player.setReleaseMode(ReleaseMode.loop);
+    player.onPlayerStateChanged.listen((state) {
+      if (state == PlayerState.paused) {
+        toggleIcon();
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     player.stop();
+  }
+
+  void toggleIcon() {
+    if (isPlaying) {
+      icon = const Icon(Icons.pause_outlined);
+    } else {
+      icon = const Icon(Icons.play_arrow_rounded);
+    }
+    setState(() {});
   }
 
   @override
@@ -49,28 +67,30 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
           ),
         ),
         const Spacer(),
-        IconButton(
+        ElevatedButton(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(const CircleBorder()),
+            backgroundColor: MaterialStateProperty.all(
+                Themes.grayColor.shade50), // <-- Button color
+          ),
           onPressed: () async {
-            if (currentText == 'start') {
-              player.play(UrlSource(sound.url));
-              setState(() {
-                icon = const Icon(
-                  Icons.pause_outlined,
-                );
-                currentText = "stop";
-              });
+            if (isPlaying) {
+              player.pause();
+              isPlaying = false;
             } else {
-              player.stop();
-              setState(() {
-                icon = const Icon(Icons.play_arrow_rounded);
-                currentText = "start";
-              });
+              if (player.state == PlayerState.playing) {
+                await player.pause();
+                player.play(UrlSource(sound.url));
+              } else {
+                player.play(UrlSource(sound.url));
+              }
+              isPlaying = true;
             }
+            toggleIcon();
           },
-          icon: icon,
+          child: icon,
         ),
       ],
     );
   }
 }
-
