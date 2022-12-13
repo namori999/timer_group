@@ -37,7 +37,8 @@ mixin _$TimerGroup {
 abstract class $TimerGroupCopyWith<$Res> {
   factory $TimerGroupCopyWith(
           TimerGroup value, $Res Function(TimerGroup) then) =
-      _$TimerGroupCopyWithImpl<$Res>;
+      _$TimerGroupCopyWithImpl<$Res, TimerGroup>;
+  @useResult
   $Res call(
       {int? id,
       String title,
@@ -50,58 +51,62 @@ abstract class $TimerGroupCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TimerGroupCopyWithImpl<$Res> implements $TimerGroupCopyWith<$Res> {
+class _$TimerGroupCopyWithImpl<$Res, $Val extends TimerGroup>
+    implements $TimerGroupCopyWith<$Res> {
   _$TimerGroupCopyWithImpl(this._value, this._then);
 
-  final TimerGroup _value;
   // ignore: unused_field
-  final $Res Function(TimerGroup) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = freezed,
-    Object? title = freezed,
+    Object? title = null,
     Object? description = freezed,
     Object? options = freezed,
     Object? timers = freezed,
     Object? totalTime = freezed,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      options: options == freezed
+      options: freezed == options
           ? _value.options
           : options // ignore: cast_nullable_to_non_nullable
               as TimerGroupOptions?,
-      timers: timers == freezed
+      timers: freezed == timers
           ? _value.timers
           : timers // ignore: cast_nullable_to_non_nullable
               as List<Timer>?,
-      totalTime: totalTime == freezed
+      totalTime: freezed == totalTime
           ? _value.totalTime
           : totalTime // ignore: cast_nullable_to_non_nullable
               as int?,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $TimerGroupOptionsCopyWith<$Res>? get options {
     if (_value.options == null) {
       return null;
     }
 
     return $TimerGroupOptionsCopyWith<$Res>(_value.options!, (value) {
-      return _then(_value.copyWith(options: value));
+      return _then(_value.copyWith(options: value) as $Val);
     });
   }
 }
@@ -113,6 +118,7 @@ abstract class _$$_TimerGroupCopyWith<$Res>
           _$_TimerGroup value, $Res Function(_$_TimerGroup) then) =
       __$$_TimerGroupCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {int? id,
       String title,
@@ -126,46 +132,45 @@ abstract class _$$_TimerGroupCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TimerGroupCopyWithImpl<$Res> extends _$TimerGroupCopyWithImpl<$Res>
+class __$$_TimerGroupCopyWithImpl<$Res>
+    extends _$TimerGroupCopyWithImpl<$Res, _$_TimerGroup>
     implements _$$_TimerGroupCopyWith<$Res> {
   __$$_TimerGroupCopyWithImpl(
       _$_TimerGroup _value, $Res Function(_$_TimerGroup) _then)
-      : super(_value, (v) => _then(v as _$_TimerGroup));
+      : super(_value, _then);
 
-  @override
-  _$_TimerGroup get _value => super._value as _$_TimerGroup;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = freezed,
-    Object? title = freezed,
+    Object? title = null,
     Object? description = freezed,
     Object? options = freezed,
     Object? timers = freezed,
     Object? totalTime = freezed,
   }) {
     return _then(_$_TimerGroup(
-      id: id == freezed
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      options: options == freezed
+      options: freezed == options
           ? _value.options
           : options // ignore: cast_nullable_to_non_nullable
               as TimerGroupOptions?,
-      timers: timers == freezed
+      timers: freezed == timers
           ? _value._timers
           : timers // ignore: cast_nullable_to_non_nullable
               as List<Timer>?,
-      totalTime: totalTime == freezed
+      totalTime: freezed == totalTime
           ? _value.totalTime
           : totalTime // ignore: cast_nullable_to_non_nullable
               as int?,
@@ -219,28 +224,24 @@ class _$_TimerGroup extends _TimerGroup {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TimerGroup &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality()
-                .equals(other.description, description) &&
-            const DeepCollectionEquality().equals(other.options, options) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.options, options) || other.options == options) &&
             const DeepCollectionEquality().equals(other._timers, _timers) &&
-            const DeepCollectionEquality().equals(other.totalTime, totalTime));
+            (identical(other.totalTime, totalTime) ||
+                other.totalTime == totalTime));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(description),
-      const DeepCollectionEquality().hash(options),
-      const DeepCollectionEquality().hash(_timers),
-      const DeepCollectionEquality().hash(totalTime));
+  int get hashCode => Object.hash(runtimeType, id, title, description, options,
+      const DeepCollectionEquality().hash(_timers), totalTime);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_TimerGroupCopyWith<_$_TimerGroup> get copyWith =>
       __$$_TimerGroupCopyWithImpl<_$_TimerGroup>(this, _$identity);
 

@@ -33,34 +33,37 @@ mixin _$TimerGroupInfo {
 abstract class $TimerGroupInfoCopyWith<$Res> {
   factory $TimerGroupInfoCopyWith(
           TimerGroupInfo value, $Res Function(TimerGroupInfo) then) =
-      _$TimerGroupInfoCopyWithImpl<$Res>;
+      _$TimerGroupInfoCopyWithImpl<$Res, TimerGroupInfo>;
+  @useResult
   $Res call({String title, String? description});
 }
 
 /// @nodoc
-class _$TimerGroupInfoCopyWithImpl<$Res>
+class _$TimerGroupInfoCopyWithImpl<$Res, $Val extends TimerGroupInfo>
     implements $TimerGroupInfoCopyWith<$Res> {
   _$TimerGroupInfoCopyWithImpl(this._value, this._then);
 
-  final TimerGroupInfo _value;
   // ignore: unused_field
-  final $Res Function(TimerGroupInfo) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = freezed,
+    Object? title = null,
     Object? description = freezed,
   }) {
     return _then(_value.copyWith(
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-    ));
+    ) as $Val);
   }
 }
 
@@ -71,31 +74,30 @@ abstract class _$$_TimerGroupInfoCopyWith<$Res>
           _$_TimerGroupInfo value, $Res Function(_$_TimerGroupInfo) then) =
       __$$_TimerGroupInfoCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String title, String? description});
 }
 
 /// @nodoc
 class __$$_TimerGroupInfoCopyWithImpl<$Res>
-    extends _$TimerGroupInfoCopyWithImpl<$Res>
+    extends _$TimerGroupInfoCopyWithImpl<$Res, _$_TimerGroupInfo>
     implements _$$_TimerGroupInfoCopyWith<$Res> {
   __$$_TimerGroupInfoCopyWithImpl(
       _$_TimerGroupInfo _value, $Res Function(_$_TimerGroupInfo) _then)
-      : super(_value, (v) => _then(v as _$_TimerGroupInfo));
+      : super(_value, _then);
 
-  @override
-  _$_TimerGroupInfo get _value => super._value as _$_TimerGroupInfo;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = freezed,
+    Object? title = null,
     Object? description = freezed,
   }) {
     return _then(_$_TimerGroupInfo(
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
@@ -126,20 +128,18 @@ class _$_TimerGroupInfo extends _TimerGroupInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TimerGroupInfo &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality()
-                .equals(other.description, description));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(description));
+  int get hashCode => Object.hash(runtimeType, title, description);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_TimerGroupInfoCopyWith<_$_TimerGroupInfo> get copyWith =>
       __$$_TimerGroupInfoCopyWithImpl<_$_TimerGroupInfo>(this, _$identity);
 

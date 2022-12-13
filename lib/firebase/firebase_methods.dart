@@ -1,8 +1,8 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_group/domein/models/sound.dart';
 
 class FirebaseMethods {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -36,18 +36,18 @@ class FirebaseMethods {
     return url;
   }
 
-  Future<List<String>> getSoundEffects() async {
+  Future<List<Sound>> getSoundEffects() async {
     final storageRef = FirebaseStorage.instance.ref().child("SE");
     final listResult = await storageRef.listAll();
-    final List<String> fileNames = [];
+    final List<Sound> sounds = [];
 
     for (var item in listResult.items) {
       // The items under storageRef.
       final ref = storage.ref().child(item.fullPath);
       final String url = await ref.getDownloadURL();
-      fileNames.add(url);
+      sounds.add(Sound(name: item.name, url: url));
     }
-    print(fileNames);
-    return fileNames;
+    print(sounds);
+    return sounds;
   }
 }

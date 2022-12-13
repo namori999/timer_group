@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/views/components/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -11,14 +12,14 @@ class AlarmInputDialog extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<String> sounds;
+  final List<Sound> sounds;
 
   @override
   AlarmInputDialogState createState() => AlarmInputDialogState();
 }
 
 class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
-  List<String> get sounds => widget.sounds;
+  List<Sound> get sounds => widget.sounds;
   AlarmSounds selectedSound = AlarmSounds.sample;
 
   @override

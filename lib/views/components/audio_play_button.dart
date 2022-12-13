@@ -2,8 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/models/timer.dart';
-import 'package:timer_group/firebase/firebase_methods.dart';
+import 'package:timer_group/domein/models/sound.dart';
 
 class AudioPlayButton extends ConsumerStatefulWidget {
   const AudioPlayButton({
@@ -11,14 +10,14 @@ class AudioPlayButton extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final String sound;
+  final Sound sound;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => AudioPlayButtonState();
 }
 
 class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
-  String get sound => widget.sound;
+  Sound get sound => widget.sound;
   String currentText = "start";
   Icon icon = const Icon(Icons.play_arrow_rounded);
 
@@ -43,7 +42,7 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
         SizedBox(
           width: 120,
           child: Text(
-            sound,
+            sound.name,
             style: const TextStyle(
               overflow: TextOverflow.ellipsis,
             ),
@@ -53,7 +52,7 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
         IconButton(
           onPressed: () async {
             if (currentText == 'start') {
-              player.play(UrlSource(sound));
+              player.play(UrlSource(sound.url));
               setState(() {
                 icon = const Icon(
                   Icons.pause_outlined,

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
@@ -213,7 +214,8 @@ class GroupAddPageListTileState
                       ],
                     ),
                     onPressed: () async {
-                      List<String> sounds = await FirebaseMethods().getSoundEffects();
+                      List<Sound> sounds =
+                          await FirebaseMethods().getSoundEffects();
 
                       AlarmSounds result = await showDialog(
                         context: context,
@@ -260,11 +262,13 @@ class GroupAddPageListTileState
                       ],
                     ),
                     onPressed: () async {
+                      final List<Sound> musics =
+                          await FirebaseMethods().getSoundEffects();
                       AlarmSounds result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return const BgmInputDialog();
+                          return BgmInputDialog(musics: musics);
                         },
                       );
                       if (timer != null) {
