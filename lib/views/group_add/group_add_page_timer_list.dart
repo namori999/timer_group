@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
@@ -123,14 +122,13 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                       index = index - 1;
                     });
                   } else {
-                    setState(() {
-                      timerList.add(GroupAddPageTimerListTile(
-                        index: index,
-                        number: index,
-                        groupId: groupId,
-                        timer: addedTimer,
-                      ));
-                    });
+                    final timer = await timerProvider.getTimer(groupId, index);
+                    timerList.add(GroupAddPageTimerListTile(
+                      index: index,
+                      number: index,
+                      groupId: groupId,
+                      timer: timer,
+                    ));
                   }
                 },
                 iconSize: 80,
