@@ -148,6 +148,9 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
                 options: options,
               ),
             ),
+          const  SizedBox(
+            height: 56,
+          )
         ],
       ),
     );
