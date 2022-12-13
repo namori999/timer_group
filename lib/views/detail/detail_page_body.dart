@@ -53,7 +53,7 @@ class DetailPageBodyState extends ConsumerState<DetailPageBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.only(right: 24, left: 24, bottom: 40),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
