@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_group/views/group_list_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app_splash_page.dart';
 import 'configure/theme.dart';
 
 class App extends StatelessWidget {
@@ -13,12 +14,15 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: Themes.defaultTheme,
       darkTheme: Themes.darkTheme,
-      home: const GroupListPage(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      routes: <String, WidgetBuilder>{
+        '/': (_) => AppSplashPage(),
+        '/home': (_) => const GroupListPage(),
+      },
       supportedLocales: const [
         Locale("en"),
         Locale("ja"),

@@ -5,7 +5,7 @@ import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/provider/timerGroupOptionsProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/detail/detail_page_list.dart';
 import 'package:timer_group/views/detail/over_time_tile.dart';
