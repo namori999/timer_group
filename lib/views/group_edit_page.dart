@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'group_edit/group_edit_page_data.dart';
 
 class GroupEditPage extends ConsumerWidget {

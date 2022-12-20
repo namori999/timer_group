@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/views/detail/detail_page_body.dart';
 
