@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
 final timerRepositoryProvider = Provider((ref) => timerRepository(ref));

@@ -3,7 +3,7 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
-import 'package:timer_group/domein/provider/timerGroupOptionsProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/storage/sqlite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
