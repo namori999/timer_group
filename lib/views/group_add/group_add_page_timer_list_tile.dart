@@ -47,9 +47,9 @@ class GroupAddPageListTileState
 
   static String time = '';
   static int timeSecond = 0;
-  AlarmSounds alarm = AlarmSounds.sample;
+  Sound? alarm;
+  Sound? bgm;
   static String alarmTitle = '';
-  AlarmSounds bgm = AlarmSounds.sample;
   static String bgmTitle = '';
   static String imageTitle = '';
   static String notification = 'ON';
@@ -195,19 +195,26 @@ class GroupAddPageListTileState
                   const Spacer(),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
+                      maximumSize: const Size(130, 40),
                       foregroundColor: Themes.grayColor,
                       side: const BorderSide(
                         color: Themes.grayColor,
                       ),
-                      padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.all(8),
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          alarmTitle,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            alarmTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
@@ -217,7 +224,7 @@ class GroupAddPageListTileState
                       List<Sound> sounds =
                           await FirebaseMethods().getSoundEffects();
 
-                      AlarmSounds result = await showDialog(
+                      Sound result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
@@ -252,10 +259,16 @@ class GroupAddPageListTileState
                     ),
                     child: Row(
                       children: [
-                        Text(
-                          bgmTitle,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            bgmTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
@@ -264,7 +277,7 @@ class GroupAddPageListTileState
                     onPressed: () async {
                       final List<Sound> musics =
                           await FirebaseMethods().getSoundEffects();
-                      AlarmSounds result = await showDialog(
+                      Sound result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
