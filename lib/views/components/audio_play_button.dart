@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
+import 'package:timer_group/domein/provider/audioProvider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
 class AudioPlayButton extends ConsumerStatefulWidget {
@@ -22,38 +23,56 @@ class AudioPlayButton extends ConsumerStatefulWidget {
 class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
   Sound get sound => widget.sound;
   Icon icon = const Icon(Icons.play_arrow_rounded);
-  bool isPlaying = false;
-
   AudioPlayer get player => widget.player;
+  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    player.setReleaseMode(ReleaseMode.loop);
-    player.onPlayerStateChanged.listen((state) {
-      if (state == PlayerState.paused) {
-        toggleIcon();
-      }
-    });
+
   }
 
   @override
   void dispose() {
     super.dispose();
-    player.stop();
+    player.dispose();
   }
 
-  void toggleIcon() {
-    if (isPlaying) {
-      icon = const Icon(Icons.pause_outlined);
-    } else {
-      icon = const Icon(Icons.play_arrow_rounded);
-    }
+  void setStartIcon() {
+    icon = const Icon(Icons.play_arrow_rounded);
+    setState(() {});
+  }
+
+  void setPauseIcon() {
+    icon = const Icon(Icons.pause_rounded);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final audioProvider = ref.watch(audioPlayingProvider.notifier);
+    player.onPlayerStateChanged.listen((state) {
+      if (state == PlayerState.playing) {
+        print('playing');
+      }
+      if (state == PlayerState.paused) {
+        print('paused');
+        setStartIcon();
+      }
+    });
+
+    void start() {
+      isPlaying = true;
+      audioProvider.play(sound);
+      setPauseIcon();
+    }
+
+    void pause() {
+      audioProvider.pause();
+      setStartIcon();
+      isPlaying = false;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -73,20 +92,10 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
             backgroundColor: MaterialStateProperty.all(
                 Themes.grayColor.shade50), // <-- Button color
           ),
-          onPressed: () async {
-            if (isPlaying) {
-              player.pause();
-              isPlaying = false;
-            } else {
-              if (player.state == PlayerState.playing) {
-                await player.pause();
-                player.play(UrlSource(sound.url));
-              } else {
-                player.play(UrlSource(sound.url));
-              }
-              isPlaying = true;
-            }
-            toggleIcon();
+          onPressed: () {
+            (player.state == PlayerState.playing)
+                ? pause()
+                : start();
           },
           child: icon,
         ),

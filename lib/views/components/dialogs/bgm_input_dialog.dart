@@ -19,7 +19,6 @@ class BgmInputDialog extends ConsumerStatefulWidget {
 class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
   List<Sound> get musics => widget.musics;
   AlarmSounds selectedSound = AlarmSounds.sample;
-  AudioPlayer player = AudioPlayer();
 
   Widget spacer() {
     return Column(
@@ -106,7 +105,10 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
                 height: 50,
                 color: Colors.white,
                 child: RadioListTile(
-                  title: AudioPlayButton(sound: musics[index],player: player,),
+                  title: AudioPlayButton(
+                    sound: musics[index],
+                    player: AudioPlayer(playerId: musics[index].name),
+                  ),
                   value: musics[index],
                   groupValue: selectedSound,
                   onChanged: (value) => _onRadioSelected(value),
