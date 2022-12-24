@@ -25,6 +25,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
   @override
   void initState() {
     super.initState();
+    selectedSound = sounds.first;
   }
 
   Widget spacer() {

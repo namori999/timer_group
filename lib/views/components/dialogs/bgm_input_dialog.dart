@@ -1,11 +1,9 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
-import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/audioProvider.dart';
 import 'package:timer_group/views/components/audio_play_button.dart';
-import 'package:timer_group/views/configure/theme.dart';
 
 class BgmInputDialog extends ConsumerStatefulWidget {
   const BgmInputDialog({required this.musics, Key? key}) : super(key: key);
@@ -18,19 +16,12 @@ class BgmInputDialog extends ConsumerStatefulWidget {
 
 class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
   List<Sound> get musics => widget.musics;
-  AlarmSounds selectedSound = AlarmSounds.sample;
+  Sound? selectedSound;
 
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 16),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
-        SizedBox(height: 16),
-      ],
-    );
+  @override
+  void initState() {
+    super.initState();
+    selectedSound = musics.first;
   }
 
   _onRadioSelected(value) {
@@ -41,6 +32,8 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final audioProvider = ref.watch(audioPlayingProvider.notifier);
+
     return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
@@ -55,7 +48,7 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
             ),
           ),
           onPressed: () {
-            Navigator.pop<AlarmSounds>(context, selectedSound);
+            Navigator.pop<Sound>(context, selectedSound);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -107,7 +100,7 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
                 child: RadioListTile(
                   title: AudioPlayButton(
                     sound: musics[index],
-                    player: AudioPlayer(playerId: musics[index].name),
+                    player: audioProvider.player,
                   ),
                   value: musics[index],
                   groupValue: selectedSound,
