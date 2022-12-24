@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
@@ -46,9 +47,9 @@ class GroupAddPageListTileState
 
   static String time = '';
   static int timeSecond = 0;
-  AlarmSounds alarm = AlarmSounds.sample;
+  Sound? alarm;
+  Sound? bgm;
   static String alarmTitle = '';
-  AlarmSounds bgm = AlarmSounds.sample;
   static String bgmTitle = '';
   static String imageTitle = '';
   static String notification = 'ON';
@@ -194,30 +195,40 @@ class GroupAddPageListTileState
                   const Spacer(),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
+                      maximumSize: const Size(130, 40),
                       foregroundColor: Themes.grayColor,
                       side: const BorderSide(
                         color: Themes.grayColor,
                       ),
-                      padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.all(8),
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          alarmTitle,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            alarmTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
                       ],
                     ),
                     onPressed: () async {
-                      AlarmSounds result = await showDialog(
+                      List<Sound> sounds =
+                          await FirebaseMethods().getSoundEffects();
+
+                      Sound result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return const AlarmInputDialog();
+                          return AlarmInputDialog(sounds: sounds);
                         },
                       );
                       if (timer != null) {
@@ -248,21 +259,29 @@ class GroupAddPageListTileState
                     ),
                     child: Row(
                       children: [
-                        Text(
-                          bgmTitle,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            bgmTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         const Icon(Icons.keyboard_arrow_right_rounded),
                       ],
                     ),
                     onPressed: () async {
-                      AlarmSounds result = await showDialog(
+                      final List<Sound> musics =
+                          await FirebaseMethods().getSoundEffects();
+                      Sound result = await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) {
-                          return const BgmInputDialog();
+                          return BgmInputDialog(musics: musics);
                         },
                       );
                       if (timer != null) {

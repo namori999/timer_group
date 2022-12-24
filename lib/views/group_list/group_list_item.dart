@@ -7,7 +7,7 @@ import 'package:timer_group/domein/logic/undo_stack.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 

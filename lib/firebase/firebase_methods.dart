@@ -2,6 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_group/domein/models/sound.dart';
 
 class FirebaseMethods {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -33,5 +34,20 @@ class FirebaseMethods {
     final String url = await ref.getDownloadURL();
 
     return url;
+  }
+
+  Future<List<Sound>> getSoundEffects() async {
+    final storageRef = FirebaseStorage.instance.ref().child("SE");
+    final listResult = await storageRef.listAll();
+    final List<Sound> sounds = [];
+
+    for (var item in listResult.items) {
+      // The items under storageRef.
+      final ref = storage.ref().child(item.fullPath);
+      final String url = await ref.getDownloadURL();
+      sounds.add(Sound(name: item.name, url: url));
+    }
+    print(sounds);
+    return sounds;
   }
 }

@@ -37,7 +37,8 @@ mixin _$Timer {
 /// @nodoc
 abstract class $TimerCopyWith<$Res> {
   factory $TimerCopyWith(Timer value, $Res Function(Timer) then) =
-      _$TimerCopyWithImpl<$Res>;
+      _$TimerCopyWithImpl<$Res, Timer>;
+  @useResult
   $Res call(
       {int? id,
       int groupId,
@@ -50,58 +51,61 @@ abstract class $TimerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TimerCopyWithImpl<$Res> implements $TimerCopyWith<$Res> {
+class _$TimerCopyWithImpl<$Res, $Val extends Timer>
+    implements $TimerCopyWith<$Res> {
   _$TimerCopyWithImpl(this._value, this._then);
 
-  final Timer _value;
   // ignore: unused_field
-  final $Res Function(Timer) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = freezed,
-    Object? groupId = freezed,
-    Object? number = freezed,
-    Object? time = freezed,
-    Object? soundPath = freezed,
-    Object? bgmPath = freezed,
-    Object? imagePath = freezed,
-    Object? notification = freezed,
+    Object? groupId = null,
+    Object? number = null,
+    Object? time = null,
+    Object? soundPath = null,
+    Object? bgmPath = null,
+    Object? imagePath = null,
+    Object? notification = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      groupId: groupId == freezed
+      groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
               as int,
-      number: number == freezed
+      number: null == number
           ? _value.number
           : number // ignore: cast_nullable_to_non_nullable
               as int,
-      time: time == freezed
+      time: null == time
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
               as int,
-      soundPath: soundPath == freezed
+      soundPath: null == soundPath
           ? _value.soundPath
           : soundPath // ignore: cast_nullable_to_non_nullable
               as String,
-      bgmPath: bgmPath == freezed
+      bgmPath: null == bgmPath
           ? _value.bgmPath
           : bgmPath // ignore: cast_nullable_to_non_nullable
               as String,
-      imagePath: imagePath == freezed
+      imagePath: null == imagePath
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
               as String,
-      notification: notification == freezed
+      notification: null == notification
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -110,6 +114,7 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
   factory _$$_TimerCopyWith(_$_Timer value, $Res Function(_$_Timer) then) =
       __$$_TimerCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {int? id,
       int groupId,
@@ -122,55 +127,53 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res>
+class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
     implements _$$_TimerCopyWith<$Res> {
   __$$_TimerCopyWithImpl(_$_Timer _value, $Res Function(_$_Timer) _then)
-      : super(_value, (v) => _then(v as _$_Timer));
+      : super(_value, _then);
 
-  @override
-  _$_Timer get _value => super._value as _$_Timer;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = freezed,
-    Object? groupId = freezed,
-    Object? number = freezed,
-    Object? time = freezed,
-    Object? soundPath = freezed,
-    Object? bgmPath = freezed,
-    Object? imagePath = freezed,
-    Object? notification = freezed,
+    Object? groupId = null,
+    Object? number = null,
+    Object? time = null,
+    Object? soundPath = null,
+    Object? bgmPath = null,
+    Object? imagePath = null,
+    Object? notification = null,
   }) {
     return _then(_$_Timer(
-      id: id == freezed
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      groupId: groupId == freezed
+      groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
               as int,
-      number: number == freezed
+      number: null == number
           ? _value.number
           : number // ignore: cast_nullable_to_non_nullable
               as int,
-      time: time == freezed
+      time: null == time
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
               as int,
-      soundPath: soundPath == freezed
+      soundPath: null == soundPath
           ? _value.soundPath
           : soundPath // ignore: cast_nullable_to_non_nullable
               as String,
-      bgmPath: bgmPath == freezed
+      bgmPath: null == bgmPath
           ? _value.bgmPath
           : bgmPath // ignore: cast_nullable_to_non_nullable
               as String,
-      imagePath: imagePath == freezed
+      imagePath: null == imagePath
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
               as String,
-      notification: notification == freezed
+      notification: null == notification
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
               as String,
@@ -223,32 +226,27 @@ class _$_Timer extends _Timer {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Timer &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.groupId, groupId) &&
-            const DeepCollectionEquality().equals(other.number, number) &&
-            const DeepCollectionEquality().equals(other.time, time) &&
-            const DeepCollectionEquality().equals(other.soundPath, soundPath) &&
-            const DeepCollectionEquality().equals(other.bgmPath, bgmPath) &&
-            const DeepCollectionEquality().equals(other.imagePath, imagePath) &&
-            const DeepCollectionEquality()
-                .equals(other.notification, notification));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.groupId, groupId) || other.groupId == groupId) &&
+            (identical(other.number, number) || other.number == number) &&
+            (identical(other.time, time) || other.time == time) &&
+            (identical(other.soundPath, soundPath) ||
+                other.soundPath == soundPath) &&
+            (identical(other.bgmPath, bgmPath) || other.bgmPath == bgmPath) &&
+            (identical(other.imagePath, imagePath) ||
+                other.imagePath == imagePath) &&
+            (identical(other.notification, notification) ||
+                other.notification == notification));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(groupId),
-      const DeepCollectionEquality().hash(number),
-      const DeepCollectionEquality().hash(time),
-      const DeepCollectionEquality().hash(soundPath),
-      const DeepCollectionEquality().hash(bgmPath),
-      const DeepCollectionEquality().hash(imagePath),
-      const DeepCollectionEquality().hash(notification));
+  int get hashCode => Object.hash(runtimeType, id, groupId, number, time,
+      soundPath, bgmPath, imagePath, notification);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_TimerCopyWith<_$_Timer> get copyWith =>
       __$$_TimerCopyWithImpl<_$_Timer>(this, _$identity);
 

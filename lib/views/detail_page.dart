@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/provider/timerGroupProvider.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
