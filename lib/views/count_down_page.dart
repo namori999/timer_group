@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,27 +68,45 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
   );
 
-  //late Sound alarmSound = Sound(name: name, url: url)
+  final alarmPlayer = AudioPlayer();
+  final bgmPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    bgmPlayer.setReleaseMode(ReleaseMode.loop);
+    bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+    super.initState();
+  }
 
   void nextDuration() {
+    ///タイマー終了してすぐ
     LocalNotification().notify(currentIndex);
+    alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+
     if (currentIndex < timers.length - 1) {
       currentIndex++;
+      ///次のtimeをセット
       streamDuration = StreamDuration(
         Duration(seconds: timers[currentIndex].time),
         onDone: () {
           nextDuration();
         },
       );
+      ///次のbgmを再生
+      bgmPlayer.pause();
+      bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+      ///次の背景に更新
+      setState(() {
+        backGroundImage = Image(
+          image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+        );
+      });
     } else {
       print('All Done');
+      bgmPlayer.stop();
+      bgmPlayer.dispose();
       Navigator.pop(context);
     }
-    setState(() {
-      backGroundImage = Image(
-        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-      );
-    });
   }
 
   @override
