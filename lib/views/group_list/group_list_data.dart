@@ -41,30 +41,34 @@ class GroupListBodyData extends ConsumerWidget {
       child: Center(
         child: timerGroups.when(
           loading: () => const CircularProgressIndicator(),
-          data: (groups) => ListView.builder(
-            padding: const EdgeInsets.only(top: 16),
-            itemCount: groups.length,
-            itemBuilder: (context, index) {
-              return FutureBuilder(
-                future: getTimerGroup(groups[index].id!),
-                builder: (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
-                  if (tg.hasData) {
-                    return GroupListItem(
-                      tg.data!,
-                      tg.data!.options!,
-                      tg.data!.totalTime!,
-                      tg.data!.timers!,
-                      index,
+          data: (groups) => groups.isNotEmpty
+              ? ListView.builder(
+                  padding: const EdgeInsets.only(top: 16),
+                  itemCount: groups.length,
+                  itemBuilder: (context, index) {
+                    return FutureBuilder(
+                      future: getTimerGroup(groups[index].id!),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
+                        if (tg.hasData) {
+                          return GroupListItem(
+                            tg.data!,
+                            tg.data!.options!,
+                            tg.data!.totalTime!,
+                            tg.data!.timers!,
+                            index,
+                          );
+                        } else if (tg.hasError) {
+                          return const Text('何らかのエラーが発生しているようです');
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
                     );
-                  } else if (tg.hasError) {
-                    return const SizedBox();
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              );
-            },
-          ),
+                  },
+                )
+              : emptyLayout(),
           error: (error, stackTrace) {
             return emptyLayout();
           },
