@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'timer.dart';
 
@@ -24,10 +24,10 @@ mixin _$Timer {
   int get groupId => throw _privateConstructorUsedError;
   int get number => throw _privateConstructorUsedError;
   int get time => throw _privateConstructorUsedError; // timeはぜんぶ 秒 で管理
-  String get soundPath => throw _privateConstructorUsedError;
-  String get bgmPath => throw _privateConstructorUsedError;
+  Sound get alarm => throw _privateConstructorUsedError;
+  Sound get bgm => throw _privateConstructorUsedError;
   String get imagePath => throw _privateConstructorUsedError;
-  String get notification => throw _privateConstructorUsedError;
+  int get notification => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,10 +44,13 @@ abstract class $TimerCopyWith<$Res> {
       int groupId,
       int number,
       int time,
-      String soundPath,
-      String bgmPath,
+      Sound alarm,
+      Sound bgm,
       String imagePath,
-      String notification});
+      int notification});
+
+  $SoundCopyWith<$Res> get alarm;
+  $SoundCopyWith<$Res> get bgm;
 }
 
 /// @nodoc
@@ -67,8 +70,8 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
     Object? groupId = null,
     Object? number = null,
     Object? time = null,
-    Object? soundPath = null,
-    Object? bgmPath = null,
+    Object? alarm = null,
+    Object? bgm = null,
     Object? imagePath = null,
     Object? notification = null,
   }) {
@@ -89,14 +92,14 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
               as int,
-      soundPath: null == soundPath
-          ? _value.soundPath
-          : soundPath // ignore: cast_nullable_to_non_nullable
-              as String,
-      bgmPath: null == bgmPath
-          ? _value.bgmPath
-          : bgmPath // ignore: cast_nullable_to_non_nullable
-              as String,
+      alarm: null == alarm
+          ? _value.alarm
+          : alarm // ignore: cast_nullable_to_non_nullable
+              as Sound,
+      bgm: null == bgm
+          ? _value.bgm
+          : bgm // ignore: cast_nullable_to_non_nullable
+              as Sound,
       imagePath: null == imagePath
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
@@ -104,8 +107,24 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
       notification: null == notification
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SoundCopyWith<$Res> get alarm {
+    return $SoundCopyWith<$Res>(_value.alarm, (value) {
+      return _then(_value.copyWith(alarm: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SoundCopyWith<$Res> get bgm {
+    return $SoundCopyWith<$Res>(_value.bgm, (value) {
+      return _then(_value.copyWith(bgm: value) as $Val);
+    });
   }
 }
 
@@ -120,10 +139,15 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
       int groupId,
       int number,
       int time,
-      String soundPath,
-      String bgmPath,
+      Sound alarm,
+      Sound bgm,
       String imagePath,
-      String notification});
+      int notification});
+
+  @override
+  $SoundCopyWith<$Res> get alarm;
+  @override
+  $SoundCopyWith<$Res> get bgm;
 }
 
 /// @nodoc
@@ -139,8 +163,8 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
     Object? groupId = null,
     Object? number = null,
     Object? time = null,
-    Object? soundPath = null,
-    Object? bgmPath = null,
+    Object? alarm = null,
+    Object? bgm = null,
     Object? imagePath = null,
     Object? notification = null,
   }) {
@@ -161,14 +185,14 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
               as int,
-      soundPath: null == soundPath
-          ? _value.soundPath
-          : soundPath // ignore: cast_nullable_to_non_nullable
-              as String,
-      bgmPath: null == bgmPath
-          ? _value.bgmPath
-          : bgmPath // ignore: cast_nullable_to_non_nullable
-              as String,
+      alarm: null == alarm
+          ? _value.alarm
+          : alarm // ignore: cast_nullable_to_non_nullable
+              as Sound,
+      bgm: null == bgm
+          ? _value.bgm
+          : bgm // ignore: cast_nullable_to_non_nullable
+              as Sound,
       imagePath: null == imagePath
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
@@ -176,7 +200,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
       notification: null == notification
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
     ));
   }
 }
@@ -189,8 +213,8 @@ class _$_Timer extends _Timer {
       required this.groupId,
       required this.number,
       required this.time,
-      required this.soundPath,
-      required this.bgmPath,
+      required this.alarm,
+      required this.bgm,
       required this.imagePath,
       required this.notification})
       : super._();
@@ -208,17 +232,17 @@ class _$_Timer extends _Timer {
   final int time;
 // timeはぜんぶ 秒 で管理
   @override
-  final String soundPath;
+  final Sound alarm;
   @override
-  final String bgmPath;
+  final Sound bgm;
   @override
   final String imagePath;
   @override
-  final String notification;
+  final int notification;
 
   @override
   String toString() {
-    return 'Timer(id: $id, groupId: $groupId, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
+    return 'Timer(id: $id, groupId: $groupId, number: $number, time: $time, alarm: $alarm, bgm: $bgm, imagePath: $imagePath, notification: $notification)';
   }
 
   @override
@@ -230,9 +254,8 @@ class _$_Timer extends _Timer {
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.number, number) || other.number == number) &&
             (identical(other.time, time) || other.time == time) &&
-            (identical(other.soundPath, soundPath) ||
-                other.soundPath == soundPath) &&
-            (identical(other.bgmPath, bgmPath) || other.bgmPath == bgmPath) &&
+            (identical(other.alarm, alarm) || other.alarm == alarm) &&
+            (identical(other.bgm, bgm) || other.bgm == bgm) &&
             (identical(other.imagePath, imagePath) ||
                 other.imagePath == imagePath) &&
             (identical(other.notification, notification) ||
@@ -241,8 +264,8 @@ class _$_Timer extends _Timer {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, groupId, number, time,
-      soundPath, bgmPath, imagePath, notification);
+  int get hashCode => Object.hash(runtimeType, id, groupId, number, time, alarm,
+      bgm, imagePath, notification);
 
   @JsonKey(ignore: true)
   @override
@@ -264,10 +287,10 @@ abstract class _Timer extends Timer {
       required final int groupId,
       required final int number,
       required final int time,
-      required final String soundPath,
-      required final String bgmPath,
+      required final Sound alarm,
+      required final Sound bgm,
       required final String imagePath,
-      required final String notification}) = _$_Timer;
+      required final int notification}) = _$_Timer;
   _Timer._() : super._();
 
   factory _Timer.fromJson(Map<String, dynamic> json) = _$_Timer.fromJson;
@@ -281,13 +304,13 @@ abstract class _Timer extends Timer {
   @override
   int get time;
   @override // timeはぜんぶ 秒 で管理
-  String get soundPath;
+  Sound get alarm;
   @override
-  String get bgmPath;
+  Sound get bgm;
   @override
   String get imagePath;
   @override
-  String get notification;
+  int get notification;
   @override
   @JsonKey(ignore: true)
   _$$_TimerCopyWith<_$_Timer> get copyWith =>

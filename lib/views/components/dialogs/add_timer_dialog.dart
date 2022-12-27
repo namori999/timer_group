@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
@@ -63,10 +62,15 @@ class AddTimerDialog extends ConsumerWidget {
                   groupId: groupId,
                   number: index,
                   time: timeToSecond(GroupAddPageListTileState.time),
-                  soundPath: GroupAddPageListTileState.alarmTitle,
-                  bgmPath: GroupAddPageListTileState.bgmTitle,
+                  alarm: Sound(
+                      name: GroupAddPageListTileState.alarm.name,
+                      url: GroupAddPageListTileState.alarm.url),
+                  bgm: Sound(
+                      name: GroupAddPageListTileState.bgm.name,
+                      url: GroupAddPageListTileState.bgm.url),
                   imagePath: GroupAddPageListTileState.imageTitle,
-                  notification: GroupAddPageListTileState.notification);
+                  notification: GroupAddPageListTileState.notification ? 1 : 0,
+              );
               provider.addTimer(timer);
               Navigator.pop<Timer>(context, timer);
             },

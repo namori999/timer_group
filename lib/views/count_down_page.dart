@@ -49,18 +49,12 @@ class CountDownPage extends ConsumerStatefulWidget {
 
 class CountDownPageState extends ConsumerState<CountDownPage> {
   TimerGroup get timerGroup => widget.timerGroup;
-
   List<Timer> get timers => widget.timers;
-
   TimerGroupOptions get options => widget.options;
-
   int get totalTime => widget.totalTimeSecond;
+
   late Duration remainingTime;
   Duration duration = const Duration(seconds: 0);
-  late Image backGroundImage = Image(
-    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-  );
-
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
     Duration(seconds: timers[currentIndex].time),
@@ -69,8 +63,14 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     },
   ));
 
+  late Image backGroundImage = Image(
+    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+  );
+
+  //late Sound alarmSound = Sound(name: name, url: url)
+
   void nextDuration() {
-    FinishNotification().notify(currentIndex);
+    LocalNotification().notify(currentIndex);
     if (currentIndex < timers.length - 1) {
       currentIndex++;
       streamDuration = StreamDuration(
@@ -129,6 +129,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             size: 20,
                           ),
                           const SizedBox(height: 16),
+                          ///合計時間のカウントダウン
                           SlideCountdown(
                             duration: Duration(seconds: totalTime),
                             decoration: BoxDecoration(
@@ -158,6 +159,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
+                          ///今のタイマーのカウントダウン
                           SlideCountdown(
                             key: UniqueKey(),
                             duration: streamDuration.duration,
