@@ -34,7 +34,6 @@ class timerRepository {
   }
 
   Future<void> addTimer(Timer timer) async {
-
     await _db.insert(timer);
     ref.invalidate(timerRepositoryProvider);
     ref.invalidate(timerGroupRepositoryProvider);

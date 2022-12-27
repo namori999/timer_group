@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS timers (
   Future<void> update(Timer timer) async {
     final db = await _getDatabase();
     print("update timer: timer = $timer");
-    await db.update('timers', timer.toJson(),
+    await db.update('timers', timer.toMap(),
         where: 'groupId = ? and number = ?',
         whereArgs: [timer.groupId, timer.number]);
   }
