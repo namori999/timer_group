@@ -40,7 +40,7 @@ class GroupEditPageData extends ConsumerWidget {
               );
             }
           } else {
-            return const Text('sorry,something went wrong');
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
