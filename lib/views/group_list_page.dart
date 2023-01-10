@@ -62,7 +62,9 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: isSheetOpen
+          ? Colors.grey
+          : Theme.of(context).backgroundColor,
       leading: Builder(
         builder: (context) => Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -114,7 +116,9 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: appBar(),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: isSheetOpen
+          ? Colors.grey
+          : Theme.of(context).backgroundColor,
       body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
