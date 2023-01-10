@@ -99,6 +99,9 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                   ),
                   Text(
                     alarmTitle,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -116,6 +119,9 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                   ),
                   Text(
                     bgmTitle,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
