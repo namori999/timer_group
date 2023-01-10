@@ -44,7 +44,7 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
             padding: const EdgeInsets.only(top: 16),
             physics: const ClampingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: timers.length - 1,
+            itemCount: timers.length,
             itemBuilder: (context, index) {
               return DetailPageListTile(
                 title: title,
