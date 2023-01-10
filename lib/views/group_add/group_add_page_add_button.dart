@@ -38,6 +38,15 @@ class GroupAddPageAddButton extends ConsumerWidget {
               return;
             }
 
+            Fluttertoast.showToast(
+                msg: '$title を追加しました🕊',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+
             Navigator.of(context).pop();
           },
           child: Padding(
