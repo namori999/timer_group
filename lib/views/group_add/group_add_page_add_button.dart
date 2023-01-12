@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list.dart';
 
 class GroupAddPageAddButton extends ConsumerWidget {
@@ -43,7 +44,7 @@ class GroupAddPageAddButton extends ConsumerWidget {
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
                 timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
+                backgroundColor: Themes.themeColor.shade50,
                 textColor: Colors.white,
                 fontSize: 16.0);
 
