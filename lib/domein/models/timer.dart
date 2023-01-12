@@ -9,7 +9,6 @@ class Timer with _$Timer {
   const Timer._();
 
   factory Timer({
-    int? id,
     required int groupId,
     required int number,
     required int time,// timeはぜんぶ 秒 で管理
@@ -21,7 +20,6 @@ class Timer with _$Timer {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'groupId': groupId,
       'number' : number,
       'time': time,

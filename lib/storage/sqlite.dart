@@ -171,7 +171,6 @@ class Timers implements SqliteLocalDatabase {
     await db.execute(
       '''
 CREATE TABLE IF NOT EXISTS timers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
   groupId INTEGER,
   number INTEGER,
   time INTEGER,
@@ -263,7 +262,7 @@ CREATE TABLE IF NOT EXISTS timers (
     final db = await _getDatabase();
     var result = await db
         .rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);
-    var value = result[0]["SUM(time)"] ;
+    var value = result[0]["SUM(time)"];
 
     if (value == null) {
       return 0;

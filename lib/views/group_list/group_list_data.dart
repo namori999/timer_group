@@ -21,13 +21,16 @@ class GroupListBodyData extends ConsumerWidget {
     Widget emptyLayout() {
       return Center(
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: const [
               Spacer(),
-              Text("まだ登録されてないよ"),
-              Spacer(),
               Text(
-                "ここからタイマーグループを追加",
+                "+ ボタンから",
+                style: TextStyle(fontSize: 12),
+              ),
+              Text(
+                "タイマーグループを追加します",
                 style: TextStyle(fontSize: 12),
               ),
               Icon(Icons.south_east),
@@ -41,34 +44,36 @@ class GroupListBodyData extends ConsumerWidget {
       child: Center(
         child: timerGroups.when(
           loading: () => const CircularProgressIndicator(),
-          data: (groups) => groups.isNotEmpty
-              ? ListView.builder(
-                  padding: const EdgeInsets.only(top: 16),
-                  itemCount: groups.length,
-                  itemBuilder: (context, index) {
-                    return FutureBuilder(
-                      future: getTimerGroup(groups[index].id!),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<TimerGroup> tg) {
-                        if (tg.hasData) {
-                          return GroupListItem(
-                            tg.data!,
-                            tg.data!.options!,
-                            tg.data!.totalTime!,
-                            tg.data!.timers!,
-                            index,
-                          );
-                        } else if (tg.hasError) {
-                          return const Text('何らかのエラーが発生しているようです');
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                    );
-                  },
-                )
-              : emptyLayout(),
+          data: (groups) {
+            return (groups.isEmpty)
+                ? emptyLayout()
+                : ListView.builder(
+                    padding: const EdgeInsets.only(top: 16),
+                    itemCount: groups.length,
+                    itemBuilder: (context, index) {
+                      return FutureBuilder(
+                        future: getTimerGroup(groups[index].id!),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<TimerGroup> tg) {
+                          if (tg.hasData) {
+                            return GroupListItem(
+                              tg.data!,
+                              tg.data!.options!,
+                              tg.data!.totalTime!,
+                              tg.data!.timers!,
+                              index,
+                            );
+                          } else if (tg.hasError) {
+                            return const SizedBox();
+                          } else {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                        },
+                      );
+                    },
+                  );
+          },
           error: (error, stackTrace) {
             return emptyLayout();
           },

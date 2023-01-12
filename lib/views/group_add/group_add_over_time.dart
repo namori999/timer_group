@@ -24,6 +24,7 @@ class GroupAddOverTime extends ConsumerStatefulWidget {
 
 class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
   get title => widget.title;
+
   get overTimeTimer => widget.overTimeTimer;
   String overTimeText = 'OFF';
   bool overTimeEnabled = false;
@@ -33,7 +34,7 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
 
   @override
   initState() {
-    if(overTimeTimer != null) {
+    if (overTimeTimer != null) {
       overTimeEnabled = true;
       timer = overTimeTimer;
     }
@@ -86,6 +87,7 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                 number: 0,
                 groupId: id,
                 timer: timer,
+                overTime: true,
               ),
               spacer()
             ],
