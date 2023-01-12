@@ -34,9 +34,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   @override
   void initState() {
-    if (overTimeEnabled) {
-      timers.removeLast();
-    }
     super.initState();
   }
 
@@ -80,7 +77,8 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: timers.length,
+                  itemCount:
+                      overTimeEnabled ? timers.length - 1 : timers.length,
                   itemBuilder: (context, i) {
                     if (timers[i].number == 0) {
                       return const SizedBox();
