@@ -8,11 +8,13 @@ import 'group_add_page_timer_list_tile.dart';
 class GroupAddPageTimerList extends ConsumerStatefulWidget {
   GroupAddPageTimerList({
     required this.groupId,
+    required this.overTimeEnabled,
     this.timers,
     Key? key,
   }) : super(key: key);
 
   List<Timer>? timers;
+  bool overTimeEnabled;
   int groupId;
 
   @override
@@ -26,7 +28,17 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   get groupId => widget.groupId;
 
+  get overTimeEnabled => widget.overTimeEnabled;
+
   get timers => widget.timers;
+
+  @override
+  void initState() {
+    if (overTimeEnabled) {
+      timers.removeLast();
+    }
+    super.initState();
+  }
 
   int addIndex() {
     ++index;
@@ -70,15 +82,16 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                   scrollDirection: Axis.horizontal,
                   itemCount: timers.length,
                   itemBuilder: (context, i) {
-                    if(timers[i].number != 0) {
+                    if (timers[i].number == 0) {
+                      return const SizedBox();
+                    } else {
                       return GroupAddPageTimerListTile(
-                      index: i +1,
-                      number: timers[i].number,
-                      groupId: groupId,
-                      timer: timers[i],
-                    );
+                        index: i + 1,
+                        number: timers[i].number,
+                        groupId: groupId,
+                        timer: timers[i],
+                      );
                     }
-                    return const SizedBox();
                   },
                 ),
               ),

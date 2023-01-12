@@ -135,8 +135,13 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               ),
               spacer(),
               timers.when(
-                  data: (t) =>
-                      GroupAddPageTimerList(timers: t, groupId: timerGroup.id!),
+                  data: (t) {
+                    return GroupAddPageTimerList(
+                      timers: t,
+                      groupId: timerGroup.id!,
+                      overTimeEnabled: (timerGroup.options!.overTime == 'ON'),
+                    );
+                  },
                   error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
                   loading: () =>
                       const Center(child: CircularProgressIndicator())),
@@ -149,10 +154,12 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               ),
               SizedBox(
                 height: 400,
-                child: GroupAddOverTime(
-                  title: timerGroup.title,
-                  overTimeTimer: overTimeTimer,
-                ),
+                child: timers.when(
+                    data: (t) => GroupAddOverTime(
+                        title: timerGroup.title, overTimeTimer: t?.last),
+                    error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator())),
               ),
             ],
           ),
