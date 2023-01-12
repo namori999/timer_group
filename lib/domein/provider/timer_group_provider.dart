@@ -81,7 +81,7 @@ class TimerGroupRepository {
       ),
     );
     for (Timer t in timerGroup.timers!) {
-      await _timersDb.insert(t.copyWith(id: newId));
+      await _timersDb.insert(t);
     }
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
-import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
@@ -9,11 +8,13 @@ import 'group_add_page_timer_list_tile.dart';
 class GroupAddPageTimerList extends ConsumerStatefulWidget {
   GroupAddPageTimerList({
     required this.groupId,
+    required this.overTimeEnabled,
     this.timers,
     Key? key,
   }) : super(key: key);
 
   List<Timer>? timers;
+  bool overTimeEnabled;
   int groupId;
 
   @override
@@ -27,38 +28,18 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   get groupId => widget.groupId;
 
+  get overTimeEnabled => widget.overTimeEnabled;
+
   get timers => widget.timers;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   int addIndex() {
     ++index;
     return index;
-  }
-
-  @override
-  void initState() {
-    if (timers != null) {
-      int index = 1;
-      for (Timer t in timers) {
-        if (t.number != 0) {
-          timerList.add(GroupAddPageTimerListTile(
-            index: index,
-            number: t.number,
-            groupId: t.groupId,
-            timer: t,
-          ));
-          index ++;
-        }
-      }
-    } else {
-      addIndex();
-    }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    timerList.clear();
   }
 
   @override
@@ -75,11 +56,17 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             const Text("タイマー"),
             Padding(
               padding: const EdgeInsets.only(right: 32),
-              child: Text(
-                '× ${timerList.length}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              child: overTimeEnabled
+                  ? Text(
+                      '× ${timers.length - 1}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    )
+                  : Text(
+                      '× ${timers.length}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
             ),
           ],
         ),
@@ -92,16 +79,30 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 380,
-                child: Row(
-                  children: timerList,
-                )
+                height: 360,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount:
+                      overTimeEnabled ? timers.length - 1 : timers.length,
+                  itemBuilder: (context, i) {
+                    if (timers[i].number == 0) {
+                      return const SizedBox();
+                    } else {
+                      return GroupAddPageTimerListTile(
+                        index: i + 1,
+                        number: timers[i].number,
+                        groupId: groupId,
+                        timer: timers[i],
+                      );
+                    }
+                  },
+                ),
               ),
               IconButton(
                 onPressed: () async {
-                  final timerProvider = ref.watch(timerRepositoryProvider);
                   index = addIndex();
-                  Timer addedTimer = await showModalBottomSheet(
+                  await showModalBottomSheet(
                       context: context,
                       elevation: 20,
                       isScrollControlled: true,
@@ -115,21 +116,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                           groupId: groupId,
                         );
                       });
-
-                  if (addedTimer == null) {
-                    timerProvider.removeTimer(groupId, index);
-                    setState(() {
-                      index = index - 1;
-                    });
-                  } else {
-                    final timer = await timerProvider.getTimer(groupId, index);
-                    timerList.add(GroupAddPageTimerListTile(
-                      index: index,
-                      number: index,
-                      groupId: groupId,
-                      timer: timer,
-                    ));
-                  }
                 },
                 iconSize: 80,
                 icon: const Icon(

@@ -63,14 +63,10 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
     super.initState();
   }
 
-  Future<List<Timer>> getTimers() async {
-    final timerProvider = ref.watch(timerRepositoryProvider);
-    final timers = await timerProvider.getTimers(timerGroup.id!);
-    return timers;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final timers = ref.watch(timersListProvider(timerGroup.id!));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: SingleChildScrollView(
@@ -138,18 +134,17 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                 ],
               ),
               spacer(),
-              FutureBuilder(
-                future: getTimers(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<List<Timer>> timers) {
-                  if (timers.hasData) {
+              timers.when(
+                  data: (t) {
                     return GroupAddPageTimerList(
-                        timers: timers.data, groupId: timerGroup.id!);
-                  } else {
-                    return Text("データが存在しません");
-                  }
-                },
-              ),
+                      timers: t,
+                      groupId: timerGroup.id!,
+                      overTimeEnabled: (timerGroup.options!.overTime == 'ON'),
+                    );
+                  },
+                  error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator())),
               const SizedBox(
                 height: 16,
               ),
@@ -160,9 +155,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               SizedBox(
                 height: 400,
                 child: GroupAddOverTime(
-                  title: timerGroup.title,
-                  overTimeTimer: overTimeTimer,
-                ),
+                    title: timerGroup.title, overTimeTimer: timers.value?.last),
               ),
             ],
           ),

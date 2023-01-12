@@ -23,11 +23,8 @@ class DetailPageList extends ConsumerStatefulWidget {
 
 class DetailPageListState extends ConsumerState<DetailPageList> {
   List<Timer> timerList = [];
-
   get title => widget.title;
-
   get timers => widget.timers;
-
   get options => widget.options;
 
   @override
@@ -44,7 +41,7 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
             padding: const EdgeInsets.only(top: 16),
             physics: const ClampingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: timers.length - 1,
+            itemCount: timers.length -1,
             itemBuilder: (context, index) {
               return DetailPageListTile(
                 title: title,

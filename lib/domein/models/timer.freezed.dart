@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'timer.dart';
 
@@ -20,7 +20,6 @@ Timer _$TimerFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Timer {
-  int? get id => throw _privateConstructorUsedError;
   int get groupId => throw _privateConstructorUsedError;
   int get number => throw _privateConstructorUsedError;
   int get time => throw _privateConstructorUsedError; // timeはぜんぶ 秒 で管理
@@ -40,8 +39,7 @@ abstract class $TimerCopyWith<$Res> {
       _$TimerCopyWithImpl<$Res, Timer>;
   @useResult
   $Res call(
-      {int? id,
-      int groupId,
+      {int groupId,
       int number,
       int time,
       String soundPath,
@@ -63,7 +61,6 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? groupId = null,
     Object? number = null,
     Object? time = null,
@@ -73,10 +70,6 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
     Object? notification = null,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
@@ -116,8 +109,7 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int? id,
-      int groupId,
+      {int groupId,
       int number,
       int time,
       String soundPath,
@@ -135,7 +127,6 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? groupId = null,
     Object? number = null,
     Object? time = null,
@@ -145,10 +136,6 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
     Object? notification = null,
   }) {
     return _then(_$_Timer(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
@@ -185,8 +172,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
 @JsonSerializable()
 class _$_Timer extends _Timer {
   _$_Timer(
-      {this.id,
-      required this.groupId,
+      {required this.groupId,
       required this.number,
       required this.time,
       required this.soundPath,
@@ -198,8 +184,6 @@ class _$_Timer extends _Timer {
   factory _$_Timer.fromJson(Map<String, dynamic> json) =>
       _$$_TimerFromJson(json);
 
-  @override
-  final int? id;
   @override
   final int groupId;
   @override
@@ -218,7 +202,7 @@ class _$_Timer extends _Timer {
 
   @override
   String toString() {
-    return 'Timer(id: $id, groupId: $groupId, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
+    return 'Timer(groupId: $groupId, number: $number, time: $time, soundPath: $soundPath, bgmPath: $bgmPath, imagePath: $imagePath, notification: $notification)';
   }
 
   @override
@@ -226,7 +210,6 @@ class _$_Timer extends _Timer {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Timer &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.number, number) || other.number == number) &&
             (identical(other.time, time) || other.time == time) &&
@@ -241,8 +224,8 @@ class _$_Timer extends _Timer {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, groupId, number, time,
-      soundPath, bgmPath, imagePath, notification);
+  int get hashCode => Object.hash(runtimeType, groupId, number, time, soundPath,
+      bgmPath, imagePath, notification);
 
   @JsonKey(ignore: true)
   @override
@@ -260,8 +243,7 @@ class _$_Timer extends _Timer {
 
 abstract class _Timer extends Timer {
   factory _Timer(
-      {final int? id,
-      required final int groupId,
+      {required final int groupId,
       required final int number,
       required final int time,
       required final String soundPath,
@@ -272,8 +254,6 @@ abstract class _Timer extends Timer {
 
   factory _Timer.fromJson(Map<String, dynamic> json) = _$_Timer.fromJson;
 
-  @override
-  int? get id;
   @override
   int get groupId;
   @override

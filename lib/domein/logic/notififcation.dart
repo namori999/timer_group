@@ -39,7 +39,7 @@ class FinishNotification {
     final flnp = FlutterLocalNotificationsPlugin();
     return configureLocalTimeZone().then((_) => flnp.show(
           0,
-          '🐓 <　${timerIndex+1}個めのアラームが鳴っています',
+          '🕊 <　${timerIndex+1}個めのアラームが鳴っています',
           null,
           const NotificationDetails(
             android: AndroidNotificationDetails(

@@ -8,7 +8,6 @@ class Timer with _$Timer {
   const Timer._();
 
   factory Timer({
-    int? id,
     required int groupId,
     required int number,
     required int time,// timeはぜんぶ 秒 で管理

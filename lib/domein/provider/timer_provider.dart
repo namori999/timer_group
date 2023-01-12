@@ -7,6 +7,11 @@ import 'package:timer_group/storage/sqlite.dart';
 
 final timerRepositoryProvider = Provider((ref) => timerRepository(ref));
 
+final timersListProvider =
+    FutureProvider.family<List<Timer>?, int>((ref, groupId) async {
+  return await ref.watch(timerRepositoryProvider).getTimers(groupId);
+});
+
 class timerRepository {
   timerRepository(this.ref);
 
@@ -23,6 +28,7 @@ class timerRepository {
     print('timer updated at provider: $timer');
     ref.invalidate(timerRepositoryProvider);
     ref.invalidate(timerGroupRepositoryProvider);
+    ref.invalidate(timersListProvider);
   }
 
   Future<void> addTimers(List<Timer> timers) async {

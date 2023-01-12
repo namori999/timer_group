@@ -27,8 +27,11 @@ class DetailPageListTile extends ConsumerStatefulWidget {
 
 class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
   get title => widget.title;
+
   Timer get timer => widget.timer;
+
   int get index => widget.index;
+
   TimerGroupOptions get options => widget.options;
   String time = '';
   AlarmSounds alarm = AlarmSounds.sample;
@@ -95,9 +98,15 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   const SizedBox(
                     width: 16,
                   ),
-                  Text(
-                    alarmTitle,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  SizedBox(
+                    width: 130,
+                    child: Text(
+                      alarmTitle,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   spacer()
                 ],
@@ -108,11 +117,18 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   const SizedBox(
                     width: 16,
                   ),
-                  Text(
-                    bgmTitle,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  SizedBox(
+                    width: 130,
+                    child: Text(
+                      bgmTitle,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  spacer()
+                  spacer(),
                 ],
               ),
               Row(

@@ -105,44 +105,152 @@ class GroupAddPageListTileState
             width: 1,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (number != 0)
-                Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Center(
-                          child: Text(index.toString()),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional.centerEnd,
-                          child: IconButton(
-                            onPressed: () async {
-                              provider.removeTimer(groupId, number);
-                              GroupAddPageTimerListState.timerList
-                                  .removeAt(index);
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.close_rounded),
-                            padding: EdgeInsets.zero,
+        child: InkWell(
+          onTap: () => print('${timer!.number}'),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (number != 0)
+                  Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Center(
+                            child: Text(index.toString()),
                           ),
+                          Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: IconButton(
+                              onPressed: () async {
+                                provider.removeTimer(groupId, number);
+                                GroupAddPageTimerListState.timerList
+                                    .removeAt(index);
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.close_rounded),
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ],
+                      ),
+                      spacer(),
+                    ],
+                  ),
+                Row(
+                  children: [
+                    const Icon(Icons.timer_outlined),
+                    const Text("タイム"),
+                    const Spacer(),
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(130, 40),
+                          foregroundColor: Themes.grayColor,
+                          side: const BorderSide(
+                            color: Themes.grayColor,
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
-                      ],
-                    ),
-                    spacer(),
+                        child: Row(
+                          children: [
+                            Text(
+                              time,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_rounded),
+                          ],
+                        ),
+                        onPressed: () async {
+                          Duration result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) {
+                              return TimeInputDialog(
+                                selectedTime: time,
+                              );
+                            },
+                          );
+
+                          if (timer != null) {
+                            timeSecond = result.inSeconds;
+                            provider.updateTimer(
+                                timer!.copyWith(time: result.inSeconds));
+                          }
+                          setState(() {
+                            time = result
+                                .toString()
+                                .split('.')
+                                .first
+                                .padLeft(8, "0");
+                          });
+                        }),
                   ],
                 ),
-              Row(
-                children: [
-                  const Icon(Icons.timer_outlined),
-                  const Text("タイム"),
-                  const Spacer(),
-                  OutlinedButton(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Icon(Icons.volume_up_outlined),
+                    const Text("アラーム音"),
+                    const Spacer(),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        maximumSize: const Size(130, 40),
+                        foregroundColor: Themes.grayColor,
+                        side: const BorderSide(
+                          color: Themes.grayColor,
+                        ),
+                        padding: const EdgeInsets.all(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            child: Text(
+                              alarmTitle,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.keyboard_arrow_right_rounded),
+                        ],
+                      ),
+                      onPressed: () async {
+                        List<Sound> sounds =
+                            await FirebaseMethods().getSoundEffects();
+
+                        Sound result = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) {
+                            return AlarmInputDialog(sounds: sounds);
+                          },
+                        );
+                        if (timer != null) {
+                          provider.updateTimer(
+                              timer!.copyWith(soundPath: result.name));
+                        }
+                        setState(() {
+                          alarm = result;
+                          alarmTitle = result.name;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.music_note_outlined),
+                    const Text("BGM"),
+                    const Spacer(),
+                    OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(130, 40),
                         foregroundColor: Themes.grayColor,
@@ -153,237 +261,132 @@ class GroupAddPageListTileState
                       ),
                       child: Row(
                         children: [
-                          Text(
-                            time,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                          SizedBox(
+                            width: 80,
+                            child: Text(
+                              bgmTitle,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           const Icon(Icons.keyboard_arrow_right_rounded),
                         ],
                       ),
                       onPressed: () async {
-                        Duration result = await showDialog(
+                        final List<Sound> musics =
+                            await FirebaseMethods().getSoundEffects();
+                        Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
-                            return TimeInputDialog(
-                              selectedTime: time,
-                            );
+                            return BgmInputDialog(musics: musics);
                           },
                         );
-
                         if (timer != null) {
-                          timeSecond = result.inSeconds;
                           provider.updateTimer(
-                              timer!.copyWith(time: result.inSeconds));
+                              timer!.copyWith(bgmPath: result.name));
                         }
                         setState(() {
-                          time = result
-                              .toString()
-                              .split('.')
-                              .first
-                              .padLeft(8, "0");
-                        });
-                      }),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Icon(Icons.volume_up_outlined),
-                  const Text("アラーム音"),
-                  const Spacer(),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      maximumSize: const Size(130, 40),
-                      foregroundColor: Themes.grayColor,
-                      side: const BorderSide(
-                        color: Themes.grayColor,
-                      ),
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 80,
-                          child: Text(
-                            alarmTitle,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.keyboard_arrow_right_rounded),
-                      ],
-                    ),
-                    onPressed: () async {
-                      List<Sound> sounds =
-                          await FirebaseMethods().getSoundEffects();
-
-                      Sound result = await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (_) {
-                          return AlarmInputDialog(sounds: sounds);
-                        },
-                      );
-                      if (timer != null) {
-                        provider.updateTimer(
-                            timer!.copyWith(soundPath: result.name));
-                      }
-                      setState(() {
-                        alarm = result;
-                        alarmTitle = result.name;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.music_note_outlined),
-                  const Text("BGM"),
-                  const Spacer(),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(130, 40),
-                      foregroundColor: Themes.grayColor,
-                      side: const BorderSide(
-                        color: Themes.grayColor,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 80,
-                          child: Text(
-                            bgmTitle,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.keyboard_arrow_right_rounded),
-                      ],
-                    ),
-                    onPressed: () async {
-                      final List<Sound> musics =
-                          await FirebaseMethods().getSoundEffects();
-                      Sound result = await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (_) {
-                          return BgmInputDialog(musics: musics);
-                        },
-                      );
-                      if (timer != null) {
-                        provider
-                            .updateTimer(timer!.copyWith(bgmPath: result.name));
-                      }
-                      setState(() {
-                        bgm = result;
-                        bgmTitle = result.name;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.image_outlined),
-                  const Text("背景"),
-                  const Spacer(),
-                  Container(
-                    width: 130,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(imageTitle),
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: Size(130, 40),
-                        foregroundColor: Themes.grayColor,
-                        side: const BorderSide(
-                          color: Themes.grayColor,
-                        ),
-                      ),
-                      onPressed: () async {
-                        final List<Image> imageList =
-                            await FirebaseMethods().getImages();
-                        String result = await showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) {
-                            return ImageInputDialog(imageList);
-                          },
-                        );
-                        if (timer != null) {
-                          provider
-                              .updateTimer(timer!.copyWith(imagePath: result));
-                        }
-                        setState(() {
-                          imageTitle = result;
+                          bgm = result;
+                          bgmTitle = result.name;
                         });
                       },
-                      child: Text(''),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.notifications_active_outlined),
-                  const Text("通知"),
-                  Spacer(),
-                  OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(130, 40),
-                        foregroundColor: Themes.grayColor,
-                        side: const BorderSide(
-                          color: Themes.grayColor,
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.image_outlined),
+                    const Text("背景"),
+                    const Spacer(),
+                    Container(
+                      width: 130,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(imageTitle),
+                          fit: BoxFit.fitWidth,
                         ),
                       ),
-                      child: Text(
-                        notification,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: Size(130, 40),
+                          foregroundColor: Themes.grayColor,
+                          side: const BorderSide(
+                            color: Themes.grayColor,
+                          ),
+                        ),
+                        onPressed: () async {
+                          final List<Image> imageList =
+                              await FirebaseMethods().getImages();
+                          String result = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) {
+                              return ImageInputDialog(imageList);
+                            },
+                          );
+                          if (timer != null) {
+                            provider.updateTimer(
+                                timer!.copyWith(imagePath: result));
+                          }
+                          setState(() {
+                            imageTitle = result;
+                          });
+                        },
+                        child: Text(''),
                       ),
-                      onPressed: () {
-                        if (isNotifyEnabled) {
-                          isNotifyEnabled = false;
-                          if (timer != null) {
-                            provider.updateTimer(
-                                timer!.copyWith(notification: 'OFF'));
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.notifications_active_outlined),
+                    const Text("通知"),
+                    Spacer(),
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(130, 40),
+                          foregroundColor: Themes.grayColor,
+                          side: const BorderSide(
+                            color: Themes.grayColor,
+                          ),
+                        ),
+                        child: Text(
+                          notification,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          if (isNotifyEnabled) {
+                            isNotifyEnabled = false;
+                            if (timer != null) {
+                              provider.updateTimer(
+                                  timer!.copyWith(notification: 'OFF'));
+                            }
+                            setState(() {
+                              notification = 'OFF';
+                            });
+                          } else {
+                            isNotifyEnabled = true;
+                            if (timer != null) {
+                              provider.updateTimer(
+                                  timer!.copyWith(notification: 'ON'));
+                            }
+                            setState(() {
+                              notification = 'ON';
+                            });
                           }
-                          setState(() {
-                            notification = 'OFF';
-                          });
-                        } else {
-                          isNotifyEnabled = true;
-                          if (timer != null) {
-                            provider.updateTimer(
-                                timer!.copyWith(notification: 'ON'));
-                          }
-                          setState(() {
-                            notification = 'ON';
-                          });
-                        }
-                      }),
-                ],
-              ),
-            ],
+                        }),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
