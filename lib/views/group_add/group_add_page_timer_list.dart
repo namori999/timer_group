@@ -56,11 +56,17 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             const Text("タイマー"),
             Padding(
               padding: const EdgeInsets.only(right: 32),
-              child: Text(
-                '× ${timers.length}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              child: overTimeEnabled
+                  ? Text(
+                      '× ${timers.length - 1}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    )
+                  : Text(
+                      '× ${timers.length}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
             ),
           ],
         ),
