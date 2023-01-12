@@ -154,8 +154,16 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               ),
               SizedBox(
                 height: 400,
-                child: GroupAddOverTime(
-                    title: timerGroup.title, overTimeTimer: timers.value?.last),
+                child: timers.when(
+                    data: (t) {
+                      return t!.isEmpty
+                          ? GroupAddOverTime(title: timerGroup.title)
+                          : GroupAddOverTime(
+                              title: timerGroup.title, overTimeTimer: t.last);
+                    },
+                    error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator())),
               ),
             ],
           ),
