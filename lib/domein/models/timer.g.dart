@@ -7,7 +7,6 @@ part of 'timer.dart';
 // **************************************************************************
 
 _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
-      id: json['id'] as int?,
       groupId: json['groupId'] as int,
       number: json['number'] as int,
       time: json['time'] as int,
@@ -18,7 +17,6 @@ _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
     );
 
 Map<String, dynamic> _$$_TimerToJson(_$_Timer instance) => <String, dynamic>{
-      'id': instance.id,
       'groupId': instance.groupId,
       'number': instance.number,
       'time': instance.time,

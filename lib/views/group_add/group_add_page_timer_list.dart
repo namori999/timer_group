@@ -70,12 +70,15 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                   scrollDirection: Axis.horizontal,
                   itemCount: timers.length,
                   itemBuilder: (context, i) {
-                    return GroupAddPageTimerListTile(
+                    if(timers[i].number != 0) {
+                      return GroupAddPageTimerListTile(
                       index: i +1,
                       number: timers[i].number,
                       groupId: groupId,
                       timer: timers[i],
                     );
+                    }
+                    return const SizedBox();
                   },
                 ),
               ),

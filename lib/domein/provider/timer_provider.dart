@@ -28,6 +28,7 @@ class timerRepository {
     print('timer updated at provider: $timer');
     ref.invalidate(timerRepositoryProvider);
     ref.invalidate(timerGroupRepositoryProvider);
+    ref.invalidate(timersListProvider);
   }
 
   Future<void> addTimers(List<Timer> timers) async {
