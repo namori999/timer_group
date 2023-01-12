@@ -46,7 +46,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             groupId: t.groupId,
             timer: t,
           ));
-          index ++;
+          index++;
         }
       }
     } else {
@@ -76,7 +76,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             Padding(
               padding: const EdgeInsets.only(right: 32),
               child: Text(
-                '× ${timerList.length}',
+                '× ${timers.length}',
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -93,15 +93,25 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             children: [
               SizedBox(
                 height: 380,
-                child: Row(
-                  children: timerList,
-                )
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: timers.length,
+                  itemBuilder: (context, i) {
+                    return GroupAddPageTimerListTile(
+                      index: i,
+                      number: i,
+                      groupId: groupId,
+                      timer: timers[i],
+                    );
+                  },
+                ),
               ),
               IconButton(
                 onPressed: () async {
                   final timerProvider = ref.watch(timerRepositoryProvider);
                   index = addIndex();
-                  Timer addedTimer = await showModalBottomSheet(
+                  Timer? addedTimer = await showModalBottomSheet(
                       context: context,
                       elevation: 20,
                       isScrollControlled: true,
@@ -123,12 +133,16 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                     });
                   } else {
                     final timer = await timerProvider.getTimer(groupId, index);
-                    timerList.add(GroupAddPageTimerListTile(
-                      index: index,
-                      number: index,
-                      groupId: groupId,
-                      timer: timer,
-                    ));
+                    /*
+                    timerList.add(
+                      GroupAddPageTimerListTile(
+                        index: index,
+                        number: index,
+                        groupId: groupId,
+                        timer: timer,
+                      ),
+                    );
+                     */
                   }
                 },
                 iconSize: 80,

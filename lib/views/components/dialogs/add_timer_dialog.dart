@@ -37,7 +37,7 @@ class AddTimerDialog extends ConsumerWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    Navigator.pop<bool>(context, false);
+                    Navigator.pop<Timer?>(context, null);
                   },
                   icon: const Icon(Icons.close_rounded)),
             ],
