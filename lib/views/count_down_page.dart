@@ -78,6 +78,13 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    bgmPlayer.dispose();
+    alarmPlayer.dispose();
+    super.dispose();
+  }
+
   void nextDuration() {
     ///タイマー終了してすぐ
     LocalNotification().notify(currentIndex);
