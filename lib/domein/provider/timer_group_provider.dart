@@ -122,6 +122,10 @@ class savedTimerGroupNotifier
     return prefs;
   }
 
+  Future<int?> getEditingId() async {
+    return state.value?.last.id;
+  }
+
   // 値の操作を行う (state = StateNotifier<int>)
   Future<int> addNewGroup(TimerGroupInfo info) async {
     final id =

@@ -46,7 +46,6 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
     });
   }
 
-
   void showRemoveAlert(String title) {
     showDialog<bool>(
       context: context,

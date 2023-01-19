@@ -28,7 +28,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
 
   final children = <Widget>[];
   bool isEmpty = false;
-  bool onSecondStep = false;
+  static bool onSecondStep = false;
   var groupId = 0;
 
   @override
@@ -43,13 +43,6 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
     });
     children.add(textFields());
     children.add(nextStepButton());
-  }
-
-  Future<void> cancelAdding() async {
-    if (onSecondStep) {
-      final repo = ref.watch(timerGroupRepositoryProvider);
-      await repo.removeTimerGroup(groupId);
-    }
   }
 
   Widget nextStepButton() {

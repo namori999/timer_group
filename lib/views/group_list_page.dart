@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add/group_add_page_body.dart';
 import 'package:timer_group/views/group_add_page.dart';
@@ -32,8 +33,6 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
   );
 
   void showCancelAlert() {
-    final addPageBody = GroupAddPageBodyState();
-
     showDialog<bool>(
       context: context,
       builder: (context) {
@@ -50,7 +49,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                   style: TextStyle(color: Colors.red),
                 ),
                 onPressed: () async {
-                  addPageBody.cancelAdding();
+                  await canselAdding();
                   Navigator.pop<bool>(context);
                   Navigator.pop(this.context);
                 }),
@@ -58,6 +57,15 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
         );
       },
     );
+  }
+
+  Future<void> canselAdding() async {
+    if (GroupAddPageBodyState.onSecondStep) {
+      final id = await ref.read(savedTimerGroupProvider.notifier)
+          .getEditingId();
+      final repo = ref.watch(timerGroupRepositoryProvider);
+      if (id != null) await repo.removeTimerGroup(id);
+    }
   }
 
   PreferredSizeWidget appBar() {
