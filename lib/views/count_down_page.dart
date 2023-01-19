@@ -13,6 +13,8 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
+import 'count_down/count_down_buttons.dart';
+
 class CountDownPage extends ConsumerStatefulWidget {
   static Route<CountDownPage> route({
     required TimerGroup timerGroup,
@@ -72,7 +74,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
   );
 
   final alarmPlayer = AudioPlayer();
-  final bgmPlayer = AudioPlayer();
+  static final bgmPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -216,6 +218,12 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CountDownPageButtons(
+              streamDuration: streamDuration,
+            ),
+          )
         ],
       ),
     );
