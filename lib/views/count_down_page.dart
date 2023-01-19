@@ -50,8 +50,11 @@ class CountDownPage extends ConsumerStatefulWidget {
 
 class CountDownPageState extends ConsumerState<CountDownPage> {
   TimerGroup get timerGroup => widget.timerGroup;
+
   List<Timer> get timers => widget.timers;
+
   TimerGroupOptions get options => widget.options;
+
   int get totalTime => widget.totalTimeSecond;
 
   late Duration remainingTime;
@@ -81,17 +84,20 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
   @override
   void dispose() {
     bgmPlayer.dispose();
-    alarmPlayer.dispose();
     super.dispose();
   }
 
   void nextDuration() {
     ///タイマー終了してすぐ
     LocalNotification().notify(currentIndex);
-    alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+    if (LocalNotification.notificationIsActive(
+        timers[currentIndex].notification)) {
+      alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+    }
 
     if (currentIndex < timers.length - 1) {
       currentIndex++;
+
       ///次のtimeをセット
       streamDuration = StreamDuration(
         Duration(seconds: timers[currentIndex].time),
@@ -99,9 +105,11 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
           nextDuration();
         },
       );
+
       ///次のbgmを再生
       bgmPlayer.pause();
       bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+
       ///次の背景に更新
       setState(() {
         backGroundImage = Image(
@@ -155,6 +163,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             size: 20,
                           ),
                           const SizedBox(height: 16),
+
                           ///合計時間のカウントダウン
                           SlideCountdown(
                             duration: Duration(seconds: totalTime),
@@ -185,6 +194,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
+
                           ///今のタイマーのカウントダウン
                           SlideCountdown(
                             key: UniqueKey(),
