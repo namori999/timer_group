@@ -174,10 +174,12 @@ CREATE TABLE IF NOT EXISTS timers (
   groupId INTEGER,
   number INTEGER,
   time INTEGER,
-  soundPath TEXT,
-  bgmPath TEXT,
+  alarmName TEXT,
+  alarmUrl TEXT,
+  bgmName TEXT,
+  bgmUrl TEXT,
   imagePath TEXT,
-  notification TEXT)
+  notification INTEGER)
   ''',
     );
   }
@@ -210,7 +212,7 @@ CREATE TABLE IF NOT EXISTS timers (
     print("insert timers: timers=$timer");
     await db.insert(
       'timers',
-      timer.toJson(),
+      timer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -231,7 +233,7 @@ CREATE TABLE IF NOT EXISTS timers (
   Future<void> update(Timer timer) async {
     final db = await _getDatabase();
     print("update timer: timer = $timer");
-    await db.update('timers', timer.toJson(),
+    await db.update('timers', timer.toMap(),
         where: 'groupId = ? and number = ?',
         whereArgs: [timer.groupId, timer.number]);
   }

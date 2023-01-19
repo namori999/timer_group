@@ -3,8 +3,8 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-class FinishNotification {
-  bool notificationIsActive(int? notificationStatus) => notificationStatus != 0;
+class LocalNotification {
+  static bool notificationIsActive(int? notification) => notification != 0;
 
   /// flutter_local_notificationsの初期化
   Future<void> initializeNotification() async {

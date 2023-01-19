@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/outlined_drop_down_button.dart';
 import 'package:timer_group/views/components/separoter.dart';
@@ -66,6 +67,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   @override
   Widget build(BuildContext context) {
     final timers = ref.watch(timersListProvider(timerGroup.id!));
+    final overTime = ref.watch(overTimeProvider(timerGroup.id!));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -139,10 +141,16 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                     return GroupAddPageTimerList(
                       timers: t,
                       groupId: timerGroup.id!,
-                      overTimeEnabled: (timerGroup.options!.overTime == 'ON'),
+                      overTimeEnabled: overTime.when(
+                          data: (b) => b,
+                          error: (e, s) => false,
+                          loading: () => false),
                     );
                   },
-                  error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
+                  error: (e, s) {
+                    print({e.toString() + s.toString()});
+                    return const Text('sorry, タイマー取得でエラーがでました');
+                  },
                   loading: () =>
                       const Center(child: CircularProgressIndicator())),
               const SizedBox(

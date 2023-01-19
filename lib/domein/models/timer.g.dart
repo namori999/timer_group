@@ -10,18 +10,24 @@ _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
       groupId: json['groupId'] as int,
       number: json['number'] as int,
       time: json['time'] as int,
-      soundPath: json['soundPath'] as String,
-      bgmPath: json['bgmPath'] as String,
+      alarm: Sound(
+            name:json['alarmName'] as String,
+            url: json['alarmUrl'] as String,
+      ),
+      bgm: Sound(
+            name: json['bgmName'] as String,
+            url: json['bgmUrl'] as String,
+      ),
       imagePath: json['imagePath'] as String,
-      notification: json['notification'] as String,
+      notification: json['notification'] as int,
     );
 
 Map<String, dynamic> _$$_TimerToJson(_$_Timer instance) => <String, dynamic>{
       'groupId': instance.groupId,
       'number': instance.number,
       'time': instance.time,
-      'soundPath': instance.soundPath,
-      'bgmPath': instance.bgmPath,
+      'alarm': instance.alarm,
+      'bgm': instance.bgm,
       'imagePath': instance.imagePath,
       'notification': instance.notification,
     };

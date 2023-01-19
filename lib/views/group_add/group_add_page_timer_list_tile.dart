@@ -47,12 +47,12 @@ class GroupAddPageListTileState
 
   static String time = '';
   static int timeSecond = 0;
-  Sound? alarm;
-  Sound? bgm;
+  static Sound alarm = Sound(name: '', url: '');
+  static Sound bgm = Sound(name: '', url: '');
   static String alarmTitle = '';
   static String bgmTitle = '';
   static String imageTitle = '';
-  static String notification = 'ON';
+  static bool notification = false;
   bool isNotifyEnabled = true;
   String timerRowText = 'タイマー';
   String alarmRowText = 'アラーム';
@@ -63,10 +63,10 @@ class GroupAddPageListTileState
 
     if (timer != null) {
       time = intToTimeLeft(timer.time);
-      alarmTitle = timer.soundPath;
-      bgmTitle = timer.bgmPath;
+      alarmTitle = timer.alarm.name;
+      bgmTitle = timer.alarm.name;
       imageTitle = timer.imagePath;
-      notification = timer.notification;
+      //notification = LocalNotification.notificationIsActive(timer.notification);
     } else {
       time = '00:00:00';
       Future(() async {
@@ -233,14 +233,17 @@ class GroupAddPageListTileState
                             return AlarmInputDialog(sounds: sounds);
                           },
                         );
+
                         if (timer != null) {
-                          provider.updateTimer(
-                              timer!.copyWith(soundPath: result.name));
+                          provider.updateTimer(timer!.copyWith(
+                            alarm: Sound(name: result.name, url: result.url),
+                          ));
                         }
                         setState(() {
                           alarm = result;
                           alarmTitle = result.name;
                         });
+                        print(alarm.toString());
                       },
                     ),
                   ],
@@ -287,11 +290,11 @@ class GroupAddPageListTileState
                           },
                         );
                         if (timer != null) {
-                          provider.updateTimer(
-                              timer!.copyWith(bgmPath: result.name));
+                          provider.updateTimer(timer!.copyWith(
+                              bgm: Sound(name: result.name, url: result.url)));
+                          bgm = result;
                         }
                         setState(() {
-                          bgm = result;
                           bgmTitle = result.name;
                         });
                       },
@@ -358,7 +361,7 @@ class GroupAddPageListTileState
                           ),
                         ),
                         child: Text(
-                          notification,
+                          notification ? 'ON' : 'OFF',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -367,19 +370,19 @@ class GroupAddPageListTileState
                             isNotifyEnabled = false;
                             if (timer != null) {
                               provider.updateTimer(
-                                  timer!.copyWith(notification: 'OFF'));
+                                  timer!.copyWith(notification: 0));
                             }
                             setState(() {
-                              notification = 'OFF';
+                              notification = false;
                             });
                           } else {
                             isNotifyEnabled = true;
                             if (timer != null) {
                               provider.updateTimer(
-                                  timer!.copyWith(notification: 'ON'));
+                                  timer!.copyWith(notification: 1));
                             }
                             setState(() {
-                              notification = 'ON';
+                              notification = true;
                             });
                           }
                         }),

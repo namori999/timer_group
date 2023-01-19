@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/logic/notififcation.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
@@ -48,10 +49,12 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
     final timer = this.timer;
 
     time = intToTimeLeft(timer.time);
-    alarmTitle = timer.soundPath;
-    bgmTitle = timer.bgmPath;
+    alarmTitle = timer.alarm.name;
+    bgmTitle = timer.bgm.name;
     imageTitle = timer.imagePath;
-    notification = timer.notification;
+    notification = LocalNotification.notificationIsActive(timer.notification)
+        ? 'ON'
+        : 'OFF';
     super.initState();
   }
 

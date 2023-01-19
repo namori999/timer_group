@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,12 +56,9 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
   TimerGroupOptions get options => widget.options;
 
   int get totalTime => widget.totalTimeSecond;
+
   late Duration remainingTime;
   Duration duration = const Duration(seconds: 0);
-  late Image backGroundImage = Image(
-    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-  );
-
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
     Duration(seconds: timers[currentIndex].time),
@@ -69,25 +67,61 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     },
   ));
 
+  late Image backGroundImage = Image(
+    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+  );
+
+  final alarmPlayer = AudioPlayer();
+  final bgmPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    bgmPlayer.setReleaseMode(ReleaseMode.loop);
+    bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bgmPlayer.dispose();
+    super.dispose();
+  }
+
   void nextDuration() {
-    FinishNotification().notify(currentIndex);
+    ///タイマー終了してすぐ
+    LocalNotification().notify(currentIndex);
+    if (LocalNotification.notificationIsActive(
+        timers[currentIndex].notification)) {
+      alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+    }
+
     if (currentIndex < timers.length - 1) {
       currentIndex++;
+
+      ///次のtimeをセット
       streamDuration = StreamDuration(
         Duration(seconds: timers[currentIndex].time),
         onDone: () {
           nextDuration();
         },
       );
+
+      ///次のbgmを再生
+      bgmPlayer.pause();
+      bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+
+      ///次の背景に更新
+      setState(() {
+        backGroundImage = Image(
+          image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+        );
+      });
     } else {
       print('All Done');
+      bgmPlayer.stop();
+      bgmPlayer.dispose();
       Navigator.pop(context);
     }
-    setState(() {
-      backGroundImage = Image(
-        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-      );
-    });
   }
 
   @override
@@ -129,6 +163,8 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             size: 20,
                           ),
                           const SizedBox(height: 16),
+
+                          ///合計時間のカウントダウン
                           SlideCountdown(
                             duration: Duration(seconds: totalTime),
                             decoration: BoxDecoration(
@@ -158,6 +194,8 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
+
+                          ///今のタイマーのカウントダウン
                           SlideCountdown(
                             key: UniqueKey(),
                             duration: streamDuration.duration,
