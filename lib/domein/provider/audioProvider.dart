@@ -12,7 +12,6 @@ final audioPlayingProvider =
 
 class AudioPlayingNotifier extends StateNotifier {
   var player;
-
   AudioPlayingNotifier(this.player) : super(player);
 
   void pause() {

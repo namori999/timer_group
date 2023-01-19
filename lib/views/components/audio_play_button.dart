@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,19 +25,13 @@ class AudioPlayButton extends ConsumerStatefulWidget {
 class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
   Sound get sound => widget.sound;
   Icon icon = const Icon(Icons.play_arrow_rounded);
+
   AudioPlayer get player => widget.player;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    player.dispose();
   }
 
   void setStartIcon() {
@@ -69,7 +65,6 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
 
     void pause() {
       audioProvider.pause();
-      setStartIcon();
       isPlaying = false;
     }
 
@@ -93,9 +88,7 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
                 Themes.grayColor.shade50), // <-- Button color
           ),
           onPressed: () {
-            (player.state == PlayerState.playing)
-                ? pause()
-                : start();
+            (player.state == PlayerState.playing) ? pause() : start();
           },
           child: icon,
         ),
