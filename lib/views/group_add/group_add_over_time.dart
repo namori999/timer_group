@@ -57,18 +57,15 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                 activeColor: Themes.themeColor,
                 onChanged: (bool value) async {
                   final options = await optionsProvider.getOptions(groupId);
-
-                  if (value) {
-                    await optionsProvider.update(
-                      TimerGroupOptions(
-                          id: groupId,
-                          timeFormat: options.timeFormat,
-                          overTime: value ? 'ON' : 'OFF'),
-                    );
-                    setState(() {
-                      overTimeEnabled = value;
-                    });
-                  }
+                  await optionsProvider.update(
+                    TimerGroupOptions(
+                        id: groupId,
+                        timeFormat: options.timeFormat,
+                        overTime: value ? 'ON' : 'OFF'),
+                  );
+                  setState(() {
+                    overTimeEnabled = value;
+                  });
                 }),
           ],
         ),
