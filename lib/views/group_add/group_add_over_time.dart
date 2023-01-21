@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
-import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -10,12 +9,12 @@ import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart'
 
 class GroupAddOverTime extends ConsumerStatefulWidget {
   GroupAddOverTime({
-    required this.title,
+    required this.groupId,
     this.overTimeTimer,
     Key? key,
   }) : super(key: key);
 
-  String title;
+  int groupId;
   Timer? overTimeTimer;
 
   @override
@@ -23,7 +22,8 @@ class GroupAddOverTime extends ConsumerStatefulWidget {
 }
 
 class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
-  get title => widget.title;
+  get groupId => widget.groupId;
+
   get overTimeTimer => widget.overTimeTimer;
   String overTimeText = 'OFF';
   bool overTimeEnabled = false;
@@ -42,6 +42,8 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
 
   @override
   Widget build(BuildContext context) {
+    final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);
+
     return Column(
       children: [
         Row(
@@ -54,28 +56,19 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                 value: overTimeEnabled,
                 activeColor: Themes.themeColor,
                 onChanged: (bool value) async {
-                  final repo = ref.watch(timerGroupRepositoryProvider);
-                  id = await repo.getId(title);
-                  final optionsProvider =
-                      ref.watch(timerGroupOptionsRepositoryProvider);
-                  final options = await optionsProvider.getOptions(id);
+                  final options = await optionsProvider.getOptions(groupId);
 
                   if (value) {
-                    await optionsProvider.update(TimerGroupOptions(
-                        id: id,
-                        title: title,
-                        timeFormat: options.timeFormat,
-                        overTime: 'ON'));
-                  } else {
-                    await optionsProvider.update(TimerGroupOptions(
-                        id: id,
-                        title: title,
-                        timeFormat: options.timeFormat,
-                        overTime: 'OFF'));
+                    await optionsProvider.update(
+                      TimerGroupOptions(
+                          id: groupId,
+                          timeFormat: options.timeFormat,
+                          overTime: value ? 'ON' : 'OFF'),
+                    );
+                    setState(() {
+                      overTimeEnabled = value;
+                    });
                   }
-                  setState(() {
-                    overTimeEnabled = value;
-                  });
                 }),
           ],
         ),

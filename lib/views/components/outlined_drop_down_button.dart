@@ -53,7 +53,6 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await ref.read(timerGroupOptionsRepositoryProvider).update(
             TimerGroupOptions(
                 id: id,
-                title: option.title,
                 timeFormat: timeFormat,
                 overTime: option.overTime)
         );
@@ -65,7 +64,6 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
         await optionsProvider.update(
             TimerGroupOptions(
                 id: id,
-                title: option.title,
                 timeFormat: option.timeFormat,
                 overTime: overTime)
         );

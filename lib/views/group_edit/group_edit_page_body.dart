@@ -90,8 +90,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   strutStyle: StrutStyle(height: 1.3),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Themes.themeColor, width: 1.0),
+                  borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
@@ -111,8 +110,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   strutStyle: StrutStyle(height: 1.3),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Themes.themeColor, width: 1.0),
+                  borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
@@ -163,9 +161,11 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
               child: timers.when(
                   data: (t) {
                     return t!.isEmpty
-                        ? GroupAddOverTime(title: timerGroup.title)
+                        ? GroupAddOverTime(
+                            groupId: timerGroup.id!,
+                          )
                         : GroupAddOverTime(
-                            title: timerGroup.title, overTimeTimer: t.last);
+                            groupId: timerGroup.id!, overTimeTimer: t.last);
                   },
                   error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
                   loading: () =>

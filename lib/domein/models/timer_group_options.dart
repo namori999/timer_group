@@ -10,7 +10,6 @@ class TimerGroupOptions with _$TimerGroupOptions {
 
   factory TimerGroupOptions({
     required int id,
-    required String title,
     TimeFormat? timeFormat,
     String? overTime,
   }) = _TimerGroupOptions;

@@ -63,7 +63,6 @@ class TimerGroupRepository {
     final int = await _db.insert(info);
     await _optionsDb.insert(TimerGroupOptions(
         id: int,
-        title: info.title,
         timeFormat: TimeFormat.minuteSecond,
         overTime: 'OFF'));
     return int;
@@ -75,7 +74,6 @@ class TimerGroupRepository {
     await _optionsDb.insert(
       TimerGroupOptions(
         id: newId,
-        title: timerGroup.title,
         timeFormat: timerGroup.options!.timeFormat,
         overTime: timerGroup.options!.overTime,
       ),
