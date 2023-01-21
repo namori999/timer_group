@@ -53,7 +53,6 @@ class GroupAddPageListTileState
   static String bgmTitle = '';
   static String imageTitle = '';
   static bool notification = false;
-  bool isNotifyEnabled = true;
   String timerRowText = 'タイマー';
   String alarmRowText = 'アラーム';
 
@@ -366,25 +365,22 @@ class GroupAddPageListTileState
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          if (isNotifyEnabled) {
-                            isNotifyEnabled = false;
+                          if (notification) {
+                            //OFFにする
                             if (timer != null) {
                               provider.updateTimer(
                                   timer!.copyWith(notification: 0));
                             }
-                            setState(() {
-                              notification = false;
-                            });
                           } else {
-                            isNotifyEnabled = true;
+                            //ONにする
                             if (timer != null) {
                               provider.updateTimer(
                                   timer!.copyWith(notification: 1));
                             }
-                            setState(() {
-                              notification = true;
-                            });
                           }
+                          setState(() {
+                            notification = !notification;
+                          });
                         }),
                   ],
                 ),
