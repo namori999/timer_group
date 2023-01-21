@@ -218,10 +218,12 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CountDownPageButtons(
-              streamDuration: streamDuration,
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: CountDownPageButtons(
+                streamDuration: streamDuration,
+              ),
             ),
           )
         ],

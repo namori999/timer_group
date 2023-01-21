@@ -66,55 +66,57 @@ class DetailPage extends ConsumerWidget {
               ),
             ],
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                  child: MaterialButton(
-                    onPressed: () async {
-                      final timerGroup = await timerGroupProvider.getTimerGroup(id);
-                      int? totalTimeSecond = await timerProvider.getTotal(id);
-                      var totalTime = 0;
-                      if (totalTimeSecond != null) {
-                        totalTimeSecond = totalTimeSecond;
-                      }
-                      Navigator.of(context).push(
-                        CountDownPage.route(
-                          timerGroup: timerGroup!,
-                          options: timerGroup.options!,
-                          timers: timerGroup.timers!,
-                          totalTimeSecond: totalTime,
-                        ),
-                      );
-                    },
-                    color: Theme.of(context).backgroundColor.withOpacity(0.9),
-                    shape: StadiumBorder(
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 4)),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.play_arrow_rounded,
-                            color: Theme.of(context).primaryColor,
-                            size: 24,
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                    child: MaterialButton(
+                      onPressed: () async {
+                        final timerGroup = await timerGroupProvider.getTimerGroup(id);
+                        int? totalTimeSecond = await timerProvider.getTotal(id);
+                        var totalTime = 0;
+                        if (totalTimeSecond != null) {
+                          totalTimeSecond = totalTimeSecond;
+                        }
+                        Navigator.of(context).push(
+                          CountDownPage.route(
+                            timerGroup: timerGroup!,
+                            options: timerGroup.options!,
+                            timers: timerGroup.timers!,
+                            totalTimeSecond: totalTime,
                           ),
-                          Text(
-                            'スタート',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 16
+                        );
+                      },
+                      color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                      shape: StadiumBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).primaryColor, width: 4)),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.play_arrow_rounded,
+                              color: Theme.of(context).primaryColor,
+                              size: 24,
                             ),
-                          ),
-                        ],
+                            Text(
+                              'スタート',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 16
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
