@@ -23,6 +23,12 @@ class timerRepository {
   Future<Timer> getTimer(int id, int number) async =>
       await _db.getTimer(id, number);
 
+  Future<Timer?> getOverTimeTimer(int id) async {
+    final timers = await getTimers(id);
+    final overTimeTimer = timers.where((t) => t.isOverTime == 1).toList();
+    return overTimeTimer.first;
+  }
+
   Future<void> updateTimer(Timer timer) async {
     await _db.update(timer);
     print('timer updated at provider: $timer');

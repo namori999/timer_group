@@ -40,7 +40,6 @@ Future<Database> _getDatabase() async {
 const scripts = {
   '3': [
     'ALTER TABLE timers ADD COLUMN isOverTime INTEGER;',
-    'ALTER TABLE timerGroupOptions DELETE COLUMN title TEXT;'
   ],
 };
 
@@ -189,7 +188,7 @@ CREATE TABLE IF NOT EXISTS timers (
   bgmName TEXT,
   bgmUrl TEXT,
   imagePath TEXT,
-  notification INTEGER
+  notification INTEGER,
   isOverTime INTEGER)
   ''',
     );

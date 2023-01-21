@@ -67,7 +67,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   @override
   Widget build(BuildContext context) {
     final timers = ref.watch(timersListProvider(timerGroup.id!));
-    final overTime = ref.watch(overTimeProvider(timerGroup.id!));
+    final overTimeEnabled = ref.watch(overTimeProvider(timerGroup.id!));
 
     return SingleChildScrollView(
       child: SizedBox(
@@ -137,7 +137,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   return GroupAddPageTimerList(
                     timers: t,
                     groupId: timerGroup.id!,
-                    overTimeEnabled: overTime.when(
+                    overTimeEnabled: overTimeEnabled.when(
                         data: (b) => b,
                         error: (e, s) => false,
                         loading: () => false),
@@ -158,18 +158,9 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
             ),
             SizedBox(
               height: 400,
-              child: timers.when(
-                  data: (t) {
-                    return t!.isEmpty
-                        ? GroupAddOverTime(
-                            groupId: timerGroup.id!,
-                          )
-                        : GroupAddOverTime(
-                            groupId: timerGroup.id!, overTimeTimer: t.last);
-                  },
-                  error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator())),
+              child: GroupAddOverTime(
+                groupId: timerGroup.id!,
+              ),
             ),
           ],
         ),

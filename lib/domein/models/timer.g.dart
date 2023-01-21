@@ -20,6 +20,7 @@ _$_Timer _$$_TimerFromJson(Map<String, dynamic> json) => _$_Timer(
       ),
       imagePath: json['imagePath'] as String,
       notification: json['notification'] as int,
+      isOverTime: json['isOverTime'] as int?,
     );
 
 Map<String, dynamic> _$$_TimerToJson(_$_Timer instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$$_TimerToJson(_$_Timer instance) => <String, dynamic>{
       'bgm': instance.bgm,
       'imagePath': instance.imagePath,
       'notification': instance.notification,
+      'isOverTime': instance.isOverTime,
     };
