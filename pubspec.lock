@@ -260,6 +260,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.8"
+  entry:
+    dependency: "direct main"
+    description:
+      name: entry
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:
@@ -826,6 +833,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  simple_animations:
+    dependency: transitive
+    description:
+      name: simple_animations
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0+3"
   sky_engine:
     dependency: transitive
     description: flutter

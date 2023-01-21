@@ -33,10 +33,13 @@ class GroupEditPageData extends ConsumerWidget {
             if (snapshot.data == null) {
               return const Text('data is null');
             } else {
-              return GroupEditPageBody(
-                timerGroup: snapshot.data,
-                titleController: titleController,
-                descriptionController: descriptionController,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: GroupEditPageBody(
+                  timerGroup: snapshot.data,
+                  titleController: titleController,
+                  descriptionController: descriptionController,
+                ),
               );
             }
           } else {
