@@ -34,26 +34,6 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
 
   @override
   Widget build(BuildContext context) {
-    if (options.overTime == 'ON') {
-      return  Scrollbar(
-          child: ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 16),
-            physics: const ClampingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: timers.length -1,
-            itemBuilder: (context, index) {
-              return DetailPageListTile(
-                title: title,
-                timer: timers[index],
-                options: options,
-                index: index,
-              );
-            },
-          ),
-      );
-    }
-
     return Scrollbar(
       child: ListView.builder(
         shrinkWrap: true,
@@ -63,7 +43,6 @@ class DetailPageListState extends ConsumerState<DetailPageList> {
         itemCount: timers.length,
         itemBuilder: (context, index) {
           return DetailPageListTile(
-            title: title,
             timer: timers[index],
             options: options,
             index: index,

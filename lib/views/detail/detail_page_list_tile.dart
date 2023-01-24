@@ -11,13 +11,11 @@ import 'package:timer_group/views/components/separoter.dart';
 class DetailPageListTile extends ConsumerStatefulWidget {
   const DetailPageListTile({
     required this.index,
-    required this.title,
     required this.timer,
     required this.options,
     Key? key,
   }) : super(key: key);
   final int index;
-  final String title;
   final Timer timer;
   final TimerGroupOptions options;
 
@@ -27,8 +25,6 @@ class DetailPageListTile extends ConsumerStatefulWidget {
 }
 
 class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
-  get title => widget.title;
-
   Timer get timer => widget.timer;
 
   int get index => widget.index;

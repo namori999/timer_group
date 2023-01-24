@@ -10,7 +10,9 @@ final timerRepositoryProvider = Provider((ref) => timerRepository(ref));
 
 final timersListProvider =
     FutureProvider.family<List<Timer>?, int>((ref, groupId) async {
-  return await ref.watch(timerRepositoryProvider).getTimers(groupId);
+  final timers = await ref.watch(timerRepositoryProvider).getTimers(groupId);
+  print(timers.where((t) => t.isOverTime != 1).toList().length);
+  return timers.where((t) => t.isOverTime != 1).toList();
 });
 
 final singleTimerProvider =
@@ -63,12 +65,14 @@ class timerRepository {
     await _db.insert(timer);
     ref.invalidate(timerRepositoryProvider);
     ref.invalidate(overTimeProvider);
+    ref.invalidate(timersListProvider);
   }
 
   Future<void> removeOverTime(int groupId) async {
     await _db.delete(groupId, 10000);
     ref.invalidate(timerRepositoryProvider);
     ref.invalidate(overTimeProvider);
+    ref.invalidate(timersListProvider);
   }
 
   Future<void> removeTimer(int groupId, int number) async {

@@ -69,13 +69,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                 const Text("タイマー"),
                 Padding(
                   padding: const EdgeInsets.only(right: 32),
-                  child: overTimeEnabled
-                      ? Text(
-                          '× ${d!.length - 1}',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        )
-                      : Text(
+                  child: Text(
                           '× ${d!.length}',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
@@ -96,8 +90,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount:
-                          overTimeEnabled ? timers.length - 1 : timers.length,
+                      itemCount: d.length,
                       itemBuilder: (context, i) {
                         if (timers[i].isOverTime == 1) {
                           return const SizedBox();
