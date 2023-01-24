@@ -44,7 +44,9 @@ class GroupAddPageListTileState
   get groupId => widget.groupId;
 
   Timer? get timer => widget.timer;
+  bool? get overTime => widget.overTime;
 
+  /*
   static String time = '';
   static int timeSecond = 0;
   static Sound alarm = Sound(name: '', url: '');
@@ -55,17 +57,18 @@ class GroupAddPageListTileState
   static bool notification = false;
   String timerRowText = 'タイマー';
   String alarmRowText = 'アラーム';
+   */
 
+  /*
   @override
   void initState() {
     final timer = this.timer;
-
     if (timer != null) {
       time = intToTimeLeft(timer.time);
       alarmTitle = timer.alarm.name;
       bgmTitle = timer.alarm.name;
       imageTitle = timer.imagePath;
-      //notification = LocalNotification.notificationIsActive(timer.notification);
+      notification = LocalNotification.notificationIsActive(timer.notification);
     } else {
       time = '00:00:00';
       Future(() async {
@@ -76,6 +79,7 @@ class GroupAddPageListTileState
     }
     super.initState();
   }
+   */
 
   Widget spacer() {
     return Column(
@@ -111,7 +115,7 @@ class GroupAddPageListTileState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (number != 0)
+                if (overTime != true)
                   Column(
                     children: [
                       Stack(
@@ -155,7 +159,9 @@ class GroupAddPageListTileState
                         child: Row(
                           children: [
                             Text(
-                              time,
+                              (timer != null)
+                                  ? intToTimeLeft(timer!.time)
+                                  : '',
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
@@ -168,23 +174,17 @@ class GroupAddPageListTileState
                             barrierDismissible: false,
                             builder: (_) {
                               return TimeInputDialog(
-                                selectedTime: time,
+                                selectedTime: (timer != null)
+                                    ? intToTimeLeft(timer!.time)
+                                    : '00:00:00',
                               );
                             },
                           );
 
                           if (timer != null) {
-                            timeSecond = result.inSeconds;
                             provider.updateTimer(
                                 timer!.copyWith(time: result.inSeconds));
                           }
-                          setState(() {
-                            time = result
-                                .toString()
-                                .split('.')
-                                .first
-                                .padLeft(8, "0");
-                          });
                         }),
                   ],
                 ),
@@ -209,7 +209,7 @@ class GroupAddPageListTileState
                           SizedBox(
                             width: 80,
                             child: Text(
-                              alarmTitle,
+                              (timer != null) ? timer!.alarm.name : '',
                               maxLines: 1,
                               softWrap: false,
                               overflow: TextOverflow.fade,
@@ -238,11 +238,6 @@ class GroupAddPageListTileState
                             alarm: Sound(name: result.name, url: result.url),
                           ));
                         }
-                        setState(() {
-                          alarm = result;
-                          alarmTitle = result.name;
-                        });
-                        print(alarm.toString());
                       },
                     ),
                   ],
@@ -266,7 +261,7 @@ class GroupAddPageListTileState
                           SizedBox(
                             width: 80,
                             child: Text(
-                              bgmTitle,
+                              (timer != null) ? timer!.bgm.name : '',
                               maxLines: 1,
                               softWrap: false,
                               overflow: TextOverflow.fade,
@@ -291,11 +286,7 @@ class GroupAddPageListTileState
                         if (timer != null) {
                           provider.updateTimer(timer!.copyWith(
                               bgm: Sound(name: result.name, url: result.url)));
-                          bgm = result;
                         }
-                        setState(() {
-                          bgmTitle = result.name;
-                        });
                       },
                     ),
                   ],
@@ -308,13 +299,16 @@ class GroupAddPageListTileState
                     Container(
                       width: 130,
                       height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(imageTitle),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
+                      decoration: (timer != null)
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    timer!.imagePath),
+                                fit: BoxFit.fitWidth,
+                              ),
+                            )
+                          : null,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           minimumSize: Size(130, 40),
@@ -337,9 +331,7 @@ class GroupAddPageListTileState
                             provider.updateTimer(
                                 timer!.copyWith(imagePath: result));
                           }
-                          setState(() {
-                            imageTitle = result;
-                          });
+
                         },
                         child: Text(''),
                       ),
@@ -360,12 +352,14 @@ class GroupAddPageListTileState
                           ),
                         ),
                         child: Text(
-                          notification ? 'ON' : 'OFF',
+                          (timer != null && timer!.notification == true)
+                              ? 'ON'
+                              : 'OFF',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          if (notification) {
+                          if (timer != null && timer!.notification == 'ON') {
                             //OFFにする
                             if (timer != null) {
                               provider.updateTimer(
@@ -378,9 +372,6 @@ class GroupAddPageListTileState
                                   timer!.copyWith(notification: 1));
                             }
                           }
-                          setState(() {
-                            notification = !notification;
-                          });
                         }),
                   ],
                 ),

@@ -156,12 +156,17 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
             const SizedBox(
               height: 8,
             ),
-            SizedBox(
-              height: 400,
-              child: GroupAddOverTime(
-                groupId: timerGroup.id!,
-              ),
-            ),
+            overTimeEnabled.when(
+                data: (d) => SizedBox(
+                      height: 400,
+                      child: GroupAddOverTime(
+                        groupId: timerGroup.id!,
+                        overTimeEnabled: d,
+                      ),
+                    ),
+                error: (e, s) => const SizedBox(),
+                loading: () =>
+                    const Center(child: CircularProgressIndicator())),
           ],
         ),
       ),

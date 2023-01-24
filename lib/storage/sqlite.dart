@@ -181,7 +181,7 @@ class Timers implements SqliteLocalDatabase {
       '''
 CREATE TABLE IF NOT EXISTS timers (
   groupId INTEGER,
-  number INTEGER,
+  number INTEGER PRIMARY KEY,
   time INTEGER,
   alarmName TEXT,
   alarmUrl TEXT,

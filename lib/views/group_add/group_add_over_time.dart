@@ -12,10 +12,12 @@ import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart'
 class GroupAddOverTime extends ConsumerStatefulWidget {
   GroupAddOverTime({
     required this.groupId,
+    required this.overTimeEnabled,
     Key? key,
   }) : super(key: key);
 
   int groupId;
+  bool overTimeEnabled;
 
   @override
   ConsumerState createState() => GroupAddOverTimeState();
@@ -24,7 +26,7 @@ class GroupAddOverTime extends ConsumerStatefulWidget {
 class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
   get groupId => widget.groupId;
   String overTimeText = 'OFF';
-  bool overTimeEnabled = false;
+  get overTimeEnabled => widget.overTimeEnabled;
   String totalTime = '';
   int id = 0;
   var timer;
@@ -60,20 +62,21 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                         overTime: value ? 'ON' : 'OFF'),
                   );
                   if (value) {
-                    timerRepository.addOverTime(Timer(
-                      groupId: groupId,
-                      number: 0,
-                      time: 0,
-                      alarm: Sound(name: '', url: ''),
-                      bgm: Sound(name: '', url: ''),
-                      imagePath: '',
-                      notification: 0,
-                      isOverTime: 1,
-                    ));
+                    timerRepository.addOverTime(
+                      Timer(
+                        groupId: groupId,
+                        number: 10000,
+                        time: 0,
+                        alarm: Sound(name: '', url: ''),
+                        bgm: Sound(name: '', url: ''),
+                        imagePath: '',
+                        notification: 0,
+                        isOverTime: 1,
+                      ),
+                    );
+                  } else {
+                    timerRepository.removeOverTime(id);
                   }
-                  setState(() {
-                    overTimeEnabled = value;
-                  });
                 }),
           ],
         ),
@@ -86,10 +89,10 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                     AsyncSnapshot<Timer?> overTimeTimer) {
                   if (overTimeTimer.hasData) {
                     return GroupAddPageTimerListTile(
-                      number: 0,
+                      number: overTimeTimer.data!.number,
                       groupId: id,
                       timer: overTimeTimer.data,
-                      overTime: true,
+                      overTime: overTimeEnabled,
                     );
                   } else {
                     return const Text("データが存在しません");

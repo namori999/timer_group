@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
@@ -54,6 +55,13 @@ class timerRepository {
   Future<void> addOverTime(Timer timer) async {
     await _db.insert(timer);
     ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(overTimeProvider);
+  }
+
+  Future<void> removeOverTime(int groupId) async {
+    await _db.delete(groupId,10000);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(overTimeProvider);
   }
 
   Future<void> removeTimer(int groupId, int number) async {
