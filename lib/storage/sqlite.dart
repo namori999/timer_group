@@ -24,14 +24,24 @@ Future<String> _getDbDirectory() async {
 
 Future<Database> _getDatabase() async {
   final dbPath = join(await _getDbDirectory(), 'local.db');
-  return _database ??= await openDatabase(
-    dbPath,
-    version: _databaseVersion,
-    onCreate: (db, version) async => await _initDatabase(db, -1, version),
-    onUpgrade: (db, oldVersion, newVersion) async =>
-        await _initDatabase(db, oldVersion, newVersion),
-  );
+  return _database ??= await openDatabase(dbPath,
+      version: _databaseVersion,
+      onCreate: (db, version) async => await _initDatabase(db, -1, version),
+      onUpgrade: (db, oldVersion, newVersion) async {
+        for (var i = oldVersion + 1; i <= newVersion; i++) {
+          var queries = scripts[i.toString()];
+          for (String query in queries!) {
+            await db.execute(query);
+          }
+        }
+      });
 }
+
+const scripts = {
+  '3': [
+    'ALTER TABLE timers ADD COLUMN isOverTime INTEGER;',
+  ],
+};
 
 Future<void> _initDatabase(Database db, int oldVersion, int newVersion) async {
   await SqliteLocalDatabase.timerGroup._initialize(db);
@@ -117,7 +127,6 @@ class SavedOptions implements SqliteLocalDatabase {
       '''
 CREATE TABLE IF NOT EXISTS timerGroupOptions (
   id INT PRIMARY KEY,
-  title TEXT,
   timeFormat TEXT,
   overTime TEXT)
   ''',
@@ -137,7 +146,7 @@ CREATE TABLE IF NOT EXISTS timerGroupOptions (
       where: 'id = ?',
       whereArgs: [id],
     );
-    if (result.isEmpty) return TimerGroupOptions(id: id, title: title);
+    if (result.isEmpty) return TimerGroupOptions(id: id);
     return TimerGroupOptions.fromJson(result[0]);
   }
 
@@ -172,14 +181,15 @@ class Timers implements SqliteLocalDatabase {
       '''
 CREATE TABLE IF NOT EXISTS timers (
   groupId INTEGER,
-  number INTEGER,
+  number INTEGER PRIMARY KEY,
   time INTEGER,
   alarmName TEXT,
   alarmUrl TEXT,
   bgmName TEXT,
   bgmUrl TEXT,
   imagePath TEXT,
-  notification INTEGER)
+  notification INTEGER,
+  isOverTime INTEGER)
   ''',
     );
   }

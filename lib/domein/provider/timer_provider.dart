@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
@@ -10,6 +11,13 @@ final timerRepositoryProvider = Provider((ref) => timerRepository(ref));
 final timersListProvider =
     FutureProvider.family<List<Timer>?, int>((ref, groupId) async {
   return await ref.watch(timerRepositoryProvider).getTimers(groupId);
+});
+
+final singleTimerProvider =
+    FutureProvider.family<Timer, Timer>((ref, timer) async {
+  return await ref
+      .watch(timerRepositoryProvider)
+      .getTimer(timer.groupId, timer.number);
 });
 
 class timerRepository {
@@ -22,6 +30,12 @@ class timerRepository {
 
   Future<Timer> getTimer(int id, int number) async =>
       await _db.getTimer(id, number);
+
+  Future<Timer?> getOverTimeTimer(int id) async {
+    final timers = await getTimers(id);
+    final overTimeTimer = timers.where((t) => t.isOverTime == 1).toList();
+    return overTimeTimer.first;
+  }
 
   Future<void> updateTimer(Timer timer) async {
     await _db.update(timer);
@@ -48,6 +62,13 @@ class timerRepository {
   Future<void> addOverTime(Timer timer) async {
     await _db.insert(timer);
     ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(overTimeProvider);
+  }
+
+  Future<void> removeOverTime(int groupId) async {
+    await _db.delete(groupId, 10000);
+    ref.invalidate(timerRepositoryProvider);
+    ref.invalidate(overTimeProvider);
   }
 
   Future<void> removeTimer(int groupId, int number) async {

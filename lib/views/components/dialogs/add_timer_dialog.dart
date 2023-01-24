@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:timer_group/domein/logic/time_converter.dart';
-import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
@@ -12,11 +10,13 @@ class AddTimerDialog extends ConsumerWidget {
     Key? key,
     required this.index,
     required this.groupId,
+    required this.timer,
     this.overTime,
   }) : super(key: key);
 
   int index;
   int groupId;
+  Timer timer;
   bool? overTime;
 
   GlobalKey<GroupAddPageListTileState> globalKey = GlobalKey();
@@ -24,6 +24,7 @@ class AddTimerDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(timerRepositoryProvider);
+    final watchedTimer = ref.watch(singleTimerProvider(timer));
 
     return Container(
       height: 600,
@@ -42,12 +43,18 @@ class AddTimerDialog extends ConsumerWidget {
                   icon: const Icon(Icons.close_rounded)),
             ],
           ),
-          GroupAddPageTimerListTile(
-            index: index,
-            groupId: groupId,
-            overTime: true,
-            key: globalKey,
-          ),
+          watchedTimer.when(
+              data: (d) => GroupAddPageTimerListTile(
+                    index: index,
+                    groupId: groupId,
+                    overTime: true,
+                    timer: d,
+                    key: globalKey,
+                  ),
+              error: (e, s) => const SizedBox(),
+              loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  )),
           const SizedBox(
             height: 16,
           ),
@@ -59,21 +66,7 @@ class AddTimerDialog extends ConsumerWidget {
               ),
             ),
             onPressed: () async {
-              final timer = Timer(
-                  groupId: groupId,
-                  number: index,
-                  time: timeToSecond(GroupAddPageListTileState.time),
-                  alarm: Sound(
-                      name: GroupAddPageListTileState.alarm.name,
-                      url: GroupAddPageListTileState.alarm.url),
-                  bgm: Sound(
-                      name: GroupAddPageListTileState.bgm.name,
-                      url: GroupAddPageListTileState.bgm.url),
-                  imagePath: GroupAddPageListTileState.imageTitle,
-                  notification: GroupAddPageListTileState.notification ? 1 : 0,
-              );
-              provider.addTimer(timer);
-              Navigator.pop<Timer>(context, timer);
+              Navigator.pop(context);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -1,47 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
-import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
 class GroupAddOverTime extends ConsumerStatefulWidget {
   GroupAddOverTime({
-    required this.title,
-    this.overTimeTimer,
+    required this.groupId,
+    required this.overTimeEnabled,
     Key? key,
   }) : super(key: key);
 
-  String title;
-  Timer? overTimeTimer;
+  int groupId;
+  bool overTimeEnabled;
 
   @override
   ConsumerState createState() => GroupAddOverTimeState();
 }
 
 class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
-  get title => widget.title;
-  get overTimeTimer => widget.overTimeTimer;
+  get groupId => widget.groupId;
   String overTimeText = 'OFF';
-  bool overTimeEnabled = false;
+  get overTimeEnabled => widget.overTimeEnabled;
   String totalTime = '';
   int id = 0;
   var timer;
 
-  @override
-  initState() {
-    if (overTimeTimer != null) {
-      overTimeEnabled = true;
-      timer = overTimeTimer;
-    }
-    super.initState();
+  Future<Timer?> getOverTimeTimer() async {
+    final overTimeTimer =
+        await ref.watch(timerRepositoryProvider).getOverTimeTimer(groupId);
+    return overTimeTimer;
   }
 
   @override
   Widget build(BuildContext context) {
+    final optionsProvider = ref.watch(timerGroupOptionsRepositoryProvider);
+    final timerRepository = ref.read(timerRepositoryProvider);
+
     return Column(
       children: [
         Row(
@@ -54,39 +54,50 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                 value: overTimeEnabled,
                 activeColor: Themes.themeColor,
                 onChanged: (bool value) async {
-                  final repo = ref.watch(timerGroupRepositoryProvider);
-                  id = await repo.getId(title);
-                  final optionsProvider =
-                      ref.watch(timerGroupOptionsRepositoryProvider);
-                  final options = await optionsProvider.getOptions(id);
-
+                  final options = await optionsProvider.getOptions(groupId);
+                  await optionsProvider.update(
+                    TimerGroupOptions(
+                        id: groupId,
+                        timeFormat: options.timeFormat,
+                        overTime: value ? 'ON' : 'OFF'),
+                  );
                   if (value) {
-                    await optionsProvider.update(TimerGroupOptions(
-                        id: id,
-                        title: title,
-                        timeFormat: options.timeFormat,
-                        overTime: 'ON'));
+                    timerRepository.addOverTime(
+                      Timer(
+                        groupId: groupId,
+                        number: 10000,
+                        time: 0,
+                        alarm: Sound(name: '', url: ''),
+                        bgm: Sound(name: '', url: ''),
+                        imagePath: '',
+                        notification: 0,
+                        isOverTime: 1,
+                      ),
+                    );
                   } else {
-                    await optionsProvider.update(TimerGroupOptions(
-                        id: id,
-                        title: title,
-                        timeFormat: options.timeFormat,
-                        overTime: 'OFF'));
+                    timerRepository.removeOverTime(id);
                   }
-                  setState(() {
-                    overTimeEnabled = value;
-                  });
                 }),
           ],
         ),
         if (overTimeEnabled)
           Column(
             children: [
-              GroupAddPageTimerListTile(
-                number: 0,
-                groupId: id,
-                timer: timer,
-                overTime: true,
+              FutureBuilder(
+                future: getOverTimeTimer(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<Timer?> overTimeTimer) {
+                  if (overTimeTimer.hasData) {
+                    return GroupAddPageTimerListTile(
+                      number: overTimeTimer.data!.number,
+                      groupId: id,
+                      timer: overTimeTimer.data!,
+                      overTime: overTimeEnabled,
+                    );
+                  } else {
+                    return const Text("データが存在しません");
+                  }
+                },
               ),
               spacer()
             ],

@@ -67,114 +67,107 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
   @override
   Widget build(BuildContext context) {
     final timers = ref.watch(timersListProvider(timerGroup.id!));
-    final overTime = ref.watch(overTimeProvider(timerGroup.id!));
+    final overTimeEnabled = ref.watch(overTimeProvider(timerGroup.id!));
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: SingleChildScrollView(
-        child: SizedBox(
-          height: 1200,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(height: 32),
-              TextField(
-                controller: titleController,
-                keyboardType: TextInputType.name,
-                maxLength: 10,
-                onSubmitted: (String value) => titleText = value,
-                onChanged: (String value) => titleText = value,
-                textInputAction: TextInputAction.next,
-                readOnly: onSecondStep,
-                decoration: const InputDecoration(
-                  label: Text(
-                    "タイトル",
-                    strutStyle: StrutStyle(height: 1.3),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Themes.themeColor, width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
-                  ),
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: 1200,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(height: 32),
+            TextField(
+              controller: titleController,
+              keyboardType: TextInputType.name,
+              maxLength: 10,
+              onSubmitted: (String value) => titleText = value,
+              onChanged: (String value) => titleText = value,
+              textInputAction: TextInputAction.next,
+              readOnly: onSecondStep,
+              decoration: const InputDecoration(
+                label: Text(
+                  "タイトル",
+                  strutStyle: StrutStyle(height: 1.3),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
                 ),
               ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: descriptionController,
-                keyboardType: TextInputType.name,
-                maxLength: 50,
-                onSubmitted: (String value) => descriptionText = value,
-                readOnly: onSecondStep,
-                decoration: const InputDecoration(
-                  label: Text(
-                    "説明",
-                    strutStyle: StrutStyle(height: 1.3),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Themes.themeColor, width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
-                  ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: descriptionController,
+              keyboardType: TextInputType.name,
+              maxLength: 50,
+              onSubmitted: (String value) => descriptionText = value,
+              readOnly: onSecondStep,
+              decoration: const InputDecoration(
+                label: Text(
+                  "説明",
+                  strutStyle: StrutStyle(height: 1.3),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Themes.themeColor, width: 1.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Themes.grayColor, width: 1.0),
                 ),
               ),
-              spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "表示単位",
-                  ),
-                  OutlinedDropDownButton(
-                    itemList: const ['分秒', '時分'],
-                    type: "TimeFormat",
-                    title: timerGroup.title,
-                  ),
-                ],
-              ),
-              spacer(),
-              timers.when(
-                  data: (t) {
-                    return GroupAddPageTimerList(
-                      timers: t,
-                      groupId: timerGroup.id!,
-                      overTimeEnabled: overTime.when(
-                          data: (b) => b,
-                          error: (e, s) => false,
-                          loading: () => false),
-                    );
-                  },
-                  error: (e, s) {
-                    print({e.toString() + s.toString()});
-                    return const Text('sorry, タイマー取得でエラーがでました');
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator())),
-              const SizedBox(
-                height: 16,
-              ),
-              spacer(),
-              const SizedBox(
-                height: 8,
-              ),
-              SizedBox(
-                height: 400,
-                child: timers.when(
-                    data: (t) {
-                      return t!.isEmpty
-                          ? GroupAddOverTime(title: timerGroup.title)
-                          : GroupAddOverTime(
-                              title: timerGroup.title, overTimeTimer: t.last);
-                    },
-                    error: (e, s) => const Text('sorry, タイマー取得でエラーがでました'),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator())),
-              ),
-            ],
-          ),
+            ),
+            spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "表示単位",
+                ),
+                OutlinedDropDownButton(
+                  itemList: const ['分秒', '時分'],
+                  type: "TimeFormat",
+                  title: timerGroup.title,
+                ),
+              ],
+            ),
+            spacer(),
+            timers.when(
+                data: (t) {
+                  return GroupAddPageTimerList(
+                    timers: t,
+                    groupId: timerGroup.id!,
+                    overTimeEnabled: overTimeEnabled.when(
+                        data: (b) => b,
+                        error: (e, s) => false,
+                        loading: () => false),
+                  );
+                },
+                error: (e, s) {
+                  print({e.toString() + s.toString()});
+                  return const Text('sorry, タイマー取得でエラーがでました');
+                },
+                loading: () =>
+                    const Center(child: CircularProgressIndicator())),
+            const SizedBox(
+              height: 16,
+            ),
+            spacer(),
+            const SizedBox(
+              height: 8,
+            ),
+            overTimeEnabled.when(
+                data: (d) => SizedBox(
+                      height: 400,
+                      child: GroupAddOverTime(
+                        groupId: timerGroup.id!,
+                        overTimeEnabled: d,
+                      ),
+                    ),
+                error: (e, s) => const SizedBox(),
+                loading: () =>
+                    const Center(child: CircularProgressIndicator())),
+          ],
         ),
       ),
     );

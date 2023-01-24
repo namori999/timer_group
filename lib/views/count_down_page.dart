@@ -78,8 +78,10 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   @override
   void initState() {
-    bgmPlayer.setReleaseMode(ReleaseMode.loop);
-    bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+    if (timers[currentIndex].bgm.url != '') {
+      bgmPlayer.setReleaseMode(ReleaseMode.loop);
+      bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+    }
     super.initState();
   }
 
@@ -91,10 +93,13 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   void nextDuration() {
     ///タイマー終了してすぐ
-    LocalNotification().notify(currentIndex);
+    if (timers[currentIndex].alarm.url != '') {
+      alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+    }
+
     if (LocalNotification.notificationIsActive(
         timers[currentIndex].notification)) {
-      alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+      LocalNotification().notify(currentIndex);
     }
 
     if (currentIndex < timers.length - 1) {
@@ -110,7 +115,9 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
       ///次のbgmを再生
       bgmPlayer.pause();
-      bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+      if (timers[currentIndex].bgm.url != '') {
+        bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+      }
 
       ///次の背景に更新
       setState(() {

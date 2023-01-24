@@ -27,6 +27,7 @@ mixin _$Timer {
   Sound get bgm => throw _privateConstructorUsedError;
   String get imagePath => throw _privateConstructorUsedError;
   int get notification => throw _privateConstructorUsedError;
+  int? get isOverTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $TimerCopyWith<$Res> {
       Sound alarm,
       Sound bgm,
       String imagePath,
-      int notification});
+      int notification,
+      int? isOverTime});
 
   $SoundCopyWith<$Res> get alarm;
   $SoundCopyWith<$Res> get bgm;
@@ -71,6 +73,7 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
     Object? bgm = null,
     Object? imagePath = null,
     Object? notification = null,
+    Object? isOverTime = freezed,
   }) {
     return _then(_value.copyWith(
       groupId: null == groupId
@@ -101,6 +104,10 @@ class _$TimerCopyWithImpl<$Res, $Val extends Timer>
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
               as int,
+      isOverTime: freezed == isOverTime
+          ? _value.isOverTime
+          : isOverTime // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 
@@ -134,7 +141,8 @@ abstract class _$$_TimerCopyWith<$Res> implements $TimerCopyWith<$Res> {
       Sound alarm,
       Sound bgm,
       String imagePath,
-      int notification});
+      int notification,
+      int? isOverTime});
 
   @override
   $SoundCopyWith<$Res> get alarm;
@@ -158,6 +166,7 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
     Object? bgm = null,
     Object? imagePath = null,
     Object? notification = null,
+    Object? isOverTime = freezed,
   }) {
     return _then(_$_Timer(
       groupId: null == groupId
@@ -188,6 +197,10 @@ class __$$_TimerCopyWithImpl<$Res> extends _$TimerCopyWithImpl<$Res, _$_Timer>
           ? _value.notification
           : notification // ignore: cast_nullable_to_non_nullable
               as int,
+      isOverTime: freezed == isOverTime
+          ? _value.isOverTime
+          : isOverTime // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -202,7 +215,8 @@ class _$_Timer extends _Timer {
       required this.alarm,
       required this.bgm,
       required this.imagePath,
-      required this.notification})
+      required this.notification,
+      this.isOverTime})
       : super._();
 
   factory _$_Timer.fromJson(Map<String, dynamic> json) =>
@@ -223,10 +237,12 @@ class _$_Timer extends _Timer {
   final String imagePath;
   @override
   final int notification;
+  @override
+  final int? isOverTime;
 
   @override
   String toString() {
-    return 'Timer(groupId: $groupId, number: $number, time: $time, alarm: $alarm, bgm: $bgm, imagePath: $imagePath, notification: $notification)';
+    return 'Timer(groupId: $groupId, number: $number, time: $time, alarm: $alarm, bgm: $bgm, imagePath: $imagePath, notification: $notification, isOverTime: $isOverTime)';
   }
 
   @override
@@ -242,13 +258,15 @@ class _$_Timer extends _Timer {
             (identical(other.imagePath, imagePath) ||
                 other.imagePath == imagePath) &&
             (identical(other.notification, notification) ||
-                other.notification == notification));
+                other.notification == notification) &&
+            (identical(other.isOverTime, isOverTime) ||
+                other.isOverTime == isOverTime));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, groupId, number, time, alarm, bgm, imagePath, notification);
+  int get hashCode => Object.hash(runtimeType, groupId, number, time, alarm,
+      bgm, imagePath, notification, isOverTime);
 
   @JsonKey(ignore: true)
   @override
@@ -272,7 +290,8 @@ abstract class _Timer extends Timer {
       required final Sound alarm,
       required final Sound bgm,
       required final String imagePath,
-      required final int notification}) = _$_Timer;
+      required final int notification,
+      final int? isOverTime}) = _$_Timer;
   _Timer._() : super._();
 
   factory _Timer.fromJson(Map<String, dynamic> json) = _$_Timer.fromJson;
@@ -291,6 +310,8 @@ abstract class _Timer extends Timer {
   String get imagePath;
   @override
   int get notification;
+  @override
+  int? get isOverTime;
   @override
   @JsonKey(ignore: true)
   _$$_TimerCopyWith<_$_Timer> get copyWith =>

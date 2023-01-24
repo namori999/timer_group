@@ -16,6 +16,7 @@ class Timer with _$Timer {
     required Sound bgm,
     required String imagePath,
     required int notification,
+    int? isOverTime,
   }) = _Timer;
 
   Map<String, dynamic> toMap() {
@@ -29,6 +30,7 @@ class Timer with _$Timer {
       'bgmUrl' : bgm.url,
       'imagePath' : imagePath,
       'notification' : notification,
+      'isOverTime' : isOverTime,
     };
   }
 
