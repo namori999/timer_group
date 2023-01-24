@@ -91,7 +91,7 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                     return GroupAddPageTimerListTile(
                       number: overTimeTimer.data!.number,
                       groupId: id,
-                      timer: overTimeTimer.data,
+                      timer: overTimeTimer.data!,
                       overTime: overTimeEnabled,
                     );
                   } else {

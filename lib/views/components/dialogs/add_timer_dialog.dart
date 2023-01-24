@@ -24,6 +24,7 @@ class AddTimerDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(timerRepositoryProvider);
+    final watchedTimer = ref.watch(singleTimerProvider(timer));
 
     return Container(
       height: 600,
@@ -42,12 +43,18 @@ class AddTimerDialog extends ConsumerWidget {
                   icon: const Icon(Icons.close_rounded)),
             ],
           ),
-          GroupAddPageTimerListTile(
-            index: index,
-            groupId: groupId,
-            overTime: true,
-            key: globalKey,
-          ),
+          watchedTimer.when(
+              data: (d) => GroupAddPageTimerListTile(
+                    index: index,
+                    groupId: groupId,
+                    overTime: true,
+                    timer: d,
+                    key: globalKey,
+                  ),
+              error: (e, s) => const SizedBox(),
+              loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  )),
           const SizedBox(
             height: 16,
           ),

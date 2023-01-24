@@ -42,7 +42,7 @@ class GroupAddPageAddButton extends ConsumerWidget {
             Fluttertoast.showToast(
                 msg: '$title を追加しました🕊',
                 toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
+                gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 backgroundColor: Themes.themeColor.shade50,
                 textColor: Colors.white,

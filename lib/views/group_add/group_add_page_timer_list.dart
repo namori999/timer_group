@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
@@ -34,8 +35,14 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
 
   get timers => widget.timers;
 
+  String imageTitle = '';
+
   @override
   void initState() {
+    Future(() async {
+      final sampleImageTitle = await FirebaseMethods().getSampleImageTitle();
+      imageTitle = sampleImageTitle;
+    });
     super.initState();
   }
 
@@ -108,16 +115,20 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                   IconButton(
                     onPressed: () async {
                       index = addIndex();
-                      final timer = Timer(
-                          groupId: groupId,
-                          number: index,
-                          time: 0,
-                          alarm: Sound(name: '', url: ''),
-                          bgm: Sound(name: '', url: ''),
-                          imagePath: '',
-                          notification: 0);
+                      timerRepository.addTimer(
+                        Timer(
+                            groupId: groupId,
+                            number: index,
+                            time: 0,
+                            alarm: Sound(name: '', url: ''),
+                            bgm: Sound(name: '', url: ''),
+                            imagePath: imageTitle,
+                            notification: 0),
+                      );
 
-                      timerRepository.addTimer(timer);
+                      final timer = await ref
+                          .watch(timerRepositoryProvider)
+                          .getTimer(groupId, index);
 
                       await showModalBottomSheet(
                           context: context,
