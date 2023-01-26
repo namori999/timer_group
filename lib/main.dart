@@ -5,11 +5,12 @@ import 'package:timer_group/views/app.dart';
 import 'domein/logic/notififcation.dart';
 import 'firebase/firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   await LocalNotification().initializeNotification();
   runApp(const ProviderScope(child: App()));
 }

@@ -50,4 +50,19 @@ class FirebaseMethods {
     print(sounds);
     return sounds;
   }
+
+  Future<List<Sound>> getBGMs() async {
+    final storageRef = FirebaseStorage.instance.ref().child("bgm");
+    final listResult = await storageRef.listAll();
+    final List<Sound> sounds = [];
+
+    for (var item in listResult.items) {
+      // The items under storageRef.
+      final ref = storage.ref().child(item.fullPath);
+      final String url = await ref.getDownloadURL();
+      sounds.add(Sound(name: item.name, url: url));
+    }
+    print(sounds);
+    return sounds;
+  }
 }

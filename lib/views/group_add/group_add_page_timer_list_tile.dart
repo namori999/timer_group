@@ -227,7 +227,7 @@ class GroupAddPageListTileState
                       ),
                       onPressed: () async {
                         final List<Sound> musics =
-                            await FirebaseMethods().getSoundEffects();
+                            await FirebaseMethods().getBGMs();
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,

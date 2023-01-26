@@ -30,8 +30,9 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
   bool isPlaying = false;
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   void setStartIcon() {
