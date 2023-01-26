@@ -101,7 +101,7 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                     ],
                   ),
                   Text(
-                    alarmTitle,
+                    alarmTitle.substring(0, alarmTitle.indexOf('.')),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
@@ -121,7 +121,7 @@ class DetailPageListTileState extends ConsumerState<OverTimeTile> {
                     ],
                   ),
                   Text(
-                    bgmTitle,
+                    bgmTitle.substring(0, bgmTitle.indexOf('.')),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,

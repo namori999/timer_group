@@ -39,9 +39,13 @@ class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
 class GroupAddPageListTileState
     extends ConsumerState<GroupAddPageTimerListTile> {
   get number => widget.number;
+
   get index => widget.index;
+
   get groupId => widget.groupId;
+
   Timer get timer => widget.timer;
+
   bool? get overTime => widget.overTime;
 
   @override
@@ -153,7 +157,10 @@ class GroupAddPageListTileState
                           SizedBox(
                             width: 80,
                             child: Text(
-                              timer.alarm.name,
+                              (timer.alarm.name == '')
+                                  ? timer.alarm.name
+                                  : timer.alarm.name.substring(
+                                      0, timer.alarm.name.indexOf('.')),
                               maxLines: 1,
                               softWrap: false,
                               overflow: TextOverflow.fade,
@@ -203,7 +210,10 @@ class GroupAddPageListTileState
                           SizedBox(
                             width: 80,
                             child: Text(
-                              timer.bgm.name,
+                              (timer.bgm.name == '')
+                                  ? timer.bgm.name
+                                  : timer.bgm.name.substring(
+                                      0, timer.bgm.name.indexOf('.')),
                               maxLines: 1,
                               softWrap: false,
                               overflow: TextOverflow.fade,

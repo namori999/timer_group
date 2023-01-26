@@ -100,7 +100,9 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   SizedBox(
                     width: 130,
                     child: Text(
-                      alarmTitle,
+                      alarmTitle == ''
+                          ? alarmTitle
+                          : alarmTitle.substring(0, alarmTitle.indexOf('.')),
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.fade,
@@ -119,7 +121,9 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                   SizedBox(
                     width: 130,
                     child: Text(
-                      bgmTitle,
+                      bgmTitle == ''
+                          ? bgmTitle
+                          : bgmTitle.substring(0, bgmTitle.indexOf('.')),
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.fade,
