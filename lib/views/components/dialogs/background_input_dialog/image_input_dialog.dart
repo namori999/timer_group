@@ -15,7 +15,7 @@ class ImageInputDialog extends StatefulWidget {
 
 class ImageInputDialogState extends State<ImageInputDialog> {
   List<Image> get images => widget.imageList;
-  late Image selectedImage = Image.asset('sample.jpg');
+  late Image selectedImage;
   bool isImageSelected = true;
 
   Widget spacer() {

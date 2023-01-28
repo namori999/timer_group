@@ -7,10 +7,15 @@ import 'firebase/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
+  //Appを名前付きで初期化
+  await Firebase.initializeApp(
+      name: 'hoge', options: DefaultFirebaseOptions.currentPlatform);
+
+  //生成されたAppsが紐づくProject IDを出力
+  Firebase.apps.forEach((e) {
+    print(e.options.projectId);
+  });
   await LocalNotification().initializeNotification();
   runApp(const ProviderScope(child: App()));
 }

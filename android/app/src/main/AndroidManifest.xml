@@ -3,7 +3,7 @@
 
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="timer_group"
         android:usesCleartextTraffic="true">
         <activity

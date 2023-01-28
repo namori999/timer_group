@@ -12,6 +12,7 @@ import 'package:timer_group/domein/logic/notififcation.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:flutter/services.dart';
 
 import 'count_down/count_down_buttons.dart';
 
@@ -78,6 +79,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     if (timers[currentIndex].bgm.url != '') {
       bgmPlayer.setReleaseMode(ReleaseMode.loop);
       bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
@@ -135,106 +137,103 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Stack(
-        children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: Image(
-                image:
-                    CachedNetworkImageProvider(timers[currentIndex].imagePath),
-              ),
+    return Stack(
+      children: [
+        SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: Image(
+              image:
+                  CachedNetworkImageProvider(timers[currentIndex].imagePath),
             ),
           ),
-          Center(
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 1),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 16),
-                          const Icon(
-                            Icons.alarm,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          const SizedBox(height: 16),
-
-                          ///合計時間のカウントダウン
-                          SlideCountdown(
-                            duration: Duration(seconds: totalTime),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            textStyle: const TextStyle(
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                              fontSize: 36,
-                            ),
-                            onDone: () {
-                              print('Countdown done!');
-                            },
-                          ),
-                          const Divider(
-                            color: Colors.white,
-                            height: 36,
-                            thickness: 1,
-                          ),
-                          const Text(
-                            '次のアラームまで',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          ///今のタイマーのカウントダウン
-                          SlideCountdown(
-                            key: UniqueKey(),
-                            duration: streamDuration.duration,
-                            streamDuration: streamDuration,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            textStyle: const TextStyle(
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                              fontSize: 24,
-                            ),
-                          ),
-                        ],
-                      )),
+        ),
+        Center(
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 1),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 16),
+                        const Icon(
+                          Icons.alarm,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(height: 16),
+
+                        ///合計時間のカウントダウン
+                        SlideCountdown(
+                          duration: Duration(seconds: totalTime),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                            fontSize: 36,
+                          ),
+                          onDone: () {
+                            print('Countdown done!');
+                          },
+                        ),
+                        const Divider(
+                          color: Colors.white,
+                          height: 36,
+                          thickness: 1,
+                        ),
+                        const Text(
+                          '次のアラームまで',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        ///今のタイマーのカウントダウン
+                        SlideCountdown(
+                          key: UniqueKey(),
+                          duration: streamDuration.duration,
+                          streamDuration: streamDuration,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    )),
               ),
             ),
           ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: CountDownPageButtons(
-                streamDuration: streamDuration,
-              ),
+        ),
+        SafeArea(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: CountDownPageButtons(
+              streamDuration: streamDuration,
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

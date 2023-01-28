@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>707190494312-a015qc4q9q3vpo7d41cie7e56kcnf6qu.apps.googleusercontent.com</string>
+	<string>841727539515-pan9i8a24i0hn0fkqeiikerft0sgfg5l.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.707190494312-a015qc4q9q3vpo7d41cie7e56kcnf6qu</string>
+	<string>com.googleusercontent.apps.841727539515-pan9i8a24i0hn0fkqeiikerft0sgfg5l</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBvig2F-HV6YYGe0AHD7gveFO_JM6fspeA</string>
+	<string>AIzaSyCxF3dvH9Dx9pVqaXIhi799z_vG7xjCyFY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>707190494312</string>
+	<string>841727539515</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.giorno.timerGroup</string>
 	<key>PROJECT_ID</key>
-	<string>sample-image-174ec</string>
+	<string>timergroup-204b1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>sample-image-174ec.appspot.com</string>
+	<string>timergroup-204b1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:707190494312:ios:1fe29aa8d9e7e947f4d7dd</string>
+	<string>1:841727539515:ios:457b1a1524176d94711f1e</string>
 </dict>
 </plist>

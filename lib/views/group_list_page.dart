@@ -89,7 +89,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       ),
       centerTitle: true,
       title: Image.asset(
-        'assets/images/app_icon.png',
+        'assets/images/app_icon_forground.png',
         fit: BoxFit.contain,
         height: 30,
       ),
