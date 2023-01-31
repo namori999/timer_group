@@ -13,6 +13,7 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:flutter/services.dart';
+import 'package:timer_group/views/count_down/count_down_text.dart';
 
 import 'count_down/count_down_buttons.dart';
 
@@ -51,7 +52,8 @@ class CountDownPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => CountDownPageState();
 }
 
-class CountDownPageState extends ConsumerState<CountDownPage> {
+class CountDownPageState extends ConsumerState<CountDownPage>
+    with TickerProviderStateMixin {
   TimerGroup get timerGroup => widget.timerGroup;
 
   List<Timer> get timers => widget.timers;
@@ -60,8 +62,6 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
 
   int get totalTime => widget.totalTimeSecond;
 
-  late Duration remainingTime;
-  Duration duration = const Duration(seconds: 0);
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
     Duration(seconds: timers[currentIndex].time),
@@ -69,6 +69,11 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
       nextDuration();
     },
   ));
+
+  late var controller = AnimationController(
+    vsync: this,
+    duration: Duration(seconds: timers[currentIndex].time),
+  );
 
   late Image backGroundImage = Image(
     image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
@@ -116,6 +121,17 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
         },
       );
 
+      ///次のDurationをAnimationControlelerに渡す
+      controller = AnimationController(
+        vsync: this,
+        duration: Duration(seconds: timers[currentIndex].time),
+      );
+      controller.reverse(
+          from: controller.value == 0.0
+              ? 1.0
+              : controller.value);
+      print(controller);
+
       ///次のbgmを再生
       bgmPlayer.pause();
       if (timers[currentIndex].bgm.url != '') {
@@ -123,11 +139,11 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
       }
 
       ///次の背景に更新
-      setState(() {
-        backGroundImage = Image(
-          image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-        );
-      });
+      backGroundImage = Image(
+        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
+      );
+
+      setState(() {});
     } else {
       print('All Done');
       bgmPlayer.stop();
@@ -177,6 +193,12 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                           size: 20,
                         ),
                         const SizedBox(height: 16),
+
+                        CountDownText(
+                            duration: Duration(seconds: timers[currentIndex].time),
+                            animationController: controller,
+                            timeFormat: timerGroup.options!.timeFormat ??
+                                TimeFormat.hourMinute),
 
                         ///合計時間のカウントダウン
                         SlideCountdown(
