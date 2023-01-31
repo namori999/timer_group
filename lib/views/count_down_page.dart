@@ -80,6 +80,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
     if (timers[currentIndex].bgm.url != '') {
       bgmPlayer.setReleaseMode(ReleaseMode.loop);
       bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
@@ -93,10 +94,10 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
     super.dispose();
   }
 
-  void nextDuration() {
+  void nextDuration() async {
     ///タイマー終了してすぐ
     if (timers[currentIndex].alarm.url != '') {
-      alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+      await alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
     }
 
     if (LocalNotification.notificationIsActive(
@@ -131,8 +132,13 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
       print('All Done');
       bgmPlayer.stop();
       bgmPlayer.dispose();
+      streamDuration.dispose();
       Navigator.pop(context);
     }
+  }
+
+  bool getBool(Duration duration) {
+    return false;
   }
 
   @override
@@ -145,8 +151,7 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
           child: FittedBox(
             fit: BoxFit.cover,
             child: Image(
-              image:
-                  CachedNetworkImageProvider(timers[currentIndex].imagePath),
+              image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
             ),
           ),
         ),
@@ -209,6 +214,44 @@ class CountDownPageState extends ConsumerState<CountDownPage> {
                           key: UniqueKey(),
                           duration: streamDuration.duration,
                           streamDuration: streamDuration,
+                          separatorType: SeparatorType.title,
+                          separatorStyle: const TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                            fontSize: 16,
+                          ),
+                          replacement: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  '00',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.none,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 2,
+                                ),
+                                Text(
+                                  '秒',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.none,
+                                    fontSize: 16,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          durationTitle: const DurationTitle(
+                            days: '日',
+                            hours: '時間',
+                            minutes: '分',
+                            seconds: '秒',
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0),
                           ),

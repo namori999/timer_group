@@ -79,7 +79,7 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
             TextField(
               controller: titleController,
               keyboardType: TextInputType.name,
-              maxLength: 10,
+              maxLength: 20,
               onSubmitted: (String value) => titleText = value,
               onChanged: (String value) => titleText = value,
               textInputAction: TextInputAction.next,
