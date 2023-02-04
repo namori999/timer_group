@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
+import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
 import 'detail/detail_page_data.dart';
@@ -29,14 +30,14 @@ class DetailPage extends ConsumerWidget {
     final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).cardColor,
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
               SliverAppBar(
                 centerTitle: true,
-                backgroundColor: Theme.of(context).colorScheme.background,
+                backgroundColor: Theme.of(context).cardColor,
                 iconTheme: IconThemeData(
                   color: Theme.of(context).primaryColor,
                 ),
@@ -73,11 +74,11 @@ class DetailPage extends ConsumerWidget {
                 child: ClipRect(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                    child: MaterialButton(
-                      onPressed: () async {
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(40),
+                      onTap: () async {
                         final timerGroup =
                             await timerGroupProvider.getTimerGroup(id);
-
                         Navigator.of(context).push(
                           CountDownPage.route(
                             timerGroup: timerGroup!,
@@ -87,13 +88,13 @@ class DetailPage extends ConsumerWidget {
                           ),
                         );
                       },
-                      color: Theme.of(context).colorScheme.background.withOpacity(0.9),
-                      shape: StadiumBorder(
-                          side: BorderSide(
-                              color: Theme.of(context).primaryColor, width: 4)),
-                      elevation: 0,
-                      child: Padding(
+                      child: Container(
                         padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(40),
+                          border: Border.all(color: Themes.grayColor,width: 4),
+                        ),
+
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
