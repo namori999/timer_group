@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
@@ -7,6 +8,7 @@ import 'package:timer_group/views/group_add/group_add_page_body.dart';
 import 'package:timer_group/views/group_add_page.dart';
 import 'package:timer_group/views/settings_page.dart';
 
+import 'components/ad/AdBanner.dart';
 import 'configure/theme.dart';
 import 'group_list/group_list_data.dart';
 
@@ -61,8 +63,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   Future<void> canselAdding() async {
     if (GroupAddPageBodyState.onSecondStep) {
-      final id = await ref.read(savedTimerGroupProvider.notifier)
-          .getEditingId();
+      final id =
+          await ref.read(savedTimerGroupProvider.notifier).getEditingId();
       final repo = ref.watch(timerGroupRepositoryProvider);
       if (id != null) await repo.removeTimerGroup(id);
     }
@@ -70,9 +72,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: isSheetOpen
-          ? Colors.grey
-          : Theme.of(context).backgroundColor,
+      backgroundColor:
+          isSheetOpen ? Colors.grey : Theme.of(context).backgroundColor,
       leading: Builder(
         builder: (context) => Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -124,9 +125,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: appBar(),
-      backgroundColor: isSheetOpen
-          ? Colors.grey
-          : Theme.of(context).backgroundColor,
+      backgroundColor:
+          isSheetOpen ? Colors.grey : Theme.of(context).backgroundColor,
       body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
@@ -173,6 +173,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
               });
         },
       ),
+      bottomNavigationBar: const AdBanner(size: AdSize.largeBanner),
     );
   }
 }
