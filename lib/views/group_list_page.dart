@@ -61,8 +61,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   Future<void> canselAdding() async {
     if (GroupAddPageBodyState.onSecondStep) {
-      final id = await ref.read(savedTimerGroupProvider.notifier)
-          .getEditingId();
+      final id =
+          await ref.read(savedTimerGroupProvider.notifier).getEditingId();
       final repo = ref.watch(timerGroupRepositoryProvider);
       if (id != null) await repo.removeTimerGroup(id);
     }
@@ -70,9 +70,10 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: isSheetOpen
-          ? Colors.grey
-          : Theme.of(context).backgroundColor,
+      backgroundColor:
+          (isSheetOpen && Theme.of(context).brightness == Brightness.light)
+              ? Colors.grey
+              : Theme.of(context).cardColor,
       leading: Builder(
         builder: (context) => Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -124,15 +125,16 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: appBar(),
-      backgroundColor: isSheetOpen
-          ? Colors.grey
-          : Theme.of(context).backgroundColor,
+      backgroundColor:
+          (isSheetOpen && Theme.of(context).brightness == Brightness.light)
+              ? Colors.grey
+              : Theme.of(context).cardColor,
       body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
               backgroundColor:
-                  Theme.of(context).backgroundColor.withOpacity(0.6),
+                  Theme.of(context).cardColor.withOpacity(0.6),
               elevation: 0,
               shape: StadiumBorder(
                   side: BorderSide(
@@ -151,6 +153,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                     backGroundColor = Themes.grayColor[700]!;
                     showBottomSheet(
                         context: context,
+                        backgroundColor: Theme.of(context).cardColor,
                         elevation: 20,
                         shape: const RoundedRectangleBorder(
                           borderRadius:
