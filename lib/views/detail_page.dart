@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
-import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
 import 'detail/detail_page_data.dart';
@@ -27,18 +26,17 @@ class DetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerProvider = ref.watch(timerRepositoryProvider);
     final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
               SliverAppBar(
                 centerTitle: true,
-                backgroundColor: Theme.of(context).backgroundColor,
+                backgroundColor: Theme.of(context).colorScheme.background,
                 iconTheme: IconThemeData(
                   color: Theme.of(context).primaryColor,
                 ),
@@ -46,7 +44,8 @@ class DetailPage extends ConsumerWidget {
                 actions: [
                   IconButton(
                     onPressed: () async {
-                      final timerGroup = await timerGroupProvider.getTimerGroup(id);
+                      final timerGroup =
+                          await timerGroupProvider.getTimerGroup(id);
                       Navigator.push(
                           context,
                           GroupEditPage.route(
@@ -76,22 +75,19 @@ class DetailPage extends ConsumerWidget {
                     filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
                     child: MaterialButton(
                       onPressed: () async {
-                        final timerGroup = await timerGroupProvider.getTimerGroup(id);
-                        int? totalTimeSecond = await timerProvider.getTotal(id);
-                        var totalTime = 0;
-                        if (totalTimeSecond != null) {
-                          totalTimeSecond = totalTimeSecond;
-                        }
+                        final timerGroup =
+                            await timerGroupProvider.getTimerGroup(id);
+
                         Navigator.of(context).push(
                           CountDownPage.route(
                             timerGroup: timerGroup!,
                             options: timerGroup.options!,
                             timers: timerGroup.timers!,
-                            totalTimeSecond: totalTime,
+                            totalTimeSecond: timerGroup.totalTime!,
                           ),
                         );
                       },
-                      color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                      color: Theme.of(context).colorScheme.background.withOpacity(0.9),
                       shape: StadiumBorder(
                           side: BorderSide(
                               color: Theme.of(context).primaryColor, width: 4)),
@@ -112,8 +108,7 @@ class DetailPage extends ConsumerWidget {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor,
-                                  fontSize: 16
-                              ),
+                                  fontSize: 16),
                             ),
                           ],
                         ),

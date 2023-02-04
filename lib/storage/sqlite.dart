@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS timers (
     return result.toList();
   }
 
-  Future<int?> getTotal(int id) async {
+  Future<int> getTotal(int id) async {
     final db = await _getDatabase();
     var result = await db
         .rawQuery("SELECT SUM(time) FROM timers where groupId = ?", [id]);

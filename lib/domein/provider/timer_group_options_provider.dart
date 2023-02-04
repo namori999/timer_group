@@ -50,6 +50,6 @@ String getFormatName(TimerGroupOptions options) {
   if (options.timeFormat == TimeFormat.minuteSecond) {
     return '分秒';
   } else {
-    return '時分';
+    return '時分秒';
   }
 }

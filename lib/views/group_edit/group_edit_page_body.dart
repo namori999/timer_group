@@ -125,9 +125,9 @@ class GroupEditPageBodyState extends ConsumerState<GroupEditPageBody> {
                   "表示単位",
                 ),
                 OutlinedDropDownButton(
-                  itemList: const ['分秒', '時分'],
+                  itemList: const ['分秒', '時分秒'],
                   type: "TimeFormat",
-                  title: timerGroup.title,
+                  options: timerGroup.options!,
                 ),
               ],
             ),
