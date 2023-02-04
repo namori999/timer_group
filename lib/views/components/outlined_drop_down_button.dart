@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -38,7 +37,7 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
     super.initState();
     if (options.timeFormat != null) {
       selectedValue =
-          (options.timeFormat == TimeFormat.hourMinute) ? '時分秒' : '分秒';
+      (options.timeFormat == TimeFormat.hourMinute) ? '時分秒' : '分秒';
     } else {
       selectedValue = '分秒';
     }
@@ -93,9 +92,13 @@ class DropDownButtonState extends ConsumerState<OutlinedDropDownButton> {
                 addOption();
                 setState(() {});
               },
+              dropdownColor: Theme.of(context).cardColor,
               items: itemList?.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem(
-                    value: value, child: Center(child: Text(value)));
+                  value: value,
+                  child: Center(
+                    child: Text(value),
+                ),);
               }).toList(),
             ),
           ),
