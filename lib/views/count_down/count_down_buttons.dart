@@ -8,10 +8,14 @@ import 'package:timer_group/views/count_down_page.dart';
 class CountDownPageButtons extends StatefulWidget {
   CountDownPageButtons({
     required this.streamDuration,
+    required this.controller,
+    required this.totalTimeController,
     Key? key,
   }) : super(key: key);
 
   StreamDuration streamDuration;
+  AnimationController controller;
+  AnimationController totalTimeController;
 
   @override
   State createState() => CountDownPageButtonsState();
@@ -19,6 +23,8 @@ class CountDownPageButtons extends StatefulWidget {
 
 class CountDownPageButtonsState extends State<CountDownPageButtons> {
   get streamDuration => widget.streamDuration;
+  get controller => widget.controller;
+  get totalTimeController => widget.totalTimeController;
   bool isPause = false;
 
   @override
@@ -62,9 +68,15 @@ class CountDownPageButtonsState extends State<CountDownPageButtons> {
                   if (isPause) {
                     streamDuration.pause();
                     CountDownPageState.bgmPlayer.pause();
+                    controller.stop();
+                    totalTimeController.stop();
                   } else {
                     streamDuration.resume();
                     CountDownPageState.bgmPlayer.resume();
+                    controller.forward();
+                    totalTimeController.forward();
+                    controller.reverse();
+                    totalTimeController.reverse();
                   }
                   setState(() {});
                 },
