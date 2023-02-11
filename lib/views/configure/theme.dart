@@ -2,25 +2,49 @@ import 'package:flutter/material.dart';
 
 class Themes {
   static ThemeData get defaultTheme => ThemeData(
-        primarySwatch: grayColor,
-        primaryColor: grayColor,
-        backgroundColor: grayColor.shade50,
-        shadowColor: Themes.themeColor.shade900,
-        splashColor: Themes.themeColor.shade100,
-        cardColor: Colors.white,
-        iconTheme: IconThemeData(color: grayColor[500]),
-        fontFamily: 'inter',
-      );
+      brightness: Brightness.light,
+      primarySwatch: grayColor,
+      primaryColor: grayColor,
+      shadowColor: Themes.themeColor.shade900,
+      splashColor: Themes.themeColor.shade100,
+      cardColor: Colors.white,
+      iconTheme: IconThemeData(color: grayColor[500]),
+      fontFamily: 'inter',
+      colorScheme: ColorScheme(
+        background: Colors.grey.shade50,
+        brightness: Brightness.light,
+        primary: Themes.grayColor.shade900,
+        onPrimary: grayColor,
+        secondary: Themes.themeColor,
+        onSecondary: grayColor,
+        error: Colors.red,
+        onError: Colors.white,
+        onBackground: grayColor,
+        surface: Colors.white,
+        onSurface: grayColor,
+      ));
 
-  static ThemeData get darkTheme => defaultTheme.copyWith(
+  static ThemeData get darkTheme => ThemeData(
       brightness: Brightness.dark,
       primaryColor: Colors.white,
-      backgroundColor: const Color(0xFF404240),
       shadowColor: Themes.themeColor.shade800,
       splashColor: Themes.themeColor,
-      cardColor: const Color(0xFF5F625F),
+      cardColor: const Color(0xFF464646),
       iconTheme: IconThemeData(color: grayColor[50]),
-      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)));
+      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+      colorScheme: const ColorScheme(
+        background: Color(0xFF242424),
+        brightness: Brightness.dark,
+        primary: Colors.white,
+        onPrimary: Colors.black,
+        secondary: Themes.themeColor,
+        onSecondary: Colors.white,
+        error: Colors.red,
+        onError: Colors.white,
+        onBackground: Colors.white,
+        surface: Color(0xFF5F625F),
+        onSurface: Colors.white,
+      ));
 
   static const MaterialColor themeColor =
       MaterialColor(_accentPrimaryValue, <int, Color>{

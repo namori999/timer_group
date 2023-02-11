@@ -73,7 +73,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       backgroundColor:
           (isSheetOpen && Theme.of(context).brightness == Brightness.light)
               ? Colors.grey
-              : Theme.of(context).cardColor,
+              : Theme.of(context).colorScheme.background,
       leading: Builder(
         builder: (context) => Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -128,7 +128,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       backgroundColor:
           (isSheetOpen && Theme.of(context).brightness == Brightness.light)
               ? Colors.grey
-              : Theme.of(context).cardColor,
+              : Theme.of(context).colorScheme.background,
       body: GroupListBodyData(),
       floatingActionButton: Builder(
         builder: (context) {
@@ -165,7 +165,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                       setState(() {
                         floatingButtonIcon = Icon(
                           Icons.add,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).iconTheme.color,
                         );
                         isSheetOpen = false;
                         backGroundColor = Colors.white;
