@@ -113,7 +113,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: ((context, index) => Container(
                 height: 50,
-                color: Colors.white,
+                color: Theme.of(context).dialogTheme.backgroundColor,
                 child: RadioListTile(
                   title: AudioPlayButton(
                     sound: sounds[index],

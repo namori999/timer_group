@@ -96,7 +96,7 @@ class BgmInputDialogState extends ConsumerState<BgmInputDialog> {
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: ((context, index) => Container(
                 height: 50,
-                color: Colors.white,
+                color: Theme.of(context).dialogBackgroundColor,
                 child: RadioListTile(
                   title: AudioPlayButton(
                     sound: musics[index],

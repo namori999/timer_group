@@ -72,8 +72,7 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          width: 120,
+        Expanded(
           child: Text(
             sound.name,
             style: const TextStyle(
@@ -81,7 +80,6 @@ class AudioPlayButtonState extends ConsumerState<AudioPlayButton> {
             ),
           ),
         ),
-        const Spacer(),
         ElevatedButton(
           style: ButtonStyle(
             shape: MaterialStateProperty.all(const CircleBorder()),
