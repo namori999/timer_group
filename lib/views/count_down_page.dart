@@ -25,12 +25,13 @@ class CountDownPage extends ConsumerStatefulWidget {
   }) {
     return MaterialPageRoute<CountDownPage>(
       settings: const RouteSettings(name: "/detail"),
-      builder: (_) => CountDownPage(
-        timerGroup: timerGroup,
-        options: options,
-        totalTimeSecond: totalTimeSecond,
-        timers: timers,
-      ),
+      builder: (_) =>
+          CountDownPage(
+            timerGroup: timerGroup,
+            options: options,
+            totalTimeSecond: totalTimeSecond,
+            timers: timers,
+          ),
     );
   }
 
@@ -60,6 +61,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   TimerGroupOptions get options => widget.options;
 
   int get totalTime => widget.totalTimeSecond;
+  late int remainingTotalTime = totalTime;
 
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
@@ -73,6 +75,13 @@ class CountDownPageState extends ConsumerState<CountDownPage>
     vsync: this,
     duration: Duration(seconds: timers[currentIndex].time),
   );
+
+  late var totalTimeStreamDuration = (StreamDuration(
+    Duration(seconds: totalTime),
+    onDone: () {
+      nextDuration();
+    },
+  ));
 
   late var totalTimeController = AnimationController(
     vsync: this,
@@ -100,8 +109,11 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   @override
   void dispose() {
     bgmPlayer.dispose();
-    alarmPlayer.dispose();
+    if(remainingTotalTime > 0) {
+      alarmPlayer.dispose();
+    }
     streamDuration.dispose();
+    totalTimeStreamDuration.dispose();
     super.dispose();
   }
 
@@ -111,10 +123,19 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       await alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
     }
 
+    totalTimeController.stop();
+
     if (LocalNotification.notificationIsActive(
         timers[currentIndex].notification)) {
       LocalNotification().notify(currentIndex);
     }
+
+    ///totalTimeを今の分減らして再セット
+    remainingTotalTime = remainingTotalTime - timers[currentIndex].time;
+    totalTimeController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: remainingTotalTime),
+    );
 
     if (currentIndex < timers.length - 1) {
       currentIndex++;
@@ -127,6 +148,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
         },
       );
 
+
       ///次のDurationをAnimationControlelerに渡す
       controller = AnimationController(
         vsync: this,
@@ -135,6 +157,12 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       controller.reverse(
           from: controller.value == 0.0 ? 1.0 : controller.value);
       print(controller);
+
+      ///totalTimeをControllerに渡す
+      totalTimeController.reverse(
+          from: totalTimeController.value == 0.0 ? 1.0 : totalTimeController
+              .value);
+      print(totalTimeController);
 
       ///次のbgmを再生
       bgmPlayer.pause();
@@ -148,13 +176,10 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       );
 
       setState(() {});
-    } else {
-      print('All Done');
-      bgmPlayer.stop();
-      bgmPlayer.dispose();
-      streamDuration.dispose();
-      Navigator.pop(context);
+      return;
     }
+    print('All Done');
+    Navigator.pop(context);
   }
 
   bool getBool(Duration duration) {
@@ -189,7 +214,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
+                        const BorderRadius.all(Radius.circular(20)),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -214,7 +239,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                           ///今のタイマーのカウントダウン
                           CountDownText(
                             duration:
-                                Duration(seconds: timers[currentIndex].time),
+                            Duration(seconds: timers[currentIndex].time),
                             animationController: controller,
                             timeFormat: timerGroup.options!.timeFormat ??
                                 TimeFormat.hourMinute,
@@ -242,7 +267,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
+                        const BorderRadius.all(Radius.circular(20)),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -259,7 +284,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
 
                           ///合計時間のカウントダウン
                           CountDownText(
-                            duration: Duration(seconds: totalTime),
+                            duration: totalTimeStreamDuration.duration,
                             textStyle: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
