@@ -8,6 +8,7 @@ class Themes {
       shadowColor: Themes.themeColor.shade900,
       splashColor: Themes.themeColor.shade100,
       cardColor: Colors.white,
+      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
       iconTheme: IconThemeData(color: grayColor[500]),
       fontFamily: 'inter',
       colorScheme: ColorScheme(

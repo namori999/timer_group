@@ -1,10 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
-import 'package:timer_group/domein/provider/audioProvider.dart';
-import 'package:timer_group/views/components/audio_play_button.dart';
+import 'package:timer_group/views/components/dialogs/audio_play_dialog/audio_play_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
+
 
 class AlarmInputDialog extends ConsumerStatefulWidget {
   const AlarmInputDialog({
@@ -49,9 +50,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final audioProvider = ref.watch(audioPlayingProvider.notifier);
-
-    return AlertDialog(
+   return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
@@ -111,16 +110,17 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
           itemCount: sounds.length,
           controller: ScrollController(),
           separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: ((context, index) => Container(
+          itemBuilder: ((context, index) => Ink(
                 height: 50,
                 color: Theme.of(context).dialogTheme.backgroundColor,
                 child: RadioListTile(
                   title: AudioPlayButton(
                     sound: sounds[index],
-                    player: audioProvider.player,
+                    player: AudioPlayer(),
                   ),
                   value: sounds[index],
                   groupValue: selectedSound,
+                  toggleable: true,
                   onChanged: (value) => _onRadioSelected(value),
                 ),
               )),

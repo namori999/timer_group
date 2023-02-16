@@ -47,7 +47,7 @@ class FirebaseMethods {
       final String url = await ref.getDownloadURL();
       sounds.add(Sound(name: item.name, url: url));
     }
-    print(sounds);
+    //print(sounds);
     return sounds;
   }
 
@@ -62,7 +62,7 @@ class FirebaseMethods {
       final String url = await ref.getDownloadURL();
       sounds.add(Sound(name: item.name, url: url));
     }
-    print(sounds);
+    //print(sounds);
     return sounds;
   }
 }

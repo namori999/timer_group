@@ -6,10 +6,10 @@ PODS:
   - Firebase/Storage (10.3.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.3.0)
-  - firebase_core (2.4.1):
+  - firebase_core (2.5.0):
     - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_storage (11.0.10):
+  - firebase_storage (11.0.11):
     - Firebase/Storage (= 10.3.0)
     - firebase_core
     - Flutter
@@ -115,8 +115,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_core: bf59c32d2e53814f558efa20840c1902fa2fe461
-  firebase_storage: 8b85bf19de50a1886f9387924fbddf066a718965
+  firebase_core: f95c8bbe65213d406d592573ad42a12d64849cb8
+  firebase_storage: 31bd20813d7c4780b1075d2d069d8338291c39c1
   FirebaseAppCheckInterop: 9fc57dfa08f0abb737b185ea065422b55355c909
   FirebaseAuthInterop: 7a766bd56971347e0de4b7674aaa62ddc7820097
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
