@@ -5,6 +5,7 @@ import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
 class GroupListItemTile extends ConsumerStatefulWidget {
@@ -37,17 +38,11 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
 
   String totalTimeText = '';
   String format = '分秒表示';
-  String timerCount = '';
 
   @override
   void initState() {
     format = getFormatName(options);
     totalTimeText = getFormattedTime(options, totalTime);
-    if (options.overTime == 'ON') {
-      timerCount = (timers.length - 1).toString();
-    } else {
-      timerCount = timers.length.toString();
-    }
     super.initState();
   }
 
@@ -67,6 +62,9 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
 
   @override
   Widget build(BuildContext context) {
+    final timersProvider = ref.watch(timersListProvider(timerGroup.id!));
+    final timerCount = timersProvider.valueOrNull?.length;
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: ListTile(

@@ -30,14 +30,14 @@ class DetailPage extends ConsumerWidget {
     final timerGroupProvider = ref.watch(timerGroupRepositoryProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
               SliverAppBar(
                 centerTitle: true,
-                backgroundColor: Theme.of(context).cardColor,
+                backgroundColor: Theme.of(context).colorScheme.background,
                 iconTheme: IconThemeData(
                   color: Theme.of(context).primaryColor,
                 ),
