@@ -100,6 +100,8 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   @override
   void dispose() {
     bgmPlayer.dispose();
+    alarmPlayer.dispose();
+    streamDuration.dispose();
     super.dispose();
   }
 
