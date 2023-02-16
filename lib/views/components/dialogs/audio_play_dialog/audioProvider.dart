@@ -25,6 +25,8 @@ class AudioPlayingNotifier extends ChangeNotifier {
   void dispose() {
     currentPlayer.stop();
     currentPlayer.dispose();
+    icon = const Icon(Icons.play_arrow_rounded);
+    ref.invalidate(audioIconProvider);
   }
 
   void setCurrentState(bool isPlaying) {
