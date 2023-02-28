@@ -6,9 +6,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Chirpiee - Multiple Timers"
         android:usesCleartextTraffic="true">
-
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -40,29 +37,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
-
-        <queries>
-            <!-- If your app opens https URLs -->
-            <intent>
-                <action android:name="android.intent.action.VIEW" />
-                <data android:scheme="https" />
-            </intent>
-            <!-- If your app makes calls -->
-            <intent>
-                <action android:name="android.intent.action.DIAL" />
-                <data android:scheme="tel" />
-            </intent>
-            <!-- If your sends SMS messages -->
-            <intent>
-                <action android:name="android.intent.action.SENDTO" />
-                <data android:scheme="smsto" />
-            </intent>
-            <!-- If your app sends emails -->
-            <intent>
-                <action android:name="android.intent.action.SEND" />
-                <data android:mimeType="*/*" />
-            </intent>
-        </queries>
 
     </application>
 </manifest>
