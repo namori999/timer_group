@@ -16,21 +16,29 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       child: SizedBox(
         width: 200,
         child: Drawer(
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const SizedBox(
-                height: 100,
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.info_outline_rounded),
+                    title: const Text("アプリ情報"),
+                    onTap: () async {
+                      showLicensePage(
+                        context: context,
+                        applicationName: 'Chirpiee',
+                        applicationVersion: '1.1.2',
+                      );
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(Icons.info_outline_rounded),
-                title: const Text("アプリ情報"),
-                onTap: () async {
-                  showLicensePage(
-                    context: context,
-                    applicationName: 'Chirpiee',
-                    applicationVersion: '1.1.2',
-                  );
-                },
+              const ListTile(
+                title: Text('Copyright \n ©︎ 2023 giorno,Inc'),
               ),
             ],
           ),
