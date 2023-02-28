@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timer_group/views/privacy_policy_page.dart';
 
 class AppDrawer extends ConsumerStatefulWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -33,6 +34,13 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
                         applicationName: 'Chirpiee',
                         applicationVersion: '1.1.2',
                       );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.info_outline_rounded),
+                    title: const Text("プライバシーポリシー"),
+                    onTap: () async {
+                      Navigator.of(context).push(PrivacyPolicyPage.route());
                     },
                   ),
                 ],
