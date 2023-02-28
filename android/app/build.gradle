@@ -60,7 +60,6 @@ android {
             storePassword "keypass"
             keyAlias "key"
             keyPassword "keypass"
-
         }
     }
 
