@@ -4,7 +4,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="timer_group"
+        android:label="Chirpiee - Multiple Timers"
         android:usesCleartextTraffic="true">
 
         android:usesCleartextTraffic="true"
