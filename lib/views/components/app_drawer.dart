@@ -32,7 +32,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
                       showLicensePage(
                         context: context,
                         applicationName: 'Chirpiee',
-                        applicationVersion: '1.1.2',
+                        applicationVersion: '1.0.0',
                       );
                     },
                   ),
