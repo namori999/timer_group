@@ -105,7 +105,7 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
           SlidableAction(
             onPressed: (_) {},
             foregroundColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             icon: Icons.edit_outlined,
             label: '編集',
           ),
@@ -113,8 +113,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
             onPressed: (_) {
               showRemoveAlert(timerGroup.title);
             },
-            foregroundColor: Theme.of(context).errorColor,
-            backgroundColor: Theme.of(context).backgroundColor,
+            foregroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.background,
             icon: Icons.delete_outline,
             label: '削除',
           ),
