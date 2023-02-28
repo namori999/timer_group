@@ -24,8 +24,8 @@ class App extends StatelessWidget {
         '/home': (_) => const GroupListPage(),
       },
       supportedLocales: const [
-        Locale("en"),
-        Locale("ja"),
+        Locale("ja","JP"),
+        //Locale("en"),
       ],
     );
   }
