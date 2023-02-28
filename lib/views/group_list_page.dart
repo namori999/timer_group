@@ -83,7 +83,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
               splashColor: isSheetOpen ? Colors.transparent : Themes.themeColor,
               highlightColor:
                   isSheetOpen ? Colors.transparent : Themes.themeColor,
-              icon: const Icon(Icons.person_outlined),
+              icon: const Icon(Icons.menu_rounded),
               color: Theme.of(context).primaryColor,
               onPressed: () {
                 isSheetOpen ? null : Scaffold.of(context).openDrawer();
@@ -97,7 +97,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
         height: 30,
       ),
       elevation: 10,
-      actions: [
+      actions: const [
+        /*
         Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
@@ -112,6 +113,8 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
                       ? null
                       : Navigator.of(context).push(SettingsPage.route());
                 })),
+
+         */
       ],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -135,8 +138,7 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
       floatingActionButton: Builder(
         builder: (context) {
           return FloatingActionButton(
-              backgroundColor:
-                  Theme.of(context).cardColor.withOpacity(0.6),
+              backgroundColor: Theme.of(context).cardColor.withOpacity(0.6),
               elevation: 0,
               shape: StadiumBorder(
                   side: BorderSide(

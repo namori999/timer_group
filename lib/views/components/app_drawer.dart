@@ -11,6 +11,42 @@ class AppDrawer extends ConsumerStatefulWidget {
 class _AppDrawerState extends ConsumerState<AppDrawer> {
   @override
   Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.horizontal(right: Radius.circular(160)),
+      child: SizedBox(
+        width: 200,
+        child: Drawer(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.info_outline_rounded),
+                    title: const Text("アプリ情報"),
+                    onTap: () async {
+                      showLicensePage(
+                        context: context,
+                        applicationName: 'Chirpiee',
+                        applicationVersion: '1.1.2',
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const ListTile(
+                title: Text('Copyright \n ©︎ 2023 giorno,Inc'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    /*
     //final user = ref.watch(userProvider);
     final user = null;
     if (user == null) {
@@ -65,5 +101,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
         ],
       ),
     );
+
+     */
   }
 }
