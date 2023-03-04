@@ -94,9 +94,8 @@ class DetailPage extends ConsumerWidget {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
-                          border: Border.all(color: Themes.grayColor,width: 4),
+                          border: Border.all(color: Themes.grayColor, width: 4),
                         ),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,

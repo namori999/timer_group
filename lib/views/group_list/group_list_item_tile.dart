@@ -42,13 +42,7 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
   @override
   void initState() {
     format = getFormatName(options);
-    final overTimeTimer = timers.where((t) => t.isOverTime == 1).toList();
-    if (overTimeTimer.isNotEmpty) {
-      totalTimeText =
-          getFormattedTime(options, totalTime - overTimeTimer.first.time);
-    } else {
-      totalTimeText = getFormattedTime(options, totalTime);
-    }
+    totalTimeText = getFormattedTime(options, totalTime);
     super.initState();
   }
 

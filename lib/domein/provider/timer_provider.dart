@@ -87,5 +87,12 @@ class timerRepository {
     ref.invalidate(timerGroupRepositoryProvider);
   }
 
-  Future<int> getTotal(int id) async => await _db.getTotal(id);
+  Future<int> getTotal(int id) async {
+    final totalTime = await _db.getTotal(id);
+    final overTimeTimer = await getOverTimeTimer(id);
+    if(overTimeTimer != null) {
+      return totalTime - overTimeTimer.time;
+    }
+    return totalTime;
+  }
 }
