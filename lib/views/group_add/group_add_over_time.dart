@@ -5,6 +5,7 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/separoter.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
@@ -26,10 +27,12 @@ class GroupAddOverTime extends ConsumerStatefulWidget {
 class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
   get groupId => widget.groupId;
   String overTimeText = 'OFF';
+
   get overTimeEnabled => widget.overTimeEnabled;
   String totalTime = '';
   int id = 0;
   var timer;
+  String imageTitle = '';
 
   Future<Timer?> getOverTimeTimer() async {
     final overTimeTimer =
@@ -55,6 +58,10 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                 activeColor: Themes.themeColor,
                 onChanged: (bool value) async {
                   final options = await optionsProvider.getOptions(groupId);
+                  final sampleImageTitle =
+                      await FirebaseMethods().getSampleImageTitle();
+                  imageTitle = sampleImageTitle;
+
                   await optionsProvider.update(
                     TimerGroupOptions(
                         id: groupId,
@@ -69,7 +76,7 @@ class GroupAddOverTimeState extends ConsumerState<GroupAddOverTime> {
                         time: 0,
                         alarm: Sound(name: '', url: ''),
                         bgm: Sound(name: '', url: ''),
-                        imagePath: '',
+                        imagePath: imageTitle,
                         notification: 0,
                         isOverTime: 1,
                       ),
