@@ -34,6 +34,7 @@ class GroupAddPageBodyState extends ConsumerState<GroupAddPageBody> {
   @override
   void initState() {
     super.initState();
+    onSecondStep = false;
     titleController.addListener(() {
       if (titleController.text.isEmpty) {
         isEmpty = true;
