@@ -36,7 +36,11 @@ class timerRepository {
   Future<Timer?> getOverTimeTimer(int id) async {
     final timers = await getTimers(id);
     final overTimeTimer = timers.where((t) => t.isOverTime == 1).toList();
-    return overTimeTimer.first;
+    if(overTimeTimer.isNotEmpty) {
+      return overTimeTimer.first;
+    } else {
+      return null;
+    }
   }
 
   Future<void> updateTimer(Timer timer) async {
@@ -87,12 +91,15 @@ class timerRepository {
     ref.invalidate(timerGroupRepositoryProvider);
   }
 
-  Future<int> getTotal(int id) async {
+  Future<int> getTotal(int id) => _db.getTotal(id);
+
+  Future<int> getMainTimerTotal(int id) async {
     final totalTime = await _db.getTotal(id);
     final overTimeTimer = await getOverTimeTimer(id);
-    if(overTimeTimer != null) {
+    if (overTimeTimer != null) {
       return totalTime - overTimeTimer.time;
+    } else {
+      return totalTime;
     }
-    return totalTime;
   }
 }
