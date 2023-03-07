@@ -22,6 +22,7 @@ class CountDownPage extends ConsumerStatefulWidget {
     required TimerGroupOptions options,
     required int totalTimeSecond,
     required List<Timer> timers,
+    required int mainTotalSecond,
   }) {
     return MaterialPageRoute<CountDownPage>(
       settings: const RouteSettings(name: "/detail"),
@@ -31,6 +32,7 @@ class CountDownPage extends ConsumerStatefulWidget {
             options: options,
             totalTimeSecond: totalTimeSecond,
             timers: timers,
+            mainTotalSecond: mainTotalSecond,
           ),
     );
   }
@@ -41,12 +43,14 @@ class CountDownPage extends ConsumerStatefulWidget {
     required this.options,
     required this.totalTimeSecond,
     required this.timers,
+    required this.mainTotalSecond,
   }) : super(key: key);
 
   final TimerGroup timerGroup;
   final TimerGroupOptions options;
   final int totalTimeSecond;
   final List<Timer> timers;
+  final int mainTotalSecond;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => CountDownPageState();
@@ -61,7 +65,10 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   TimerGroupOptions get options => widget.options;
 
   int get totalTime => widget.totalTimeSecond;
-  late int remainingTotalTime = totalTime;
+
+  int get mainTotalSecond => widget.mainTotalSecond;
+  late int remainingTotalTime =
+  (timerGroup.options!.overTime == 'ON') ? mainTotalSecond : totalTime;
 
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
@@ -77,15 +84,12 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   );
 
   late var totalTimeStreamDuration = (StreamDuration(
-    Duration(seconds: totalTime),
-    onDone: () {
-      nextDuration();
-    },
+    Duration(seconds: remainingTotalTime),
   ));
 
   late var totalTimeController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: totalTime),
+    duration: Duration(seconds: remainingTotalTime),
   );
 
   late Image backGroundImage = Image(
@@ -103,13 +107,14 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       bgmPlayer.setReleaseMode(ReleaseMode.loop);
       bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
     }
+
     super.initState();
   }
 
   @override
   void dispose() {
     bgmPlayer.dispose();
-    if(remainingTotalTime > 0) {
+    if (remainingTotalTime > 0) {
       alarmPlayer.dispose();
     }
     streamDuration.dispose();
@@ -123,19 +128,21 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       await alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
     }
 
-    totalTimeController.stop();
-
     if (LocalNotification.notificationIsActive(
         timers[currentIndex].notification)) {
       LocalNotification().notify(currentIndex);
     }
 
-    ///totalTimeを今の分減らして再セット
-    remainingTotalTime = remainingTotalTime - timers[currentIndex].time;
-    totalTimeController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: remainingTotalTime),
-    );
+    if (!totalTimeController.isDismissed) {
+      totalTimeController.stop();
+
+      ///totalTimeを今の分減らして再セット
+      remainingTotalTime = remainingTotalTime - timers[currentIndex].time;
+      totalTimeController = AnimationController(
+        vsync: this,
+        duration: Duration(seconds: remainingTotalTime),
+      );
+    }
 
     if (currentIndex < timers.length - 1) {
       currentIndex++;
@@ -148,21 +155,32 @@ class CountDownPageState extends ConsumerState<CountDownPage>
         },
       );
 
-
       ///次のDurationをAnimationControlelerに渡す
       controller = AnimationController(
         vsync: this,
         duration: Duration(seconds: timers[currentIndex].time),
       );
-      controller.reverse(
-          from: controller.value == 0.0 ? 1.0 : controller.value);
-      print(controller);
 
-      ///totalTimeをControllerに渡す
-      totalTimeController.reverse(
-          from: totalTimeController.value == 0.0 ? 1.0 : totalTimeController
-              .value);
-      print(totalTimeController);
+      if (timers[currentIndex].isOverTime == null) {
+        ///next alarmをカウントダウン
+        controller.reverse(
+            from: controller.value == 0.0 ? 1.0 : controller.value);
+        print(controller);
+
+        ///totalTimeをControllerに渡す
+        totalTimeController = AnimationController(
+          vsync: this,
+          duration: Duration(seconds: remainingTotalTime),
+        );
+
+        print(totalTimeController);
+      } else {
+        //オーバータイムの時
+        controller.forward(from: 0.0);
+        print(controller);
+        totalTimeStreamDuration.dispose();
+        totalTimeController.dispose();
+      }
 
       ///次のbgmを再生
       bgmPlayer.pause();
@@ -176,10 +194,10 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       );
 
       setState(() {});
-      return;
+    } else {
+      print('All Done');
+      Navigator.pop(context);
     }
-    print('All Done');
-    Navigator.pop(context);
   }
 
   bool getBool(Duration duration) {
@@ -226,9 +244,19 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                             size: 20,
                           ),
                           const SizedBox(height: 16),
+
+                          (timers[currentIndex].isOverTime == null) ?
                           const Text(
                             'next alarm',
                             style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              decoration: TextDecoration.none,
+                            ),
+                          ) : const Text(
+                            'over time',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               decoration: TextDecoration.none,
@@ -257,48 +285,49 @@ class CountDownPageState extends ConsumerState<CountDownPage>
               SizedBox(
                 height: 40,
               ),
-              SizedBox(
-                width: 200,
-                height: 100,
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 2, sigmaY: 1),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'total',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-
-                          ///合計時間のカウントダウン
-                          CountDownText(
-                            duration: totalTimeStreamDuration.duration,
-                            textStyle: const TextStyle(
-                                fontSize: 20,
+              if (timers[currentIndex].isOverTime == null)
+                SizedBox(
+                  width: 200,
+                  height: 100,
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 1),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'total',
+                              style: TextStyle(
+                                fontSize: 12,
                                 color: Colors.white,
-                                decoration: TextDecoration.none),
-                            animationController: totalTimeController,
-                            timeFormat: timerGroup.options!.timeFormat ??
-                                TimeFormat.hourMinute,
-                          ),
-                        ],
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+
+                            ///合計時間のカウントダウン
+                            CountDownText(
+                              duration: totalTimeStreamDuration.duration,
+                              textStyle: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  decoration: TextDecoration.none),
+                              animationController: totalTimeController,
+                              timeFormat: timerGroup.options!.timeFormat ??
+                                  TimeFormat.hourMinute,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

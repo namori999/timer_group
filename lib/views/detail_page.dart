@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
+import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:timer_group/views/count_down_page.dart';
 import 'package:timer_group/views/group_edit_page.dart';
@@ -81,12 +83,21 @@ class DetailPage extends ConsumerWidget {
                       onTap: () async {
                         final timerGroup =
                             await timerGroupProvider.getTimerGroup(id);
+                        final mainTimerTotal = await ref
+                            .watch(timerRepositoryProvider)
+                            .getMainTimerTotal(id);
+
+                        if (timerGroup!.timers!.isEmpty) {
+                          Fluttertoast.showToast(msg: 'タイマーを1つ以上追加してください');
+                          return;
+                        }
                         Navigator.of(context).push(
                           CountDownPage.route(
-                            timerGroup: timerGroup!,
+                            timerGroup: timerGroup,
                             options: timerGroup.options!,
                             timers: timerGroup.timers!,
                             totalTimeSecond: timerGroup.totalTime!,
+                            mainTotalSecond: mainTimerTotal,
                           ),
                         );
                       },
@@ -94,9 +105,8 @@ class DetailPage extends ConsumerWidget {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
-                          border: Border.all(color: Themes.grayColor,width: 4),
+                          border: Border.all(color: Themes.grayColor, width: 4),
                         ),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,

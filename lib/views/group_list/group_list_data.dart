@@ -6,7 +6,7 @@ import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/views/group_list/group_list_item.dart';
 
 class GroupListBodyData extends ConsumerWidget {
-  GroupListBodyData({Key? key}) : super(key: key);
+  const GroupListBodyData({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

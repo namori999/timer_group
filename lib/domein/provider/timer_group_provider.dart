@@ -32,16 +32,6 @@ class TimerGroupRepository {
     final timers = await ref.watch(timerRepositoryProvider).getTimers(id);
     final totalTime = await ref.watch(timerRepositoryProvider).getTotal(id);
 
-    if (totalTime == null) {
-      return TimerGroup(
-        id: id,
-        title: groupInfo.title,
-        description: groupInfo.description,
-        options: options,
-        timers: timers,
-      );
-    }
-
     return TimerGroup(
       id: id,
       title: groupInfo.title,

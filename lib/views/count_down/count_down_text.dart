@@ -50,7 +50,7 @@ class CountDownTextState extends State<CountDownText> {
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+
   }
 
   @override

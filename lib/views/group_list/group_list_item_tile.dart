@@ -65,6 +65,13 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
     final timersProvider = ref.watch(timersListProvider(timerGroup.id!));
     final timerCount = timersProvider.valueOrNull?.length;
 
+    final overTimeTimer = timers.where((t) => t.isOverTime == 1).toList();
+    if (overTimeTimer.isNotEmpty) {
+      totalTimeText =
+          getFormattedTime(options, totalTime - overTimeTimer.first.time);
+    } else {
+      totalTimeText = getFormattedTime(options, totalTime);
+    }
     return Padding(
       padding: const EdgeInsets.all(10),
       child: ListTile(

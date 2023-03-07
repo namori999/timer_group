@@ -16,6 +16,7 @@ class GroupListItem extends ConsumerStatefulWidget {
       this.timerGroup, this.options, this.totalTime, this.timers, this.index,
       {Key? key})
       : super(key: key);
+
   final TimerGroup timerGroup;
   TimerGroupOptions options;
   int totalTime;
