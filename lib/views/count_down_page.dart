@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:ui';
+import 'dart:io' as io;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -90,10 +91,6 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   late var totalTimeController = AnimationController(
     vsync: this,
     duration: Duration(seconds: remainingTotalTime),
-  );
-
-  late Image backGroundImage = Image(
-    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
   );
 
   final alarmPlayer = AudioPlayer();
@@ -188,11 +185,6 @@ class CountDownPageState extends ConsumerState<CountDownPage>
         bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
       }
 
-      ///次の背景に更新
-      backGroundImage = Image(
-        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-      );
-
       setState(() {});
     } else {
       print('All Done');
@@ -212,10 +204,13 @@ class CountDownPageState extends ConsumerState<CountDownPage>
           height: double.infinity,
           width: double.infinity,
           child: FittedBox(
-            fit: BoxFit.cover,
-            child: Image(
-              image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-            ),
+              fit: BoxFit.cover,
+              child: timers[currentIndex].imagePath.startsWith('https')
+                  ? Image(
+                image: CachedNetworkImageProvider(
+                    timers[currentIndex].imagePath),
+              )
+                  : Image.file(io.File(timers[currentIndex].imagePath))
           ),
         ),
         Center(
@@ -245,15 +240,16 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                           ),
                           const SizedBox(height: 16),
 
-                          (timers[currentIndex].isOverTime == null) ?
-                          const Text(
+                          (timers[currentIndex].isOverTime == null)
+                              ? const Text(
                             'next alarm',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               decoration: TextDecoration.none,
                             ),
-                          ) : const Text(
+                          )
+                              : const Text(
                             'over time',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
