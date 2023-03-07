@@ -12,7 +12,10 @@ final audioPlayingProvider = ChangeNotifierProvider((ref) =>
         ref, AudioPlayer(), const Icon(Icons.play_arrow_rounded)));
 
 final audioIconProvider =
-    Provider((ref) => ref.watch(audioPlayingProvider.notifier).icon);
+Provider((ref) =>
+ref
+    .watch(audioPlayingProvider.notifier)
+    .icon);
 
 class AudioPlayingNotifier extends ChangeNotifier {
   AudioPlayingNotifier(this.ref, this.currentPlayer, this.icon) : super();
@@ -50,7 +53,12 @@ class AudioPlayingNotifier extends ChangeNotifier {
     currentPlayer.stop();
     currentPlayer = player;
     currentPlayer.setReleaseMode(ReleaseMode.loop);
-    currentPlayer.play(UrlSource(sound.url));
+    if (sound.url.startsWith('https')) {
+      currentPlayer.play(UrlSource(sound.url));
+    } else {
+      currentPlayer.setSourceDeviceFile(sound.url);
+      currentPlayer.play(currentPlayer.source!);
+    }
 
     currentPlayer.onPlayerStateChanged.listen((state) {
       if (state == PlayerState.playing) {

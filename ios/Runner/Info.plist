@@ -55,7 +55,14 @@
         <string>Access to pick a photo</string>
         <key>NSPhotoLibraryUsageDescription</key>
         <string>Access to pick a photo</string>
+        <key>NSAppleMusicUsageDescription</key>
+        <string>Access to pick a audio</string>
+        <key>UIBackgroundModes</key>
+        <array>
+           <string>fetch</string>
+           <string>remote-notification</string>
+        </array>
     	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+    	<true/>
 </dict>
 </plist>
