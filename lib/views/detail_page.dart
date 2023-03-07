@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
@@ -85,9 +86,14 @@ class DetailPage extends ConsumerWidget {
                         final mainTimerTotal = await ref
                             .watch(timerRepositoryProvider)
                             .getMainTimerTotal(id);
+
+                        if (timerGroup!.timers!.isEmpty) {
+                          Fluttertoast.showToast(msg: 'タイマーを1つ以上追加してください');
+                          return;
+                        }
                         Navigator.of(context).push(
                           CountDownPage.route(
-                            timerGroup: timerGroup!,
+                            timerGroup: timerGroup,
                             options: timerGroup.options!,
                             timers: timerGroup.timers!,
                             totalTimeSecond: timerGroup.totalTime!,
