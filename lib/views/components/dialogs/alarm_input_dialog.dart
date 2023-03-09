@@ -24,6 +24,7 @@ class AlarmInputDialog extends ConsumerStatefulWidget {
 class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
   List<Sound> get sounds => widget.sounds;
   Sound? selectedSound;
+  String fileName = '';
   String strSePath = '';
 
   @override
@@ -122,11 +123,12 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
                       await FilePicker.platform.pickFiles();
                   if (result != null) {
                     io.File file = io.File(result.files.single.path!);
-                    setState(() => {strSePath = file.path.toString()});
+                    strSePath = file.path.toString();
+                    fileName = file.path.split('/').last;
+                    setState(() {
+                      sounds.add(Sound(name: fileName, url: strSePath));
+                    });
                   }
-                  setState(() {
-                    sounds.add(Sound(name: strSePath, url: strSePath));
-                  });
                 },
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

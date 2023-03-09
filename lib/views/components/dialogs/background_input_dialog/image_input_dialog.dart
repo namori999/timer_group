@@ -69,17 +69,16 @@ class ImageInputDialogState extends State<ImageInputDialog> {
                   final pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
 
-                  final pickedImage;
-                  if (pickedFile == null) {
-                    return;
+                  if (pickedFile != null) {
+                    final io.File pickedImage;
+                    pickedImage = io.File(pickedFile.path);
+                    setState(() {
+                      images.add(Image.file(
+                        io.File(pickedImage.path),
+                        semanticLabel: pickedFile.path,
+                      ));
+                    });
                   }
-                  pickedImage = io.File(pickedFile.path);
-                  setState(() {
-                    images.add(Image.file(
-                      io.File(pickedImage.path),
-                      semanticLabel: pickedFile.path,
-                    ));
-                  });
                 },
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
