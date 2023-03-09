@@ -108,16 +108,12 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
               icon: const Icon(Icons.close_rounded)),
         ],
       ),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: ListView.separated(
-          itemCount: sounds.length + 1,
-          controller: ScrollController(),
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: ((context, index) {
-            if (index == sounds.length) {
-              // 最後のリストであることを確認したら、別の Widget を返す
-              return ListTile(
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              ListTile(
                 onTap: () async {
                   FilePickerResult? result =
                       await FilePicker.platform.pickFiles();
@@ -126,7 +122,7 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
                     strSePath = file.path.toString();
                     fileName = file.path.split('/').last;
                     setState(() {
-                      sounds.add(Sound(name: fileName, url: strSePath));
+                      sounds.insert(0,Sound(name: fileName, url: strSePath));
                     });
                   }
                 },
@@ -142,23 +138,31 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
                     ),
                   ],
                 ),
-              );
-            }
-            return Ink(
-              height: 50,
-              color: Theme.of(context).dialogTheme.backgroundColor,
-              child: RadioListTile(
-                title: AudioPlayButton(
-                  sound: sounds[index],
-                  player: AudioPlayer(),
-                ),
-                value: sounds[index],
-                groupValue: selectedSound,
-                toggleable: true,
-                onChanged: (value) => _onRadioSelected(value),
               ),
-            );
-          }),
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: sounds.length,
+                controller: ScrollController(),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemBuilder: ((context, index) {
+                  return Ink(
+                    height: 50,
+                    color: Theme.of(context).dialogTheme.backgroundColor,
+                    child: RadioListTile(
+                      title: AudioPlayButton(
+                        sound: sounds[index],
+                        player: AudioPlayer(),
+                      ),
+                      value: sounds[index],
+                      groupValue: selectedSound,
+                      toggleable: true,
+                      onChanged: (value) => _onRadioSelected(value),
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );

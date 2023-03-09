@@ -55,16 +55,12 @@ class ImageInputDialogState extends State<ImageInputDialog> {
 
   Widget content() {
     if (isImageSelected) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: ListView.separated(
-          itemCount: images.length + 1,
-          controller: ScrollController(),
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: ((context, index) {
-            if (index == images.length) {
-              // 最後のリストであることを確認したら、別の Widget を返す
-              return ListTile(
+      return SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              ListTile(
                 onTap: () async {
                   final pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
@@ -73,10 +69,12 @@ class ImageInputDialogState extends State<ImageInputDialog> {
                     final io.File pickedImage;
                     pickedImage = io.File(pickedFile.path);
                     setState(() {
-                      images.add(Image.file(
-                        io.File(pickedImage.path),
-                        semanticLabel: pickedFile.path,
-                      ));
+                      images.insert(
+                          0,
+                          Image.file(
+                            io.File(pickedImage.path),
+                            semanticLabel: pickedFile.path,
+                          ));
                     });
                   }
                 },
@@ -92,51 +90,59 @@ class ImageInputDialogState extends State<ImageInputDialog> {
                     ),
                   ],
                 ),
-              );
-            }
-            final item = Stack(
-              alignment: Alignment.center,
-              children: [
-                RadioListTile(
-                  title: Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: images[index].image,
+              ),
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: images.length,
+                controller: ScrollController(),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemBuilder: ((context, index) {
+                  final item = Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      RadioListTile(
+                        title: Card(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: images[index].image,
+                              ),
+                            ),
+                            height: 50,
+                            width: 400,
+                            child: Text(
+                              images[index].semanticLabel.toString(),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        value: images[index],
+                        groupValue: selectedImage,
+                        onChanged: (value) => _onRadioSelected(value),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: MaterialButton(
+                          onPressed: () {
+                            showImageDialog(images[index]);
+                          },
+                          shape: const CircleBorder(),
+                          color: Theme.of(context).cardColor.withOpacity(0.5),
+                          child: const Icon(Icons.center_focus_weak_outlined),
                         ),
                       ),
-                      height: 50,
-                      width: 400,
-                      child: Text(
-                        images[index].semanticLabel.toString(),
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.0),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  value: images[index],
-                  groupValue: selectedImage,
-                  onChanged: (value) => _onRadioSelected(value),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: MaterialButton(
-                    onPressed: () {
-                      showImageDialog(images[index]);
-                    },
-                    shape: const CircleBorder(),
-                    color: Theme.of(context).cardColor.withOpacity(0.5),
-                    child: const Icon(Icons.center_focus_weak_outlined),
-                  ),
-                ),
-              ],
-            );
-            return item;
-          }),
+                    ],
+                  );
+                  return item;
+                }),
+              ),
+            ],
+          ),
         ),
       );
     } else {
