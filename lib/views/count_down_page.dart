@@ -124,7 +124,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       if (timers[currentIndex].alarm.url.startsWith('https')) {
         await alarmPlayer.play(UrlSource((timers[currentIndex].alarm.url)));
       } else {
-        await alarmPlayer.setSourceDeviceFile(timers[currentIndex].alarm.url);
+        alarmPlayer.setSourceDeviceFile(timers[currentIndex].alarm.url);
         await alarmPlayer.play(alarmPlayer.source!);
       }
     }
@@ -147,6 +147,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
 
     if (currentIndex < timers.length - 1) {
       currentIndex++;
+      setState(() {});
 
       ///次のtimeをセット
       streamDuration = StreamDuration(
@@ -167,12 +168,6 @@ class CountDownPageState extends ConsumerState<CountDownPage>
         controller.reverse(
             from: controller.value == 0.0 ? 1.0 : controller.value);
 
-        ///totalTimeをControllerに渡す
-        totalTimeController = AnimationController(
-          vsync: this,
-          duration: Duration(seconds: remainingTotalTime),
-        );
-
         ///totalTimeをカウントダウン
         totalTimeController.reverse(
             from: totalTimeController.value == 0.0
@@ -188,10 +183,8 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       ///次のbgmを再生
       bgmPlayer.pause();
       if (timers[currentIndex].bgm.url != '') {
-        await bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
+        bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
       }
-
-      setState(() {});
     } else {
       print('All Done');
       Navigator.pop(context);
