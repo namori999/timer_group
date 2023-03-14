@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/views/components/dialogs/audio_play_dialog/audio_play_button.dart';
@@ -121,9 +122,17 @@ class AlarmInputDialogState extends ConsumerState<AlarmInputDialog> {
                     io.File file = io.File(result.files.single.path!);
                     strSePath = file.path.toString();
                     fileName = file.path.split('/').last;
-                    setState(() {
-                      sounds.insert(0,Sound(name: fileName, url: strSePath));
-                    });
+                    if (fileName.endsWith('.mp3') ||
+                        fileName.endsWith('.wav') ||
+                        fileName.endsWith('.mp4')) {
+                      setState(() {
+                        sounds.insert(0,Sound(name: fileName, url: strSePath));
+                      });
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: 'wav,mp3,mp4 形式のファイルを選んでください',
+                          toastLength: Toast.LENGTH_LONG);
+                    }
                   }
                 },
                 title: Row(
