@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:ui';
+import 'dart:io' as io;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,14 +27,13 @@ class CountDownPage extends ConsumerStatefulWidget {
   }) {
     return MaterialPageRoute<CountDownPage>(
       settings: const RouteSettings(name: "/detail"),
-      builder: (_) =>
-          CountDownPage(
-            timerGroup: timerGroup,
-            options: options,
-            totalTimeSecond: totalTimeSecond,
-            timers: timers,
-            mainTotalSecond: mainTotalSecond,
-          ),
+      builder: (_) => CountDownPage(
+        timerGroup: timerGroup,
+        options: options,
+        totalTimeSecond: totalTimeSecond,
+        timers: timers,
+        mainTotalSecond: mainTotalSecond,
+      ),
     );
   }
 
@@ -68,7 +68,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
 
   int get mainTotalSecond => widget.mainTotalSecond;
   late int remainingTotalTime =
-  (timerGroup.options!.overTime == 'ON') ? mainTotalSecond : totalTime;
+      (timerGroup.options!.overTime == 'ON') ? mainTotalSecond : totalTime;
 
   int currentIndex = 0;
   late var streamDuration = (StreamDuration(
@@ -90,10 +90,6 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   late var totalTimeController = AnimationController(
     vsync: this,
     duration: Duration(seconds: remainingTotalTime),
-  );
-
-  late Image backGroundImage = Image(
-    image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
   );
 
   final alarmPlayer = AudioPlayer();
@@ -125,7 +121,12 @@ class CountDownPageState extends ConsumerState<CountDownPage>
   void nextDuration() async {
     ///タイマー終了してすぐ
     if (timers[currentIndex].alarm.url != '') {
-      await alarmPlayer.play(UrlSource(timers[currentIndex].alarm.url));
+      if (timers[currentIndex].alarm.url.startsWith('https')) {
+        await alarmPlayer.play(UrlSource((timers[currentIndex].alarm.url)));
+      } else {
+        alarmPlayer.setSourceDeviceFile(timers[currentIndex].alarm.url);
+        await alarmPlayer.play(alarmPlayer.source!);
+      }
     }
 
     if (LocalNotification.notificationIsActive(
@@ -146,6 +147,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
 
     if (currentIndex < timers.length - 1) {
       currentIndex++;
+      setState(() {});
 
       ///次のtimeをセット
       streamDuration = StreamDuration(
@@ -165,19 +167,15 @@ class CountDownPageState extends ConsumerState<CountDownPage>
         ///next alarmをカウントダウン
         controller.reverse(
             from: controller.value == 0.0 ? 1.0 : controller.value);
-        print(controller);
 
-        ///totalTimeをControllerに渡す
-        totalTimeController = AnimationController(
-          vsync: this,
-          duration: Duration(seconds: remainingTotalTime),
-        );
-
-        print(totalTimeController);
+        ///totalTimeをカウントダウン
+        totalTimeController.reverse(
+            from: totalTimeController.value == 0.0
+                ? 1.0
+                : totalTimeController.value);
       } else {
         //オーバータイムの時
         controller.forward(from: 0.0);
-        print(controller);
         totalTimeStreamDuration.dispose();
         totalTimeController.dispose();
       }
@@ -187,13 +185,6 @@ class CountDownPageState extends ConsumerState<CountDownPage>
       if (timers[currentIndex].bgm.url != '') {
         bgmPlayer.play(UrlSource(timers[currentIndex].bgm.url));
       }
-
-      ///次の背景に更新
-      backGroundImage = Image(
-        image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-      );
-
-      setState(() {});
     } else {
       print('All Done');
       Navigator.pop(context);
@@ -212,11 +203,13 @@ class CountDownPageState extends ConsumerState<CountDownPage>
           height: double.infinity,
           width: double.infinity,
           child: FittedBox(
-            fit: BoxFit.cover,
-            child: Image(
-              image: CachedNetworkImageProvider(timers[currentIndex].imagePath),
-            ),
-          ),
+              fit: BoxFit.cover,
+              child: timers[currentIndex].imagePath.startsWith('https')
+                  ? Image(
+                      image: CachedNetworkImageProvider(
+                          timers[currentIndex].imagePath),
+                    )
+                  : Image.file(io.File(timers[currentIndex].imagePath))),
         ),
         Center(
           child: Column(
@@ -232,7 +225,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius:
-                        const BorderRadius.all(Radius.circular(20)),
+                            const BorderRadius.all(Radius.circular(20)),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -245,29 +238,30 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                           ),
                           const SizedBox(height: 16),
 
-                          (timers[currentIndex].isOverTime == null) ?
-                          const Text(
-                            'next alarm',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                            ),
-                          ) : const Text(
-                            'over time',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
+                          (timers[currentIndex].isOverTime == null)
+                              ? const Text(
+                                  'next alarm',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                )
+                              : const Text(
+                                  'over time',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
                           const SizedBox(height: 8),
 
                           ///今のタイマーのカウントダウン
                           CountDownText(
                             duration:
-                            Duration(seconds: timers[currentIndex].time),
+                                Duration(seconds: timers[currentIndex].time),
                             animationController: controller,
                             timeFormat: timerGroup.options!.timeFormat ??
                                 TimeFormat.hourMinute,
@@ -296,7 +290,7 @@ class CountDownPageState extends ConsumerState<CountDownPage>
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(20)),
+                              const BorderRadius.all(Radius.circular(20)),
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,

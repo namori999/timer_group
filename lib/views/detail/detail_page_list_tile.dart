@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -145,8 +147,14 @@ class DetailPageListTileState extends ConsumerState<DetailPageListTile> {
                     height: 30,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(imageTitle),
+                      image:  timer.imagePath.startsWith('https')
+                          ? DecorationImage(
+                        image:
+                        CachedNetworkImageProvider(timer.imagePath),
+                        fit: BoxFit.fitWidth,
+                      )
+                          : DecorationImage(
+                        image: FileImage(io.File(timer.imagePath)),
                         fit: BoxFit.fitWidth,
                       ),
                     ),

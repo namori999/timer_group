@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,8 +13,8 @@ import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/image_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/time_input_dialog.dart';
 import 'package:timer_group/views/components/separoter.dart';
+import 'package:timer_group/views/configure/theme.dart';
 
-import '../configure/theme.dart';
 import 'group_add_page_timer_list.dart';
 
 class GroupAddPageTimerListTile extends ConsumerStatefulWidget {
@@ -251,10 +253,16 @@ class GroupAddPageListTileState
                       height: 40,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(timer.imagePath),
-                          fit: BoxFit.fitWidth,
-                        ),
+                        image: timer.imagePath.startsWith('https')
+                            ? DecorationImage(
+                                image:
+                                    CachedNetworkImageProvider(timer.imagePath),
+                                fit: BoxFit.fitWidth,
+                              )
+                            : DecorationImage(
+                                image: FileImage(io.File(timer.imagePath)),
+                                fit: BoxFit.fitWidth,
+                              ),
                       ),
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(

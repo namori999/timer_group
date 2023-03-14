@@ -1,5 +1,8 @@
+import 'dart:io' as io;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/video_imput_dialog.dart';
 import 'package:timer_group/views/components/toggle_text_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -17,19 +20,6 @@ class ImageInputDialogState extends State<ImageInputDialog> {
   List<Image> get images => widget.imageList;
   late Image selectedImage = Image.asset('assets/images/sample.jpg');
   bool isImageSelected = true;
-
-  Widget spacer() {
-    return Column(
-      children: const [
-        SizedBox(height: 16),
-        Divider(
-          color: Themes.grayColor,
-          height: 2,
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }
 
   _onRadioSelected(value) {
     setState(() {
@@ -61,55 +51,98 @@ class ImageInputDialogState extends State<ImageInputDialog> {
     );
   }
 
+  final picker = ImagePicker();
+
   Widget content() {
     if (isImageSelected) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: ListView.separated(
-          itemCount: images.length,
-          controller: ScrollController(),
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: ((context, index) => Stack(
-                alignment: Alignment.center,
-                children: [
-                  RadioListTile(
-                    title: Card(
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: images[index].image,
+      return SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              ListTile(
+                onTap: () async {
+                  final pickedFile =
+                      await picker.pickImage(source: ImageSource.gallery);
+
+                  if (pickedFile != null) {
+                    final io.File pickedImage;
+                    pickedImage = io.File(pickedFile.path);
+                    setState(() {
+                      images.insert(
+                          0,
+                          Image.file(
+                            io.File(pickedImage.path),
+                            semanticLabel: pickedFile.path,
+                          ));
+                    });
+                  }
+                },
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.collections_outlined),
+                    SizedBox(width: 8),
+                    Text(
+                      '+ ギャラリーから選ぶ',
+                      style: TextStyle(color: Themes.grayColor, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: images.length,
+                controller: ScrollController(),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemBuilder: ((context, index) {
+                  final item = Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      RadioListTile(
+                        title: Card(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: images[index].image,
+                              ),
+                            ),
+                            height: 50,
+                            width: 400,
+                            child: Text(
+                              images[index].semanticLabel.toString(),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                        height: 50,
-                        width: 400,
-                        child: Text(
-                          images[index].semanticLabel.toString(),
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.0),
-                            fontWeight: FontWeight.bold,
-                          ),
+                        value: images[index],
+                        groupValue: selectedImage,
+                        onChanged: (value) => _onRadioSelected(value),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: MaterialButton(
+                          onPressed: () {
+                            showImageDialog(images[index]);
+                          },
+                          shape: const CircleBorder(),
+                          color: Theme.of(context).cardColor.withOpacity(0.5),
+                          child: const Icon(Icons.center_focus_weak_outlined),
                         ),
                       ),
-                    ),
-                    value: images[index],
-                    groupValue: selectedImage,
-                    onChanged: (value) => _onRadioSelected(value),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: MaterialButton(
-                      onPressed: () {
-                        showImageDialog(images[index]);
-                      },
-                      shape: const CircleBorder(),
-                      color: Theme.of(context).cardColor.withOpacity(0.5),
-                      child: const Icon(Icons.center_focus_weak_outlined),
-                    ),
-                  ),
-                ],
-              )),
+                    ],
+                  );
+                  return item;
+                }),
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -133,6 +166,7 @@ class ImageInputDialogState extends State<ImageInputDialog> {
             ),
           ),
           onPressed: () {
+            print(selectedImage.semanticLabel);
             Navigator.pop<String>(context, selectedImage.semanticLabel);
           },
           child: Padding(
