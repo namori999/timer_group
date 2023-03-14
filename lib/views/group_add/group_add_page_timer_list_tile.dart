@@ -4,8 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
+import 'package:timer_group/domein/models/saved_image.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
@@ -273,13 +275,18 @@ class GroupAddPageListTileState
                           ),
                         ),
                         onPressed: () async {
-                          final List<Image> imageList =
+                          final List<Image> firebaseImage =
                               await FirebaseMethods().getImages();
+                          final List<SavedImage> savedImages = await ref
+                              .read(pickedFilesRepositoryProvider)
+                              .getImages();
+
+                          if (!mounted) return;
                           String result = await showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return ImageInputDialog(imageList);
+                              return ImageInputDialog(firebaseImage,savedImages);
                             },
                           );
                           provider

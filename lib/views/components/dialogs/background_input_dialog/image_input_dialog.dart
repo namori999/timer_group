@@ -2,22 +2,29 @@ import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:timer_group/domein/models/saved_image.dart';
+import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/video_imput_dialog.dart';
 import 'package:timer_group/views/components/toggle_text_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
-class ImageInputDialog extends StatefulWidget {
-  ImageInputDialog(this.imageList, {Key? key}) : super(key: key);
+class ImageInputDialog extends ConsumerStatefulWidget {
+  const ImageInputDialog(this.firebaseImages, this.pickedImages, {Key? key})
+      : super(key: key);
 
-  final List<Image> imageList;
+  final List<Image> firebaseImages;
+  final List<SavedImage> pickedImages;
 
   @override
   ImageInputDialogState createState() => ImageInputDialogState();
 }
 
-class ImageInputDialogState extends State<ImageInputDialog> {
-  List<Image> get images => widget.imageList;
+class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
+  List<Image> get images => widget.firebaseImages;
+
+  List<SavedImage> get pickedImages => widget.pickedImages;
   late Image selectedImage = Image.asset('assets/images/sample.jpg');
   bool isImageSelected = true;
 
@@ -53,105 +60,163 @@ class ImageInputDialogState extends State<ImageInputDialog> {
 
   final picker = ImagePicker();
 
-  Widget content() {
-    if (isImageSelected) {
-      return SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              ListTile(
-                onTap: () async {
-                  final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
+  @override
+  Widget build(BuildContext context) {
+    final pickedImageProvider = ref.watch(pickedFilesRepositoryProvider);
 
-                  if (pickedFile != null) {
-                    final io.File pickedImage;
-                    pickedImage = io.File(pickedFile.path);
-                    setState(() {
-                      images.insert(
-                          0,
-                          Image.file(
-                            io.File(pickedImage.path),
-                            semanticLabel: pickedFile.path,
-                          ));
-                    });
-                  }
-                },
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.collections_outlined),
-                    SizedBox(width: 8),
-                    Text(
-                      '+ ギャラリーから選ぶ',
-                      style: TextStyle(color: Themes.grayColor, fontSize: 14),
-                    ),
-                  ],
+    Widget content() {
+      if (isImageSelected) {
+        return SingleChildScrollView(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () async {
+                    final pickedFile =
+                        await picker.pickImage(source: ImageSource.gallery);
+
+                    if (pickedFile != null) {
+                      final io.File pickedImage;
+                      pickedImage = io.File(pickedFile.path);
+                      final fileName = pickedFile.path.split('/').last;
+                      await pickedImageProvider.addImage(
+                          SavedImage(url: pickedImage.path, name: fileName));
+
+                      setState(() {
+                        images.insert(
+                            0,
+                            Image.file(
+                              io.File(pickedImage.path),
+                              semanticLabel: pickedFile.path,
+                            ));
+                      });
+                    }
+                  },
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.collections_outlined),
+                      SizedBox(width: 8),
+                      Text(
+                        '+ ギャラリーから選ぶ',
+                        style: TextStyle(color: Themes.grayColor, fontSize: 14),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: images.length,
-                controller: ScrollController(),
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: ((context, index) {
-                  final item = Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      RadioListTile(
-                        title: Card(
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: images[index].image,
+                ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: pickedImages.length,
+                  controller: ScrollController(),
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: ((context, index) {
+                    final item = Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        RadioListTile(
+                          title: Card(
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(
+                                      io.File(pickedImages[index].url)),
+                                ),
                               ),
-                            ),
-                            height: 50,
-                            width: 400,
-                            child: Text(
-                              images[index].semanticLabel.toString(),
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.0),
-                                fontWeight: FontWeight.bold,
+                              height: 50,
+                              width: 400,
+                              child: Text(
+                                pickedImages[index].url.toString(),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.0),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
+                          value: pickedImages[index],
+                          groupValue: selectedImage,
+                          onChanged: (value) => _onRadioSelected(value),
                         ),
-                        value: images[index],
-                        groupValue: selectedImage,
-                        onChanged: (value) => _onRadioSelected(value),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: MaterialButton(
-                          onPressed: () {
-                            showImageDialog(images[index]);
-                          },
-                          shape: const CircleBorder(),
-                          color: Theme.of(context).cardColor.withOpacity(0.5),
-                          child: const Icon(Icons.center_focus_weak_outlined),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: MaterialButton(
+                            onPressed: () {
+                              showImageDialog(
+                                  Image.file(io.File(pickedImages[index].url)));
+                            },
+                            shape: const CircleBorder(),
+                            color: Theme.of(context).cardColor.withOpacity(0.5),
+                            child: const Icon(Icons.center_focus_weak_outlined),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                  return item;
-                }),
-              ),
-            ],
+                      ],
+                    );
+                    return item;
+                  }),
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: images.length,
+                  controller: ScrollController(),
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: ((context, index) {
+                    final item = Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        RadioListTile(
+                          title: Card(
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: images[index].image,
+                                ),
+                              ),
+                              height: 50,
+                              width: 400,
+                              child: Text(
+                                images[index].semanticLabel.toString(),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.0),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          value: images[index],
+                          groupValue: selectedImage,
+                          onChanged: (value) => _onRadioSelected(value),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: MaterialButton(
+                            onPressed: () {
+                              showImageDialog(images[index]);
+                            },
+                            shape: const CircleBorder(),
+                            color: Theme.of(context).cardColor.withOpacity(0.5),
+                            child: const Icon(Icons.center_focus_weak_outlined),
+                          ),
+                        ),
+                      ],
+                    );
+                    return item;
+                  }),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    } else {
-      return VideoImputDialog();
+        );
+      } else {
+        return VideoImputDialog();
+      }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),

@@ -11,6 +11,7 @@ class Sound with _$Sound {
   factory Sound({
     required String name,
     required String url,
+    String? id,
   }) = _Sound;
 
   factory Sound.fromJson(Map<String, dynamic> json) => _$SoundFromJson(json);
