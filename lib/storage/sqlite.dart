@@ -366,11 +366,12 @@ CREATE TABLE IF NOT EXISTS pickedFiles (
     });
   }
 
-  Future<void> insertImage(SavedImage savedImage) async {
+  Future<int> insertImage(SavedImage savedImage) async {
     final db = await _getDatabase();
-    await db.rawInsert('INSERT INTO pickedFiles(name, url, type) VALUES (?, ?, ?)',
-        [savedImage.name, savedImage.url, 'image']);
     print("insert pickedFiles: pickedFiles=$savedImage");
+    return await db.rawInsert('INSERT INTO pickedFiles(name, url, type) VALUES (?, ?, ?)',
+        [savedImage.name, savedImage.url, 'image']);
+
   }
 
   Future<void> insertAlarm(Sound alarm) async {

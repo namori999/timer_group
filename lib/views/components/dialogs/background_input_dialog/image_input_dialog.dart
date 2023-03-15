@@ -24,9 +24,21 @@ class ImageInputDialog extends ConsumerStatefulWidget {
 class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
   List<Image> get images => widget.firebaseImages;
 
-  List<SavedImage> get pickedImages => widget.pickedImages;
+  List<SavedImage> get savedImages => widget.pickedImages;
+  List<Image> pickedImages = [];
   late Image selectedImage = Image.asset('assets/images/sample.jpg');
   bool isImageSelected = true;
+
+  @override
+  initState() {
+    super.initState();
+    pickedImages = savedImages
+        .map((i) => Image.file(
+              io.File(i.url),
+              semanticLabel: i.url,
+            ))
+        .toList();
+  }
 
   _onRadioSelected(value) {
     setState(() {
@@ -84,11 +96,11 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                           SavedImage(url: pickedImage.path, name: fileName));
 
                       setState(() {
-                        images.insert(
+                        pickedImages.insert(
                             0,
                             Image.file(
                               io.File(pickedImage.path),
-                              semanticLabel: pickedFile.path,
+                              semanticLabel: pickedImage.path,
                             ));
                       });
                     }
@@ -122,14 +134,13 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(
-                                      io.File(pickedImages[index].url)),
+                                  image: pickedImages[index].image,
                                 ),
                               ),
                               height: 50,
                               width: 400,
                               child: Text(
-                                pickedImages[index].url.toString(),
+                                pickedImages[index].image.toString(),
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.0),
                                   fontWeight: FontWeight.bold,
@@ -145,8 +156,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                           alignment: Alignment.bottomRight,
                           child: MaterialButton(
                             onPressed: () {
-                              showImageDialog(
-                                  Image.file(io.File(pickedImages[index].url)));
+                              showImageDialog(pickedImages[index]);
                             },
                             shape: const CircleBorder(),
                             color: Theme.of(context).cardColor.withOpacity(0.5),

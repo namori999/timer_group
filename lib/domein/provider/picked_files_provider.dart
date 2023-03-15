@@ -14,16 +14,14 @@ class PickedFilesRepository {
   final Ref ref;
 
   Future<List<SavedImage>> getImages() async =>
-    await _pickedFilesDB.getImages();
+      await _pickedFilesDB.getImages();
 
-  Future<List<Sound>> getBGMs() async =>
-      await _pickedFilesDB.getBGMs();
+  Future<List<Sound>> getBGMs() async => await _pickedFilesDB.getBGMs();
 
-  Future<List<Sound>> getAlarms() async =>
-      await _pickedFilesDB.getAlarms();
+  Future<List<Sound>> getAlarms() async => await _pickedFilesDB.getAlarms();
 
-  Future<void> addImage(SavedImage savedImage) async {
-    await _pickedFilesDB.insertImage(savedImage);
+  Future<int> addImage(SavedImage savedImage) async {
+    return await _pickedFilesDB.insertImage(savedImage);
     //ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
 
