@@ -91,15 +91,16 @@ class GroupListItemTileState extends ConsumerState<GroupListItemTile> {
             children: [
               Text(totalTimeText),
               separator(),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.notifications_active_outlined,
-                    color: Themes.grayColor,
-                  ),
-                  Text('× $timerCount'),
-                ],
-              ),
+              if (timerCount != null)
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.notifications_active_outlined,
+                      color: Themes.grayColor,
+                    ),
+                    Text('× $timerCount'),
+                  ],
+                ),
               separator(),
               Text(format),
             ],
