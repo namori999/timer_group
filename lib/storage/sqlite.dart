@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS pickedFiles (
         where: 'id = ?', whereArgs: [options.id]);
   }
 
-  Future<void> delete(int id) async {
+  Future<void> delete(String id) async {
     final db = await _getDatabase();
     await db.delete('pickedFiles', where: 'id = ?', whereArgs: [id]);
   }

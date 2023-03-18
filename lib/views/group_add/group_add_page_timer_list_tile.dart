@@ -180,6 +180,7 @@ class GroupAddPageListTileState
                         List<Sound> sounds =
                             await FirebaseMethods().getSoundEffects();
 
+                        if (!mounted) return;
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -187,7 +188,6 @@ class GroupAddPageListTileState
                             return AlarmInputDialog(sounds: sounds);
                           },
                         );
-
                         provider.updateTimer(timer.copyWith(
                           alarm: Sound(name: result.name, url: result.url),
                         ));
@@ -232,6 +232,7 @@ class GroupAddPageListTileState
                       onPressed: () async {
                         final List<Sound> musics =
                             await FirebaseMethods().getBGMs();
+                        if(!mounted)return;
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -286,7 +287,8 @@ class GroupAddPageListTileState
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return ImageInputDialog(firebaseImage,savedImages);
+                              return ImageInputDialog(
+                                  firebaseImage, savedImages);
                             },
                           );
                           provider

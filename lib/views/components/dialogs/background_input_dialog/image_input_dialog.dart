@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -77,6 +78,14 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
   Widget build(BuildContext context) {
     final pickedImageProvider = ref.watch(pickedFilesRepositoryProvider);
 
+    deleteImage(String path) {
+      print(path);
+      final String? id =
+          savedImages.where((i) => i.url == path).toList().first.id;
+      if (id == null) return;
+      pickedImageProvider.remove(id);
+    }
+
     Widget content() {
       if (isImageSelected) {
         return SingleChildScrollView(
@@ -89,29 +98,29 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                     final pickedFile =
                         await picker.pickImage(source: ImageSource.gallery);
 
-                    if (pickedFile != null) {
-                      final io.File pickedImage;
-                      pickedImage = io.File(pickedFile.path);
-                      final fileName = pickedFile.path.split('/').last;
+                    if (pickedFile == null) return;
 
-                      final String duplicateFilePath =
-                          await getApplicationDocumentsDirectory()
-                              .then((value) => value.path);
-                      final localImage = await pickedImage
-                          .copy('$duplicateFilePath/$fileName');
+                    final io.File pickedImage;
+                    pickedImage = io.File(pickedFile.path);
+                    final fileName = pickedFile.path.split('/').last;
 
-                      await pickedImageProvider.addImage(
-                          SavedImage(url: localImage.path, name: fileName));
+                    final String duplicateFilePath =
+                        await getApplicationDocumentsDirectory()
+                            .then((value) => value.path);
+                    final localImage =
+                        await pickedImage.copy('$duplicateFilePath/$fileName');
 
-                      setState(() {
-                        pickedImages.insert(
-                            0,
-                            Image.file(
-                              io.File(pickedImage.path),
-                              semanticLabel: pickedImage.path,
-                            ));
-                      });
-                    }
+                    await pickedImageProvider.addImage(
+                        SavedImage(url: localImage.path, name: fileName));
+
+                    setState(() {
+                      pickedImages.insert(
+                          0,
+                          Image.file(
+                            io.File(pickedImage.path),
+                            semanticLabel: pickedImage.path,
+                          ));
+                    });
                   },
                   title: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,46 +141,66 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                   controller: ScrollController(),
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: ((context, index) {
-                    final item = Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        RadioListTile(
-                          title: Card(
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: pickedImages[index].image,
+                    final item = Slidable(
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (_) {
+                              deleteImage(pickedImages[index].semanticLabel!);
+                              pickedImages.removeAt(index);
+                              setState(() {});
+                            },
+                            backgroundColor: Theme.of(context).cardColor,
+                            foregroundColor: Colors.red,
+                            icon: Icons.delete_outline,
+                            label: '削除',
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          RadioListTile(
+                            title: Card(
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: pickedImages[index].image,
+                                  ),
                                 ),
-                              ),
-                              height: 50,
-                              width: 400,
-                              child: Text(
-                                pickedImages[index].image.toString(),
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.0),
-                                  fontWeight: FontWeight.bold,
+                                height: 50,
+                                width: 400,
+                                child: Text(
+                                  pickedImages[index].image.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.0),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
+                            value: pickedImages[index],
+                            groupValue: selectedImage,
+                            onChanged: (value) => _onRadioSelected(value),
                           ),
-                          value: pickedImages[index],
-                          groupValue: selectedImage,
-                          onChanged: (value) => _onRadioSelected(value),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: MaterialButton(
-                            onPressed: () {
-                              showImageDialog(pickedImages[index]);
-                            },
-                            shape: const CircleBorder(),
-                            color: Theme.of(context).cardColor.withOpacity(0.5),
-                            child: const Icon(Icons.center_focus_weak_outlined),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: MaterialButton(
+                              onPressed: () {
+                                showImageDialog(pickedImages[index]);
+                              },
+                              shape: const CircleBorder(),
+                              color:
+                                  Theme.of(context).cardColor.withOpacity(0.5),
+                              child:
+                                  const Icon(Icons.center_focus_weak_outlined),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                     return item;
                   }),

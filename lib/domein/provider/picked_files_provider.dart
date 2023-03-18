@@ -25,7 +25,7 @@ class PickedFilesRepository {
     //ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
 
-  Future<void> remove(int id) async {
+  Future<void> remove(String id) async {
     await _pickedFilesDB.delete(id);
     //ref.refresh(timerGroupOptionsProvider(id));
   }
