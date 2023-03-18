@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:timer_group/domein/models/saved_image.dart';
 import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/video_imput_dialog.dart';
@@ -92,8 +93,15 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                       final io.File pickedImage;
                       pickedImage = io.File(pickedFile.path);
                       final fileName = pickedFile.path.split('/').last;
+
+                      final String duplicateFilePath =
+                          await getApplicationDocumentsDirectory()
+                              .then((value) => value.path);
+                      final localImage = await pickedImage
+                          .copy('$duplicateFilePath/$fileName');
+
                       await pickedImageProvider.addImage(
-                          SavedImage(url: pickedImage.path, name: fileName));
+                          SavedImage(url: localImage.path, name: fileName));
 
                       setState(() {
                         pickedImages.insert(
