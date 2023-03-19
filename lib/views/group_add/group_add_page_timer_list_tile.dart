@@ -1,10 +1,10 @@
 import 'dart:io' as io;
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
-import 'package:timer_group/domein/models/saved_image.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/picked_files_provider.dart';
@@ -55,7 +55,7 @@ class GroupAddPageListTileState
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(timerRepositoryProvider);
-    print(timer.imagePath);
+    final savedImages = ref.watch(pickedImagesProvider).valueOrNull;
 
     return SizedBox(
       width: 280,
@@ -232,7 +232,7 @@ class GroupAddPageListTileState
                       onPressed: () async {
                         final List<Sound> musics =
                             await FirebaseMethods().getBGMs();
-                        if(!mounted)return;
+                        if (!mounted) return;
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -276,19 +276,22 @@ class GroupAddPageListTileState
                           ),
                         ),
                         onPressed: () async {
-                          final List<Image> firebaseImage =
-                              await FirebaseMethods().getImages();
-                          final List<SavedImage> savedImages = await ref
-                              .read(pickedFilesRepositoryProvider)
-                              .getImages();
+                          final pickedImageProvider =
+                              ref.read(pickedFilesRepositoryProvider);
+
+                          if (savedImages == null || savedImages.isEmpty) {
+                            final List<Image> firebaseImage =
+                                await FirebaseMethods().getImages();
+                            await pickedImageProvider
+                                .saveFirebaseImages(firebaseImage);
+                          }
 
                           if (!mounted) return;
                           String result = await showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return ImageInputDialog(
-                                  firebaseImage, savedImages);
+                              return ImageInputDialog(savedImages!);
                             },
                           );
                           provider

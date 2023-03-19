@@ -1,11 +1,18 @@
+import 'dart:io' as io;
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:timer_group/domein/models/saved_image.dart';
 import 'package:timer_group/domein/models/sound.dart';
-import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/storage/sqlite.dart';
 
 final pickedFilesRepositoryProvider =
     Provider((ref) => PickedFilesRepository(ref));
+
+final pickedImagesProvider =
+    FutureProvider((ref) => PickedFilesRepository(ref).getImages());
 
 class PickedFilesRepository {
   PickedFilesRepository(this.ref);
@@ -25,16 +32,24 @@ class PickedFilesRepository {
     //ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
 
+  Future<void> saveFirebaseImages(List<Image> images) async {
+    final String dir =
+        await getApplicationDocumentsDirectory().then((value) => value.path);
+
+    for (Image i in images) {
+      final io.File file = io.File(path.join(dir,path.basename(i.semanticLabel!)));
+      final http.Response response =
+          await http.get(Uri.parse(i.semanticLabel!));
+      await file.writeAsBytes(response.bodyBytes);
+
+      addImage(SavedImage(url: file.path, name: i.semanticLabel!));
+    }
+
+    ref.invalidate(pickedImagesProvider);
+  }
+
   Future<void> remove(String id) async {
     await _pickedFilesDB.delete(id);
     //ref.refresh(timerGroupOptionsProvider(id));
-  }
-}
-
-String getFormatName(TimerGroupOptions options) {
-  if (options.timeFormat == TimeFormat.minuteSecond) {
-    return '分秒';
-  } else {
-    return '時分秒';
   }
 }

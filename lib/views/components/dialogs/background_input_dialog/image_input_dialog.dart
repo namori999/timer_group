@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -13,10 +14,8 @@ import 'package:timer_group/views/components/toggle_text_button.dart';
 import 'package:timer_group/views/configure/theme.dart';
 
 class ImageInputDialog extends ConsumerStatefulWidget {
-  const ImageInputDialog(this.firebaseImages, this.pickedImages, {Key? key})
-      : super(key: key);
+  const ImageInputDialog(this.pickedImages, {Key? key}) : super(key: key);
 
-  final List<Image> firebaseImages;
   final List<SavedImage> pickedImages;
 
   @override
@@ -24,8 +23,6 @@ class ImageInputDialog extends ConsumerStatefulWidget {
 }
 
 class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
-  List<Image> get images => widget.firebaseImages;
-
   List<SavedImage> get savedImages => widget.pickedImages;
   List<Image> pickedImages = [];
   late Image selectedImage = Image.asset('assets/images/sample.jpg');
@@ -35,10 +32,14 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
   initState() {
     super.initState();
     pickedImages = savedImages
-        .map((i) => Image.file(
-              io.File(i.url),
-              semanticLabel: i.url,
-            ))
+        .map((i) => i.url.startsWith('https')
+            ? Image(
+                image: CachedNetworkImageProvider(i.url),
+              )
+            : Image.file(
+                io.File(i.url),
+                semanticLabel: i.url,
+              ))
         .toList();
   }
 
@@ -201,56 +202,6 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                           ),
                         ],
                       ),
-                    );
-                    return item;
-                  }),
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: images.length,
-                  controller: ScrollController(),
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                  itemBuilder: ((context, index) {
-                    final item = Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        RadioListTile(
-                          title: Card(
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: images[index].image,
-                                ),
-                              ),
-                              height: 50,
-                              width: 400,
-                              child: Text(
-                                images[index].semanticLabel.toString(),
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.0),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          value: images[index],
-                          groupValue: selectedImage,
-                          onChanged: (value) => _onRadioSelected(value),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: MaterialButton(
-                            onPressed: () {
-                              showImageDialog(images[index]);
-                            },
-                            shape: const CircleBorder(),
-                            color: Theme.of(context).cardColor.withOpacity(0.5),
-                            child: const Icon(Icons.center_focus_weak_outlined),
-                          ),
-                        ),
-                      ],
                     );
                     return item;
                   }),
