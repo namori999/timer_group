@@ -106,7 +106,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                     final fileName = pickedFile.path.split('/').last;
 
                     final String duplicateFilePath =
-                        await getApplicationDocumentsDirectory()
+                        await getTemporaryDirectory()
                             .then((value) => value.path);
                     final localImage =
                         await pickedImage.copy('$duplicateFilePath/$fileName');

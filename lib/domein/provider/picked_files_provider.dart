@@ -34,7 +34,7 @@ class PickedFilesRepository {
 
   Future<void> saveFirebaseImages(List<Image> images) async {
     final String dir =
-        await getApplicationDocumentsDirectory().then((value) => value.path);
+        await getTemporaryDirectory().then((value) => value.path);
 
     for (Image i in images) {
       final io.File file = io.File(path.join(dir,path.basename(i.semanticLabel!)));

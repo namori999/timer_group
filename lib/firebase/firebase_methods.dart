@@ -22,8 +22,8 @@ class FirebaseMethods{
           semanticLabel: url,
         ),
       );
+      print(item.name);
     }
-    print(imageList);
     return imageList;
   }
 
