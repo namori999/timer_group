@@ -23,6 +23,19 @@ class PickedFilesRepository {
   Future<List<SavedImage>> getImages() async =>
       await _pickedFilesDB.getImages();
 
+  Future<List<Image>> getImageList() async {
+    final savedImages = await getImages();
+    final pickedImages = savedImages
+        .map((i) => Image.file(
+              io.File(i.url),
+              semanticLabel: i.url,
+            ))
+        .toList()
+        .reversed
+        .toList(); //最新順で
+    return pickedImages;
+  }
+
   Future<List<Sound>> getBGMs() async => await _pickedFilesDB.getBGMs();
 
   Future<List<Sound>> getAlarms() async => await _pickedFilesDB.getAlarms();
@@ -37,7 +50,8 @@ class PickedFilesRepository {
         await getTemporaryDirectory().then((value) => value.path);
 
     for (Image i in images) {
-      final io.File file = io.File(path.join(dir,path.basename(i.semanticLabel!)));
+      final io.File file =
+          io.File(path.join(dir, path.basename(i.semanticLabel!)));
       final http.Response response =
           await http.get(Uri.parse(i.semanticLabel!));
       await file.writeAsBytes(response.bodyBytes);
@@ -48,8 +62,10 @@ class PickedFilesRepository {
     ref.invalidate(pickedImagesProvider);
   }
 
-  Future<void> remove(String id) async {
-    await _pickedFilesDB.delete(id);
+  Future<void> remove(String path) async {
+    final images = await getImages();
+    final String? id = images.where((i) => i.url == path).toList().first.id;
+    if (id != null) await _pickedFilesDB.delete(id);
     //ref.refresh(timerGroupOptionsProvider(id));
   }
 }

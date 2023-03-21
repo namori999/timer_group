@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -16,32 +15,16 @@ import 'package:timer_group/views/configure/theme.dart';
 class ImageInputDialog extends ConsumerStatefulWidget {
   const ImageInputDialog(this.pickedImages, {Key? key}) : super(key: key);
 
-  final List<SavedImage> pickedImages;
+  final List<Image> pickedImages;
 
   @override
   ImageInputDialogState createState() => ImageInputDialogState();
 }
 
 class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
-  List<SavedImage> get savedImages => widget.pickedImages;
-  List<Image> pickedImages = [];
+  List<Image> get savedImages => widget.pickedImages;
   late Image selectedImage = Image.asset('assets/images/sample.jpg');
   bool isImageSelected = true;
-
-  @override
-  initState() {
-    super.initState();
-    pickedImages = savedImages
-        .map((i) => i.url.startsWith('https')
-            ? Image(
-                image: CachedNetworkImageProvider(i.url),
-              )
-            : Image.file(
-                io.File(i.url),
-                semanticLabel: i.url,
-              ))
-        .toList();
-  }
 
   _onRadioSelected(value) {
     setState(() {
@@ -78,13 +61,11 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
   @override
   Widget build(BuildContext context) {
     final pickedImageProvider = ref.watch(pickedFilesRepositoryProvider);
+    bool isLoading = false;
 
-    deleteImage(String path) {
+    deleteImage(String path) async {
       print(path);
-      final String? id =
-          savedImages.where((i) => i.url == path).toList().first.id;
-      if (id == null) return;
-      pickedImageProvider.remove(id);
+      pickedImageProvider.remove(path);
     }
 
     Widget content() {
@@ -100,6 +81,9 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                         await picker.pickImage(source: ImageSource.gallery);
 
                     if (pickedFile == null) return;
+                    setState(() {
+                      isLoading = true;
+                    });
 
                     final io.File pickedImage;
                     pickedImage = io.File(pickedFile.path);
@@ -115,12 +99,13 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                         SavedImage(url: localImage.path, name: fileName));
 
                     setState(() {
-                      pickedImages.insert(
+                      savedImages.insert(
                           0,
                           Image.file(
                             io.File(pickedImage.path),
                             semanticLabel: pickedImage.path,
                           ));
+                      isLoading = false;
                     });
                   },
                   title: Row(
@@ -138,7 +123,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                 ),
                 ListView.separated(
                   shrinkWrap: true,
-                  itemCount: pickedImages.length,
+                  itemCount: savedImages.length,
                   controller: ScrollController(),
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: ((context, index) {
@@ -148,8 +133,8 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                         children: [
                           SlidableAction(
                             onPressed: (_) {
-                              deleteImage(pickedImages[index].semanticLabel!);
-                              pickedImages.removeAt(index);
+                              deleteImage(savedImages[index].semanticLabel!);
+                              savedImages.removeAt(index);
                               setState(() {});
                             },
                             backgroundColor: Theme.of(context).cardColor,
@@ -169,13 +154,13 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: pickedImages[index].image,
+                                    image: savedImages[index].image,
                                   ),
                                 ),
                                 height: 50,
                                 width: 400,
                                 child: Text(
-                                  pickedImages[index].image.toString(),
+                                  savedImages[index].image.toString(),
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.0),
                                     fontWeight: FontWeight.bold,
@@ -183,7 +168,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                                 ),
                               ),
                             ),
-                            value: pickedImages[index],
+                            value: savedImages[index],
                             groupValue: selectedImage,
                             onChanged: (value) => _onRadioSelected(value),
                           ),
@@ -191,7 +176,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                             alignment: Alignment.bottomRight,
                             child: MaterialButton(
                               onPressed: () {
-                                showImageDialog(pickedImages[index]);
+                                showImageDialog(savedImages[index]);
                               },
                               shape: const CircleBorder(),
                               color:
@@ -215,75 +200,88 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
       }
     }
 
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-      ),
-      insetPadding: const EdgeInsets.all(16),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+    return Stack(
+      children: [
+        AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
           ),
-          onPressed: () {
-            print(selectedImage.semanticLabel);
-            String? imageName = selectedImage.semanticLabel;
-            imageName ??= pickedImages.first.semanticLabel;
-            Navigator.pop<String>(context, imageName);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  '決定',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                )
-              ],
+          insetPadding: const EdgeInsets.all(16),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                print(selectedImage.semanticLabel);
+                String? imageName = selectedImage.semanticLabel;
+                Navigator.pop<String>(context, imageName);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      '決定',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-      title: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ],
+          title: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.image_outlined),
-                  SizedBox(
-                    width: 8,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.image_outlined),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text('背景')
+                    ],
                   ),
-                  Text('背景')
+                  const Spacer(),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.close_rounded)),
                 ],
               ),
-              const Spacer(),
-              IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(Icons.close_rounded)),
+              const Divider(
+                height: 16,
+              ),
+              ToggleTextButton(
+                onLeftSelected: _onIamgeSelected,
+                onRightSelected: _onVideoSelected,
+              ),
             ],
           ),
-          const Divider(
-            height: 16,
+          content: content(),
+        ),
+        if (isLoading)
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Theme.of(context).cardColor.withOpacity(0.5),
           ),
-          ToggleTextButton(
-            onLeftSelected: _onIamgeSelected,
-            onRightSelected: _onVideoSelected,
-          ),
-        ],
-      ),
-      content: content(),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          )
+      ],
     );
   }
 }

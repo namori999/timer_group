@@ -70,10 +70,10 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                 Padding(
                   padding: const EdgeInsets.only(right: 32),
                   child: Text(
-                          '× ${d!.length}',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                    '× ${d!.length}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
@@ -123,7 +123,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                           .watch(timerRepositoryProvider)
                           .getTimer(groupId, index);
 
-                      if(!mounted) return;
+                      if (!mounted) return;
                       await showModalBottomSheet(
                           context: context,
                           elevation: 20,

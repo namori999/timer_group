@@ -55,7 +55,6 @@ class GroupAddPageListTileState
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(timerRepositoryProvider);
-    final savedImages = ref.watch(pickedImagesProvider).valueOrNull;
 
     return SizedBox(
       width: 280,
@@ -276,22 +275,16 @@ class GroupAddPageListTileState
                           ),
                         ),
                         onPressed: () async {
-                          final pickedImageProvider =
-                              ref.read(pickedFilesRepositoryProvider);
-
-                          if (savedImages == null || savedImages.isEmpty) {
-                            final List<Image> firebaseImage =
-                                await FirebaseMethods().getImages();
-                            await pickedImageProvider
-                                .saveFirebaseImages(firebaseImage);
-                          }
+                          final images = await ref
+                              .read(pickedFilesRepositoryProvider)
+                              .getImageList();
 
                           if (!mounted) return;
                           String result = await showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return ImageInputDialog(savedImages!);
+                              return ImageInputDialog(images);
                             },
                           );
                           provider
