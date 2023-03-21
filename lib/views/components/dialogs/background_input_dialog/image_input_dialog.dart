@@ -230,7 +230,9 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
           ),
           onPressed: () {
             print(selectedImage.semanticLabel);
-            Navigator.pop<String>(context, selectedImage.semanticLabel);
+            String? imageName = selectedImage.semanticLabel;
+            imageName ??= pickedImages.first.semanticLabel;
+            Navigator.pop<String>(context, imageName);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
