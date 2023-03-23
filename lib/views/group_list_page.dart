@@ -4,8 +4,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
-import 'package:timer_group/firebase/firebase_methods.dart';
-import 'package:timer_group/storage/preferances/preferances_provider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add/group_add_page_body.dart';
 import 'package:timer_group/views/group_add_page.dart';
@@ -35,6 +33,15 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     Icons.add,
     color: Theme.of(context).primaryColor,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      final pickedFileProvider = ref.read(pickedFilesRepositoryProvider);
+      pickedFileProvider.checkFirstLaunch();
+    });
+  }
 
   void showCancelAlert() {
     showDialog<bool>(
@@ -129,19 +136,6 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pickedImageProvider = ref.read(pickedFilesRepositoryProvider);
-
-    Future(() async {
-      final images = await pickedImageProvider.getImages();
-      if (images.isEmpty) {
-        await ref.read(isFirstLaunchProvider.notifier).updateData(true);
-        final List<Image> firebaseImage = await FirebaseMethods().getImages();
-        ref
-            .read(pickedFilesRepositoryProvider)
-            .saveFirebaseImages(firebaseImage);
-      }
-    });
-
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: appBar(),
