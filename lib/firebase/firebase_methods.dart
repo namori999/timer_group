@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_group/domein/models/sound.dart';
 
-class FirebaseMethods {
+class FirebaseMethods{
   FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<List<Image>> getImages() async {
@@ -22,8 +22,8 @@ class FirebaseMethods {
           semanticLabel: url,
         ),
       );
+      print(item.name);
     }
-    print(imageList);
     return imageList;
   }
 

@@ -1,4 +1,5 @@
 import 'dart:io' as io;
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/logic/time_converter.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
-import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/image_input_dialog.dart';
@@ -53,7 +54,6 @@ class GroupAddPageListTileState
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(timerRepositoryProvider);
-    print(timer.imagePath);
 
     return SizedBox(
       width: 280,
@@ -175,20 +175,20 @@ class GroupAddPageListTileState
                         ],
                       ),
                       onPressed: () async {
-                        List<Sound> sounds =
-                            await FirebaseMethods().getSoundEffects();
+                        final List<Sound> bgms = await ref
+                            .read(pickedFilesRepositoryProvider)
+                            .getAlarms();
 
+                        if (!mounted) return;
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) {
-                            return AlarmInputDialog(sounds: sounds);
+                            return AlarmInputDialog(sounds: bgms);
                           },
                         );
-
                         provider.updateTimer(timer.copyWith(
-                          alarm: Sound(name: result.name, url: result.url),
-                        ));
+                            alarm: Sound(name: result.name, url: result.url)));
                       },
                     ),
                   ],
@@ -228,8 +228,11 @@ class GroupAddPageListTileState
                         ],
                       ),
                       onPressed: () async {
-                        final List<Sound> musics =
-                            await FirebaseMethods().getBGMs();
+                        final List<Sound> musics = await ref
+                            .read(pickedFilesRepositoryProvider)
+                            .getBGMs();
+
+                        if (!mounted) return;
                         Sound result = await showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -273,13 +276,16 @@ class GroupAddPageListTileState
                           ),
                         ),
                         onPressed: () async {
-                          final List<Image> imageList =
-                              await FirebaseMethods().getImages();
+                          final images = await ref
+                              .read(pickedFilesRepositoryProvider)
+                              .getImageList();
+
+                          if (!mounted) return;
                           String result = await showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return ImageInputDialog(imageList);
+                              return ImageInputDialog(images);
                             },
                           );
                           provider

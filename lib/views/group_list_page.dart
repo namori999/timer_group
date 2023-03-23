@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/views/components/app_drawer.dart';
 import 'package:timer_group/views/group_add/group_add_page_body.dart';
 import 'package:timer_group/views/group_add_page.dart';
-import 'package:timer_group/views/settings_page.dart';
 
 import 'components/ad/AdBanner.dart';
 import 'configure/theme.dart';
@@ -33,6 +33,15 @@ class _GroupListPageState extends ConsumerState<GroupListPage> {
     Icons.add,
     color: Theme.of(context).primaryColor,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      final pickedFileProvider = ref.read(pickedFilesRepositoryProvider);
+      pickedFileProvider.checkFirstLaunch();
+    });
+  }
 
   void showCancelAlert() {
     showDialog<bool>(

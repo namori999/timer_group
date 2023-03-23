@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
-import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'group_add_page_timer_list_tile.dart';
@@ -40,8 +40,8 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   @override
   void initState() {
     Future(() async {
-      final sampleImageTitle = await FirebaseMethods().getSampleImageTitle();
-      imageTitle = sampleImageTitle;
+      final sampleImageTitle = ref.watch(pickedImagesProvider).value?.first.url;
+      imageTitle = sampleImageTitle!;
     });
     super.initState();
   }
@@ -70,10 +70,10 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                 Padding(
                   padding: const EdgeInsets.only(right: 32),
                   child: Text(
-                          '× ${d!.length}',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                    '× ${d!.length}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
@@ -123,6 +123,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                           .watch(timerRepositoryProvider)
                           .getTimer(groupId, index);
 
+                      if (!mounted) return;
                       await showModalBottomSheet(
                           context: context,
                           elevation: 20,

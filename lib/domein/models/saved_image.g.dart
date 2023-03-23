@@ -1,19 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sound.dart';
+part of 'saved_image.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Sound _$$_SoundFromJson(Map<String, dynamic> json) => _$_Sound(
-      name: json['name'] as String,
+_$_SavedImage _$$_SavedImageFromJson(Map<String, dynamic> json) =>
+    _$_SavedImage(
       url: json['url'] as String,
+      name: json['name'] as String,
       id: json['id'] as String?,
     );
 
-Map<String, dynamic> _$$_SoundToJson(_$_Sound instance) => <String, dynamic>{
-      'name': instance.name,
+Map<String, dynamic> _$$_SavedImageToJson(_$_SavedImage instance) =>
+    <String, dynamic>{
       'url': instance.url,
+      'name': instance.name,
       'id': instance.id,
     };
