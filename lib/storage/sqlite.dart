@@ -330,6 +330,19 @@ CREATE TABLE IF NOT EXISTS pickedFiles (
     });
   }
 
+  Future<bool> isSameImage(String url) async {
+    final db = await _getDatabase();
+    final result = await db.query(
+      'pickedFiles',
+      where: 'type = ? and url = ?',
+      whereArgs: ['image', url],
+    );
+    if (result.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   Future<List<Sound>> getBGMs() async {
     final db = await _getDatabase();
     final result = await db.query(

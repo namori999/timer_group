@@ -30,6 +30,14 @@ class PickedFilesRepository {
         .map((i) => Image.file(
               io.File(i.url),
               semanticLabel: i.url,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (wasSynchronouslyLoaded) {
+                  return child;
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             ))
         .toList()
         .reversed
@@ -42,6 +50,8 @@ class PickedFilesRepository {
   Future<List<Sound>> getAlarms() async => await _pickedFilesDB.getAlarms();
 
   Future<void> addImage(SavedImage savedImage) async {
+    bool isSameImage = await _pickedFilesDB.isSameImage(savedImage.url);
+    if (isSameImage) return;
     return await _pickedFilesDB.insertImage(savedImage);
     //ref.refresh(timerGroupOptionsProvider(timerGroupOptions.id));
   }
@@ -60,22 +70,22 @@ class PickedFilesRepository {
     final images = await getImages();
     final BGMs = await getBGMs();
     final alarms = await getAlarms();
-    if(images.isEmpty) saveFirebaseImages();
-    if(BGMs.isEmpty) saveFirebaseBGMs();
-    if(alarms.isEmpty) saveFirebaseAlarms();
+    if (images.isEmpty) saveFirebaseImages();
+    if (BGMs.isEmpty) saveFirebaseBGMs();
+    if (alarms.isEmpty) saveFirebaseAlarms();
   }
 
   Future<void> saveFirebaseImages() async {
     final List<Image> firebaseImage = await FirebaseMethods().getImages();
 
     final String dir =
-    await getTemporaryDirectory().then((value) => value.path);
+        await getTemporaryDirectory().then((value) => value.path);
 
     for (Image i in firebaseImage) {
       final io.File file =
-      io.File(path.join(dir, path.basename(i.semanticLabel!)));
+          io.File(path.join(dir, path.basename(i.semanticLabel!)));
       final http.Response response =
-      await http.get(Uri.parse(i.semanticLabel!));
+          await http.get(Uri.parse(i.semanticLabel!));
       await file.writeAsBytes(response.bodyBytes);
 
       addImage(SavedImage(url: file.path, name: i.semanticLabel!));
@@ -91,35 +101,27 @@ class PickedFilesRepository {
         await getTemporaryDirectory().then((value) => value.path);
 
     for (Sound s in firebaseBgms) {
-      final io.File file =
-          io.File(path.join(dir, path.basename(s.name)));
-      final http.Response response =
-          await http.get(Uri.parse(s.url));
+      final io.File file = io.File(path.join(dir, path.basename(s.name)));
+      final http.Response response = await http.get(Uri.parse(s.url));
       await file.writeAsBytes(response.bodyBytes);
 
       addBGM(Sound(url: file.path, name: s.name));
     }
-
-    ref.invalidate(pickedImagesProvider);
   }
 
   Future<void> saveFirebaseAlarms() async {
     final List<Sound> alarms = await FirebaseMethods().getSoundEffects();
 
     final String dir =
-    await getTemporaryDirectory().then((value) => value.path);
+        await getTemporaryDirectory().then((value) => value.path);
 
     for (Sound s in alarms) {
-      final io.File file =
-      io.File(path.join(dir, path.basename(s.name)));
-      final http.Response response =
-      await http.get(Uri.parse(s.url));
+      final io.File file = io.File(path.join(dir, path.basename(s.name)));
+      final http.Response response = await http.get(Uri.parse(s.url));
       await file.writeAsBytes(response.bodyBytes);
 
       addAlarm(Sound(url: file.path, name: s.name));
     }
-
-    ref.invalidate(pickedImagesProvider);
   }
 
   Future<void> remove(String path) async {

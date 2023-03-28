@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
-import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/views/components/dialogs/add_timer_dialog.dart';
 import 'package:timer_group/views/configure/theme.dart';
@@ -36,15 +35,6 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   get timers => widget.timers;
 
   String imageTitle = '';
-
-  @override
-  void initState() {
-    Future(() async {
-      final sampleImageTitle = ref.watch(pickedImagesProvider).value?.first.url;
-      imageTitle = sampleImageTitle!;
-    });
-    super.initState();
-  }
 
   int addIndex() {
     ++index;
