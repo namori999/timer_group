@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
+import 'package:timer_group/views/login_page.dart';
 import 'package:timer_group/views/privacy_policy_page.dart';
 
 class AppDrawer extends ConsumerStatefulWidget {
@@ -10,6 +13,17 @@ class AppDrawer extends ConsumerStatefulWidget {
 }
 
 class _AppDrawerState extends ConsumerState<AppDrawer> {
+  bool isLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (FirebaseMethods().getUser() != null) {
+      isLogin = true;
+    }
+    print(isLogin);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -22,6 +36,38 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             children: [
               Column(
                 children: [
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  isLogin
+                      ? ListTile(
+                          leading: const Icon(Icons.login_outlined),
+                          title: const Text("ログアウト"),
+                          onTap: () async {
+                            setState(() {
+                              isLogin = false;
+                            });
+                            Fluttertoast.showToast(
+                                msg: "ログアウトしました",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.grey,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                            await FirebaseMethods.signOut(context: context);
+                          },
+                        )
+                      : ListTile(
+                          leading: const Icon(Icons.login_outlined),
+                          title: const Text("ログイン"),
+                          onTap: () async {
+                            await Navigator.of(context).push(LoginPage.route());
+                            setState(() {
+                              isLogin = true;
+                            });
+                          },
+                        ),
                   const SizedBox(
                     height: 100,
                   ),
