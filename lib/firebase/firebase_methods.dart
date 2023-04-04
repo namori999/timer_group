@@ -124,7 +124,7 @@ class FirebaseMethods {
     return null;
   }
 
-  User? getUser() {
+  static User? getUser() {
     final auth = FirebaseAuth.instance;
     return auth.currentUser;
   }
