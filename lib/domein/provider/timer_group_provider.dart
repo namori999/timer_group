@@ -5,6 +5,7 @@ import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/storage/sqlite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:synchronized/synchronized.dart';
@@ -53,6 +54,16 @@ class TimerGroupRepository {
     final int = await _db.insert(info);
     await _optionsDb.insert(TimerGroupOptions(
         id: int, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'));
+    FirebaseMethods().saveToFireStore(
+      TimerGroup(
+          id: int,
+          title: info.title,
+          description: info.description,
+          options: TimerGroupOptions(
+              id: int, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'),
+          timers: [],
+          totalTime: 0),
+    );
     return int;
   }
 
