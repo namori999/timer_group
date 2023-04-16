@@ -125,7 +125,9 @@ class _AppDrawerState extends State<AppDrawer> {
                             await Navigator.of(context).push(LoginPage.route());
                             setState(() {
                               user = FirebaseMethods.getUser();
-                              isLogin = true;
+                              if (user != null) {
+                                isLogin = true;
+                              }
                             });
                           },
                         ),

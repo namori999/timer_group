@@ -7,7 +7,7 @@ part 'timer.g.dart';
 @freezed
 class Timer with _$Timer {
   const Timer._();
-
+  @JsonSerializable(explicitToJson: true)
   factory Timer({
     required int groupId,
     required int number,

@@ -1,15 +1,21 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timer_group/domein/models/sound.dart';
+import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/models/timer.dart';
 
 class FirebaseMethods {
   FirebaseStorage storage = FirebaseStorage.instance;
 
+  ///デフォルト音声・画像の取得
   Future<List<Image>> getImages() async {
     final storageRef = FirebaseStorage.instance.ref().child("images");
     final listResult = await storageRef.listAll();
@@ -69,6 +75,7 @@ class FirebaseMethods {
     return sounds;
   }
 
+  ///ログイン
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -145,6 +152,51 @@ class FirebaseMethods {
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
+    }
+  }
+
+  ///タイマーデータ保存
+  final fireStore = FirebaseFirestore.instance;
+
+  Future<void> saveToFireStore(TimerGroup timerGroup) async {
+    final user = getUser();
+    if (user != null) {
+      final tg = <String, dynamic>{
+        'id': timerGroup.id.toString(),
+        'title': timerGroup.title.toString(),
+        'description': timerGroup.description.toString(),
+        'options': timerGroup.options!.toJson(),
+        'timers': timerGroup.timers!.map((t) => t.toMap()),
+        'totalTime' : timerGroup.totalTime.toString(),
+      };
+
+
+      await FirebaseFirestore.instance
+          .collection(user.email.toString()) // コレクションID
+          .doc(timerGroup.id.toString()) // ドキュメントID
+          .set(tg);
+      print('saveToFireStore: $timerGroup');
+    }
+  }
+
+  Future<void> saveAllDataToFireStore(List<TimerGroup> data) async {
+    final user = getUser();
+    if (user != null) {
+      for (var timerGroup in data) {
+        saveToFireStore(timerGroup);
+      }
+    }
+  }
+
+  Future<void> updateTimer(Timer timer) async {
+    final userEmail = getUser();
+    if (userEmail != null) {
+      await FirebaseFirestore.instance
+          .collection(userEmail.email.toString())
+          .doc(timer.groupId.toString())
+          .collection('timers')
+          .doc(timer.number.toString())
+          .set(timer.toJson());
     }
   }
 }

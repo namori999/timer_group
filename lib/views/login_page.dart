@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/configure/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,6 +23,12 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class LoginPageState extends ConsumerState<LoginPage> {
+  syncDataToFireStore() async {
+    final List<TimerGroup> timerGroupList =
+        await ref.read(savedTimerGroupProvider.notifier).getTimerGroupList();
+    FirebaseMethods().saveAllDataToFireStore(timerGroupList);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +134,10 @@ class LoginPageState extends ConsumerState<LoginPage> {
                         backgroundColor: Themes.themeColor,
                         textColor: Colors.white,
                         fontSize: 16.0);
+
+                    syncDataToFireStore(); // ログイン時にデータを同期
                   }
+
                   if (mounted) Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(

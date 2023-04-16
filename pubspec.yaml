@@ -69,6 +69,7 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   firebase_auth: ^4.3.0
   google_sign_in: ^6.0.2
+  cloud_firestore: ^4.5.0
 
 dev_dependencies:
   flutter_test:

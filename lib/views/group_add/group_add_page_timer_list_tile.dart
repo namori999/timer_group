@@ -9,6 +9,7 @@ import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/provider/picked_files_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/components/dialogs/alarm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/bgm_input_dialog.dart';
 import 'package:timer_group/views/components/dialogs/background_input_dialog/image_input_dialog.dart';
@@ -290,6 +291,7 @@ class GroupAddPageListTileState
                           );
                           provider
                               .updateTimer(timer.copyWith(imagePath: result));
+                          FirebaseMethods().updateTimer(timer);
                         },
                         child: const Text(''),
                       ),
