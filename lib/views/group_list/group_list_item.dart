@@ -8,6 +8,7 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/detail_page.dart';
 import 'group_list_item_tile.dart';
 
@@ -86,6 +87,8 @@ class GroupListItemState extends ConsumerState<GroupListItem> {
     final provider = ref.watch(savedTimerGroupProvider.notifier);
     setUndo(group);
     provider.removeGroup(group.id!);
+
+    FirebaseMethods().deleteDataFromFireStore(group);
 
     final snackBar = SnackBar(
       content: Text('${group.title}を削除しました'),

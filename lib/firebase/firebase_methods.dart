@@ -179,6 +179,18 @@ class FirebaseMethods {
     }
   }
 
+  Future<void> deleteDataFromFireStore(TimerGroup timerGroup) async {
+    final user = getUser();
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection(user.email.toString()) // コレクションID
+          .doc(timerGroup.id.toString()) // ドキュメントID
+          .delete();
+      print('deleteDataFromFireStore: $timerGroup');
+    }
+
+  }
+
   Future<void> saveAllDataToFireStore(List<TimerGroup> data) async {
     final user = getUser();
     if (user != null) {
@@ -224,17 +236,5 @@ class FirebaseMethods {
     }
     print('is not exist in local: $data');
     return data;
-  }
-
-  Future<void> updateTimer(Timer timer) async {
-    final userEmail = getUser();
-    if (userEmail != null) {
-      await FirebaseFirestore.instance
-          .collection(userEmail.email.toString())
-          .doc(timer.groupId.toString())
-          .collection('timers')
-          .doc(timer.number.toString())
-          .set(timer.toJson());
-    }
   }
 }
