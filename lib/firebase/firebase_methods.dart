@@ -11,6 +11,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timer_group/domein/models/sound.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/models/timer_group_options.dart';
 
 class FirebaseMethods {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -167,9 +168,8 @@ class FirebaseMethods {
         'description': timerGroup.description.toString(),
         'options': timerGroup.options!.toJson(),
         'timers': timerGroup.timers!.map((t) => t.toMap()),
-        'totalTime' : timerGroup.totalTime.toString(),
+        'totalTime': timerGroup.totalTime.toString(),
       };
-
 
       await FirebaseFirestore.instance
           .collection(user.email.toString()) // コレクションID
@@ -186,6 +186,44 @@ class FirebaseMethods {
         saveToFireStore(timerGroup);
       }
     }
+  }
+
+  Future<List<TimerGroup>> getAllDataFromFireStore() async {
+    final user = getUser();
+    final List<TimerGroup> timerGroups = [];
+    if (user != null) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection(user.email.toString())
+          .get();
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final timers = data['timers'] as List;
+        final options = data['options'];
+        final timerGroup = TimerGroup(
+            id: int.parse(data['id']),
+            title: data['title'],
+            description: data['description'],
+            options: TimerGroupOptions.fromJson(options),
+            timers: timers.map((t) => Timer.fromJson(t)).toList(),
+            totalTime: int.parse(data['totalTime']));
+        timerGroups.add(timerGroup);
+      }
+    }
+    return timerGroups;
+  }
+
+  Future<List<TimerGroup>> getDifferenceWithFiresStore(
+      List<TimerGroup> localData) async {
+    //FireStoreと比べて、Localにないデータを保存する
+    final fireStoreData = await getAllDataFromFireStore();
+    final List<TimerGroup> data = [];
+    for (var timerGroup in fireStoreData) {
+      if (!localData.contains(timerGroup)) {
+        data.add(timerGroup);
+      }
+    }
+    print('is not exist in local: $data');
+    return data;
   }
 
   Future<void> updateTimer(Timer timer) async {

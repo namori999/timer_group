@@ -56,6 +56,20 @@ class TimerGroupRepository {
     return int;
   }
 
+  Future<void> addTimerGroupList(List<TimerGroup> timerGroups) async {
+    for (TimerGroup tg in timerGroups) {
+      await _db.insertWhereId(
+          TimerGroupInfo(title: tg.title, description: tg.description), tg.id!);
+      await _optionsDb.insert(TimerGroupOptions(
+          id: tg.id!, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'));
+      if (tg.timers != null && tg.timers!.isNotEmpty) {
+        await _timersDb.insertTimerList(tg.timers!);
+      }
+    }
+    ref.invalidate(savedTimerGroupProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
+  }
+
   Future<void> recoverTimerGroup(TimerGroup timerGroup) async {
     final newId = await _db.insert(TimerGroupInfo(
         title: timerGroup.title, description: timerGroup.description));

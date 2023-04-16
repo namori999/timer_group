@@ -23,10 +23,16 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class LoginPageState extends ConsumerState<LoginPage> {
+
   syncDataToFireStore() async {
     final List<TimerGroup> timerGroupList =
         await ref.read(savedTimerGroupProvider.notifier).getTimerGroupList();
     FirebaseMethods().saveAllDataToFireStore(timerGroupList);
+    final timerGroupProvider = ref.read(timerGroupRepositoryProvider);
+    final differentData =
+        await FirebaseMethods().getDifferenceWithFiresStore(timerGroupList);
+    timerGroupProvider.addTimerGroupList(differentData);
+
   }
 
   @override
