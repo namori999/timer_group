@@ -5,6 +5,7 @@ import 'package:timer_group/domein/models/timer_group_options.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/provider/timer_group_options_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/storage/sqlite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:synchronized/synchronized.dart';
@@ -52,10 +53,32 @@ class TimerGroupRepository {
   Future<int> addNewTimerGroup(TimerGroupInfo info) async {
     final int = await _db.insert(info);
     await _optionsDb.insert(TimerGroupOptions(
-        id: int,
-        timeFormat: TimeFormat.minuteSecond,
-        overTime: 'OFF'));
+        id: int, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'));
+    FirebaseMethods().saveToFireStore(
+      TimerGroup(
+          id: int,
+          title: info.title,
+          description: info.description,
+          options: TimerGroupOptions(
+              id: int, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'),
+          timers: [],
+          totalTime: 0),
+    );
     return int;
+  }
+
+  Future<void> addTimerGroupList(List<TimerGroup> timerGroups) async {
+    for (TimerGroup tg in timerGroups) {
+      await _db.insertWhereId(
+          TimerGroupInfo(title: tg.title, description: tg.description), tg.id!);
+      await _optionsDb.insert(TimerGroupOptions(
+          id: tg.id!, timeFormat: TimeFormat.minuteSecond, overTime: 'OFF'));
+      if (tg.timers != null && tg.timers!.isNotEmpty) {
+        await _timersDb.insertTimerList(tg.timers!);
+      }
+    }
+    ref.invalidate(savedTimerGroupProvider);
+    ref.invalidate(timerGroupRepositoryProvider);
   }
 
   Future<void> recoverTimerGroup(TimerGroup timerGroup) async {
@@ -99,15 +122,51 @@ class savedTimerGroupNotifier
   final Ref ref;
 
   Future<void> _load() async {
-    state = (await AsyncValue.guard(_loadImpl));
+    state = (await AsyncValue.guard(loadImpl));
   }
 
-  Future<List<TimerGroup>> _loadImpl() async {
-    final value = state.asData?.value;
-    if (value != null) return value;
+  Future<List<TimerGroup>> loadImpl() async {
+    final List<TimerGroup> timerGroups = [];
+    final timerGroupInfo =
+        await ref.read(timerGroupRepositoryProvider).getAll();
+    for (TimerGroup i in timerGroupInfo) {
+      final tg =
+          await ref.read(timerGroupRepositoryProvider).getTimerGroup(i.id!);
 
-    final prefs = await ref.read(timerGroupRepositoryProvider).getAll();
-    return prefs;
+      timerGroups.add(
+        TimerGroup(
+          id: i.id,
+          title: i.title,
+          description: i.description,
+          options: tg!.options,
+          timers: tg.timers,
+          totalTime: tg.totalTime,
+        ),
+      );
+    }
+    return timerGroups;
+  }
+
+  Future<List<TimerGroup>> getTimerGroupList() async {
+    final List<TimerGroup> timerGroups = [];
+    final timerGroupInfo =
+        await ref.read(timerGroupRepositoryProvider).getAll();
+    for (TimerGroup i in timerGroupInfo) {
+      final tg =
+          await ref.read(timerGroupRepositoryProvider).getTimerGroup(i.id!);
+
+      timerGroups.add(
+        TimerGroup(
+          id: i.id,
+          title: i.title,
+          description: i.description,
+          options: tg!.options,
+          timers: tg.timers,
+          totalTime: tg.totalTime,
+        ),
+      );
+    }
+    return timerGroups;
   }
 
   Future<int?> getEditingId() async {

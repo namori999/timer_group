@@ -3,12 +3,13 @@ import 'package:timer_group/domein/models/timer.dart';
 import 'package:timer_group/domein/models/timer_group_options.dart';
 
 part 'timer_group.freezed.dart';
+
 part 'timer_group.g.dart';
 
 @freezed
 class TimerGroup with _$TimerGroup {
   const TimerGroup._();
-
+  @JsonSerializable(explicitToJson: true)
   factory TimerGroup({
     int? id,
     required String title,

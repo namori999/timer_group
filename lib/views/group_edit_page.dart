@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/models/timer_group_info.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'group_edit/group_edit_page_data.dart';
 
 class GroupEditPage extends ConsumerWidget {
@@ -29,6 +30,12 @@ class GroupEditPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<TimerGroup> getTimerGroup(int id) async {
+      final timerGroup =
+      await ref.watch(timerGroupRepositoryProvider).getTimerGroup(id);
+      return timerGroup!;
+    }
+
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
@@ -40,7 +47,7 @@ class GroupEditPage extends ConsumerWidget {
           elevation: 0,
           actions: [
             MaterialButton(
-              onPressed: () {
+              onPressed: () async {
                 final String title = titleController.text;
                 final String description = descriptionController.text;
                 print(title);
@@ -60,6 +67,8 @@ class GroupEditPage extends ConsumerWidget {
                 ref.read(timerGroupRepositoryProvider).update(timerGroup.id!,
                     TimerGroupInfo(title: title, description: description));
 
+                final updatedData = await getTimerGroup(timerGroup.id!);
+                FirebaseMethods().saveToFireStore(updatedData);
                 Navigator.pop(context);
               },
               child: Container(

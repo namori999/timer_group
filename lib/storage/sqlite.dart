@@ -116,6 +116,22 @@ CREATE TABLE IF NOT EXISTS timerGroup (
     return insertedId;
   }
 
+  Future<void> insertWhereId(TimerGroupInfo timerGroupInfo, int id) async {
+    final db = await _getDatabase();
+    print("insert timer group: $timerGroupInfo");
+    var values = <String, dynamic>{
+      "id": id,
+      "title": timerGroupInfo.title,
+      "description": timerGroupInfo.description,
+    };
+    await db.insert(
+      'timerGroup',
+      values,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("insert timer group: $timerGroupInfo,id: $id");
+  }
+
   Future<void> update(int id, TimerGroupInfo timerGroupInfo) async {
     final db = await _getDatabase();
     print("update timer group: $id,$timerGroupInfo");
@@ -240,16 +256,9 @@ CREATE TABLE IF NOT EXISTS timers (
   }
 
   Future<void> insertTimerList(List<Timer> timers) async {
-    final db = await _getDatabase();
-
-    timers.forEach((timer) async {
-      print("insert timers: timers=$timer");
-      await db.insert(
-        'timers',
-        timer.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    });
+    for (var timer in timers) {
+      insert(timer);
+    }
   }
 
   Future<void> update(Timer timer) async {

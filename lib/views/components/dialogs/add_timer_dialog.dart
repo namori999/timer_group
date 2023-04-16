@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timer_group/domein/models/timer.dart';
+import 'package:timer_group/domein/models/timer_group.dart';
+import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
+import 'package:timer_group/firebase/firebase_methods.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
 class AddTimerDialog extends ConsumerWidget {
@@ -25,6 +28,12 @@ class AddTimerDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(timerRepositoryProvider);
     final watchedTimer = ref.watch(singleTimerProvider(timer));
+
+    Future<TimerGroup> getTimerGroup(int id) async {
+      final timerGroup =
+          await ref.watch(timerGroupRepositoryProvider).getTimerGroup(id);
+      return timerGroup!;
+    }
 
     return Container(
       height: 600,
@@ -66,6 +75,8 @@ class AddTimerDialog extends ConsumerWidget {
               ),
             ),
             onPressed: () async {
+              final timerGroup = await getTimerGroup(groupId);
+              FirebaseMethods().saveToFireStore(timerGroup);
               Navigator.pop(context);
             },
             child: Row(
