@@ -6,6 +6,7 @@ import 'package:timer_group/domein/models/timer_group.dart';
 import 'package:timer_group/domein/provider/timer_group_provider.dart';
 import 'package:timer_group/domein/provider/timer_provider.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
+import 'package:timer_group/views/group_add/group_add_page_timer_list.dart';
 import 'package:timer_group/views/group_add/group_add_page_timer_list_tile.dart';
 
 class AddTimerDialog extends ConsumerWidget {
@@ -77,6 +78,11 @@ class AddTimerDialog extends ConsumerWidget {
             onPressed: () async {
               final timerGroup = await getTimerGroup(groupId);
               FirebaseMethods().saveToFireStore(timerGroup);
+
+              final scrollController = ref.read(scrollControllerProvider);
+              scrollController.jumpTo(
+                scrollController.position.maxScrollExtent,
+              );
               Navigator.pop(context);
             },
             child: Row(

@@ -45,6 +45,9 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
   Widget build(BuildContext context) {
     final timerRepository = ref.watch(timerRepositoryProvider);
     final timersProvider = ref.watch(timersListProvider(groupId));
+
+    final scrollController = ref.watch(scrollControllerProvider);
+
     return timersProvider.when(
       data: (d) {
         return Column(
@@ -72,6 +75,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
+              controller: scrollController,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -80,6 +84,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: d.length,
                       itemBuilder: (context, i) {
                         if (timers[i].isOverTime == 1) {
@@ -147,3 +152,7 @@ class GroupAddPageTimerListState extends ConsumerState<GroupAddPageTimerList> {
     );
   }
 }
+
+final scrollControllerProvider = Provider.autoDispose<ScrollController>((ref) {
+  return ScrollController();
+});
