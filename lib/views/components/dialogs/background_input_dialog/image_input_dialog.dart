@@ -122,6 +122,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                   ),
                 ),
                 ListView.separated(
+                  addAutomaticKeepAlives: true,
                   shrinkWrap: true,
                   itemCount: savedImages.length,
                   controller: ScrollController(),

@@ -30,6 +30,8 @@ class PickedFilesRepository {
         .map((i) => Image.file(
               io.File(i.url),
               semanticLabel: i.url,
+              cacheHeight: 200,
+              cacheWidth: 200,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if (wasSynchronouslyLoaded) {
                   return child;
