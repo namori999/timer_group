@@ -122,6 +122,7 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
                   ),
                 ),
                 ListView.separated(
+                  addAutomaticKeepAlives: true,
                   shrinkWrap: true,
                   itemCount: savedImages.length,
                   controller: ScrollController(),
@@ -263,10 +264,13 @@ class ImageInputDialogState extends ConsumerState<ImageInputDialog> {
               const Divider(
                 height: 16,
               ),
+              /*
+              // 画像と動画の切り替え
               ToggleTextButton(
                 onLeftSelected: _onIamgeSelected,
                 onRightSelected: _onVideoSelected,
               ),
+               */
             ],
           ),
           content: content(),
