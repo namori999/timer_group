@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timer_group/firebase/firebase_methods.dart';
@@ -40,6 +41,36 @@ class _AppDrawerState extends State<AppDrawer> {
       showToastMessage("アカウントを削除しました");
       Navigator.of(context).pop();
     }
+  }
+
+  //アカウント削除の際に呼び出すアラート
+  void showAccountRemoveAlert() {
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text(
+            '本当にアカウントを削除しますか？\n保存しているデータも削除されます。',
+            style: TextStyle(fontSize: 13),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text('キャンセル'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            CupertinoDialogAction(
+              child: const Text(
+                '削除',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () async {
+                await deleteAccount();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -143,39 +174,17 @@ class _AppDrawerState extends State<AppDrawer> {
                             ),
                             ListTile(
                               leading: const Icon(
-                                Icons.delete_outlined,
+                                Icons.person_off_outlined,
                                 color: Colors.red,
                               ),
-                              title: const Text("削除する"),
-                              onTap: () async {
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text("本当に削除しますか？"),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text("キャンセル"),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          await deleteAccount();
-                                        },
-                                        child: Text(
-                                          "アカウント削除",
-                                          style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                              title: const Text(
+                                "アカウント削除",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                              onTap: () {
+                                showAccountRemoveAlert();
                               },
                             ),
                           ],
