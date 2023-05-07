@@ -16,6 +16,35 @@ class _AppDrawerState extends State<AppDrawer> {
   bool isLogin = false;
   User? user;
 
+  final _deleteAccountController = TextEditingController();
+
+  //トーストメッセージ
+  void showToastMessage(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.grey,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  //アカウント削除処理
+  Future<void> deleteAccount() async {
+    await user?.delete();
+    print("アカウントを削除しました");
+    if (mounted) {
+      setState(() {
+        user = null;
+        isLogin = false;
+      });
+      showToastMessage("アカウントを削除しました");
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,52 +100,112 @@ class _AppDrawerState extends State<AppDrawer> {
                     height: 8,
                   ),
                   isLogin
-                      ? ListTile(
-                          leading: const Icon(Icons.logout_outlined),
-                          title: const Text("ログアウト"),
-                          onTap: () async {
-                            await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text("ログアウトしますか？"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("キャンセル"),
+                      ? Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.logout_outlined),
+                              title: const Text("ログアウト"),
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("ログアウトしますか？"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("キャンセル"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          setState(() {
+                                            user = null;
+                                            isLogin = false;
+                                          });
+                                          showToastMessage("ログアウトしました");
+                                          await FirebaseMethods.signOut(
+                                              context: context);
+                                          if (mounted) {
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                        child: Text(
+                                          "ログアウト",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .error,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        user = null;
-                                        isLogin = false;
-                                      });
-                                      Fluttertoast.showToast(
-                                          msg: "ログアウトしました",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          timeInSecForIosWeb: 1,
-                                          backgroundColor: Colors.grey,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-                                      await FirebaseMethods.signOut(
-                                          context: context);
-                                      if (mounted) Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "ログアウト",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.delete_outlined,
+                                color: Colors.red,
                               ),
-                            );
-                          },
+                              title: const Text("アカウント削除"),
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("アカウントを削除しますか？"),
+                                    content: SizedBox(
+                                      height: 100,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                              "アカウントを削除するなら、\n名前を入力してください。"),
+                                          TextField(
+                                            controller:
+                                                _deleteAccountController,
+                                            decoration: InputDecoration(
+                                              hintText: "${user!.displayName}",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("キャンセル"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          if (_deleteAccountController.text ==
+                                              user!.displayName) {
+                                            await deleteAccount();
+                                          } else {
+                                            showToastMessage(
+                                                "${user!.displayName}を入力してください}");
+                                          }
+                                        },
+                                        child: Text(
+                                          "アカウント削除",
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         )
                       : ListTile(
                           leading: const Icon(Icons.login_outlined),
