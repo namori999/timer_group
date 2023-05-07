@@ -16,8 +16,6 @@ class _AppDrawerState extends State<AppDrawer> {
   bool isLogin = false;
   User? user;
 
-  final _deleteAccountController = TextEditingController();
-
   //トーストメッセージ
   void showToastMessage(String message) {
     Fluttertoast.showToast(
@@ -34,7 +32,6 @@ class _AppDrawerState extends State<AppDrawer> {
   //アカウント削除処理
   Future<void> deleteAccount() async {
     await user?.delete();
-    print("アカウントを削除しました");
     if (mounted) {
       setState(() {
         user = null;
@@ -149,30 +146,12 @@ class _AppDrawerState extends State<AppDrawer> {
                                 Icons.delete_outlined,
                                 color: Colors.red,
                               ),
-                              title: const Text("アカウント削除"),
+                              title: const Text("削除する"),
                               onTap: () async {
                                 await showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("アカウントを削除しますか？"),
-                                    content: SizedBox(
-                                      height: 100,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                              "アカウントを削除するなら、\n名前を入力してください。"),
-                                          TextField(
-                                            controller:
-                                                _deleteAccountController,
-                                            decoration: InputDecoration(
-                                              hintText: "${user!.displayName}",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    title: const Text("本当に削除しますか？"),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -182,13 +161,7 @@ class _AppDrawerState extends State<AppDrawer> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          if (_deleteAccountController.text ==
-                                              user!.displayName) {
-                                            await deleteAccount();
-                                          } else {
-                                            showToastMessage(
-                                                "${user!.displayName}を入力してください}");
-                                          }
+                                          await deleteAccount();
                                         },
                                         child: Text(
                                           "アカウント削除",
